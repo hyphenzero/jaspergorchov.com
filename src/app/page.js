@@ -5,8 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion"
 import { Tilt } from "react-tilt"
 import Stats from "src/components/home/stats.js"
 import Images from "src/components/home/images.js"
-import Software from "src/components/home/software.js"
-import Art from "src/components/home/art.js"
+import Skills from "src/components/home/skills.js"
 import Projects from "src/components/home/projects.js"
 import ContactCTA from "src/components/home/contact-cta.js"
 import Footer from "src/components/home/footer.js"
@@ -195,18 +194,7 @@ export default function Home() {
 
 				<Stats />
 
-				<Software />
-
-				<div className="relative md:hidden">
-					<div
-						className="absolute inset-0 flex items-center"
-						aria-hidden="true"
-					>
-						<div className="mx-auto w-3/4 border-t border-slate-600" />
-					</div>
-				</div>
-
-				<Art />
+				<Skills />
 
 				<Projects />
 

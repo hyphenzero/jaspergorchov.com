@@ -1,5 +1,6 @@
 import React from "react"
 import Marquee from "react-fast-marquee"
+import { RectangleStackIcon } from "@heroicons/react/24/solid"
 
 const images = [
 	{
@@ -30,9 +31,12 @@ const images = [
 
 export default function Projects() {
 	return (
-		<section className="mx-auto space-y-12 py-24 sm:py-32">
+		<section className="mx-auto space-y-12 px-6 py-24 sm:py-32 lg:px-8">
 			<div className="text-center">
-				<h2 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
+				<div className="mx-auto flex justify-center items-center aspect-square w-fit rounded-lg px-3.5 py-2.5 font-grotesk text-base font-semibold ring-1 ring-inset bg-[#0F2B44] text-sky-400 ring-sky-400/20">
+					<RectangleStackIcon className="w-7 h-7" />
+				</div>
+				<h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
 					Projects
 				</h2>
 				<div className="flex w-full justify-center">

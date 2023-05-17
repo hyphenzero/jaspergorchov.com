@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from "react"
 import CountUp from "react-countup"
 import { useInView } from "react-intersection-observer"
+import { EyeIcon } from "@heroicons/react/24/solid"
 
 const startDate = new Date("December 1, 2020")
 const currentDate = new Date()
@@ -48,7 +49,10 @@ const Stats = () => {
 				<div className="mx-auto max-w-7xl px-6 sm:px-8">
 					<div className="mx-auto max-w-2xl sm:max-w-none">
 						<div className="text-center">
-							<h2 className="text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
+							<div className="flex justify-center items-center aspect-square mx-auto w-fit rounded-lg px-3.5 py-2.5 font-grotesk text-base font-semibold ring-1 ring-inset bg-[#0F2B44] text-sky-400 ring-sky-400/20">
+								<EyeIcon className="w-7 h-7" />
+							</div>
+							<h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
 								Visual Thinker
 							</h2>
 							<div className="flex w-full justify-center">

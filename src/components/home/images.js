@@ -40,7 +40,7 @@ export default function Images() {
 				{images.map((image) => (
 					<div className="flex items-center justify-center">
 						<div
-							className="relative mx-12 h-48 w-48 md:h-64 md:w-64"
+							className="relative mx-6 sm:mx-12 h-48 w-48 md:h-64 md:w-64"
 							key={image.alt}
 						>
 							<img
