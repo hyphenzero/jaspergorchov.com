@@ -33,7 +33,7 @@ const Stats = () => {
 	const [projects, setProjects] = useState(null)
 
 	useEffect(() => {
-		fetch("https://api.github.com/users/HyphenZero/repos")
+		fetch("https://api.github.com/users/hyphenzero/repos")
 			.then((response) => response.json())
 			.then((data) => {
 				const projects = data.length
@@ -49,8 +49,8 @@ const Stats = () => {
 				<div className="mx-auto max-w-7xl px-6 sm:px-8">
 					<div className="mx-auto max-w-2xl sm:max-w-none">
 						<div className="text-center">
-							<div className="flex justify-center items-center aspect-square mx-auto w-fit rounded-lg px-3.5 py-2.5 font-grotesk text-base font-semibold ring-1 ring-inset bg-[#0F2B44] text-sky-400 ring-sky-400/20">
-								<EyeIcon className="w-7 h-7" />
+							<div className="mx-auto flex aspect-square w-fit items-center justify-center rounded-lg bg-sky-400/20 px-3.5 py-2.5 font-grotesk text-base font-semibold text-sky-400 ring-1 ring-inset ring-sky-400/20">
+								<EyeIcon className="h-7 w-7" />
 							</div>
 							<h2 className="mt-6 text-3xl font-bold tracking-tight text-slate-100 sm:text-4xl">
 								Visual Thinker
