@@ -1,4 +1,4 @@
 # Personal Portfolio Website (Coming Soon)
 My portfolio website, built with 🚀 [Next.js](https://nextjs.org) and ✨ [Tailwind CSS](https://tailwindcss.com).
 
-__Completed: ~*50%*__
+__Completed: ~*75%*__
