@@ -11,7 +11,7 @@ export default function WavePattern({ fade, parallax }) {
 	const fadeFromRight = fade === 'fromRight'
 
 	let { scrollYProgress } = useScroll()
-	let y = useTransform(scrollYProgress, [0, 1], ["0%", "15%"])
+	let y = useTransform(scrollYProgress, [0, 1], ['0%', '0%'])
 
 	return (
 		<motion.svg
@@ -19,14 +19,19 @@ export default function WavePattern({ fade, parallax }) {
 			fill="none"
 			style={parallax ? { y } : {}}
 			className={clsx(
-				'absolute max-w-none h-screen right-0 top-0 -z-10 bg-cover bg-center stroke-neutral-800',
-				fadeFromTopRight && '[mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]',
+				'absolute right-0 top-0 -z-10 h-screen max-w-none bg-cover bg-center stroke-neutral-800',
+				fadeFromTopRight &&
+					'[mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]',
 				fadeFromTop && '[mask-image:linear-gradient(white,transparent)]',
-				fadeFromBottom && '[mask-image:linear-gradient(from_bottom,white,transparent)]',
-				fadeFromLeft && '[mask-image:linear-gradient(from_left,white,transparent)]',
-				fadeFromRight && '[mask-image:linear-gradient(from_right,white,transparent)]'
+				fadeFromBottom &&
+					'[mask-image:linear-gradient(to_top,white,transparent)]',
+				fadeFromLeft &&
+					'[mask-image:linear-gradient(to_right,white,transparent)]',
+				fadeFromRight &&
+					'[mask-image:linear-gradient(to_left,white,transparent)]',
 			)}
 		>
+			
 			<path
 				d="M0 22.2185C0 22.2185 209.817 -362.861 720 -108.891C1230.18 145.077 1440 -240 1440 -240"
 				strokeWidth="1"

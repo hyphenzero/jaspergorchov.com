@@ -1,21 +1,21 @@
 import Link from 'next/link'
 
 import { Bars2Icon } from '@heroicons/react/24/solid'
-import { ForwardIcon } from '@heroicons/react/20/solid'
+
 import WavePattern from './WavePattern'
 import Logo from './Logo'
 import { SecondaryButton } from './Button'
 
 const navigation = [
-	{ name: 'About', href: '#' },
-	{ name: 'Work', href: '#' },
-	{ name: 'Blog', href: '#' },
+	{ name: 'About', href: '/about' },
+	{ name: 'Work', href: '/work' },
+	{ name: 'Playground', href: '/playground' },
 ]
 
 const social = [
 	{
-		name: "Dribbble",
-		href: "https://dribbble.com/hyphenzero",
+		name: 'Dribbble',
+		href: 'https://dribbble.com/hyphenzero',
 		icon: (props) => (
 			<svg fill="currentColor" viewBox="0 0 24 24" {...props}>
 				<path
@@ -27,8 +27,8 @@ const social = [
 		),
 	},
 	{
-		name: "GitHub",
-		href: "https://github.com/hyphenzero",
+		name: 'GitHub',
+		href: 'https://github.com/hyphenzero',
 		icon: (props) => (
 			<svg fill="currentColor" viewBox="0 0 24 24" {...props}>
 				<path
@@ -62,10 +62,7 @@ function Header() {
 				aria-label="Global"
 			>
 				<div className="flex items-center lg:space-x-20">
-					<Link
-						href="/"
-						aria-label="Home"
-					>
+					<Link href="/" aria-label="Home">
 						<Logo />
 					</Link>
 					<div className="hidden lg:flex lg:gap-x-10 motion-reduce:lg:gap-x-5">
@@ -73,10 +70,12 @@ function Header() {
 							<Link
 								key={item.name}
 								href={item.href}
-								className="flex items-center group rounded-md motion-reduce:px-3 hover:px-3 py-1 text-sm font-medium text-neutral-100 hover:text-sky-300 transition-all duration-300 hover:bg-sky-300/20 backdrop-blur-3xl"
+								className="group flex items-center rounded-lg py-1 text-sm font-medium hover:backdrop-blur-3xl hover:bg-sky-300/10 hover:px-3 motion-reduce:px-3 transition-all duration-300"
 							>
-								<ForwardIcon className="h-4 w-0 group-hover:w-4 transition-[all,_width] duration-300 group-hover:mr-1.5 motion-reduce:group-hover:hidden" />
-								{item.name}
+								<span className="mb-px absolute opacity-0 transition-opacity duration-300 text-sky-300 group-hover:opacity-100 motion-reduce:group-hover:hidden font-grid">→</span>
+								<div className="text-neutral-100 transition-[all,_margin] duration-300 group-hover:ml-4 group-hover:text-sky-300">
+									{item.name}
+								</div>
 							</Link>
 						))}
 					</div>
@@ -85,7 +84,7 @@ function Header() {
 					<Link href="/contact">
 						<SecondaryButton>Contact</SecondaryButton>
 					</Link>
-					<div className="lg:hidden rounded-full p-3 transition-all duration-200 hover:bg-neutral-900">
+					<div className="rounded-full p-3 transition duration-200 hover:bg-neutral-900 border border-transparent hover:border- lg:hidden">
 						<Bars2Icon className="h-6 w-6 text-neutral-100" />
 					</div>
 				</div>
@@ -101,47 +100,22 @@ function Footer() {
 				Footer
 			</h2>
 			<div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-				<div className="mt-16 border-t border-neutral-900 pt-8 sm:mt-20 lg:mt-24 lg:flex lg:items-center lg:justify-between">
-					<div>
-						<h3 className="font-display text-sm font-semibold leading-6 text-white">Subscribe to the newsletter</h3>
-						<p className="mt-2 text-sm leading-6 text-neutral-300">
-							Get monthly updates on my projects, right in your inbox.
-						</p>
-					</div>
-					<form className="mt-6 sm:flex sm:max-w-md lg:mt-0">
-						<label htmlFor="email-address" className="sr-only">
-							Email address
-						</label>
-						<input
-							type="email"
-							name="email-address"
-							id="email-address"
-							autoComplete="email"
-							required
-							className="w-full min-w-0 appearance-none rounded-md border-0 bg-neutral-950 px-3 py-1.5 text-base text-white ring-1 ring-inset ring-neutral-800 placeholder:text-neutral-500 focus:ring-2 focus:ring-inset focus:ring-sky-300 sm:w-56 sm:text-sm sm:leading-6"
-							placeholder="Enter your email"
-						/>
-						<div className="mt-4 sm:ml-4 sm:mt-0 sm:flex-shrink-0">
-							<button
-								type="submit"
-								className="flex w-full items-center justify-center rounded-md bg-neutral-800 px-3 py-2 text-sm font-semibold text-white hover:bg-neutral-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-300 transition-colors duration-200"
-							>
-								Subscribe
-							</button>
-						</div>
-					</form>
-				</div>
 				<div className="mt-8 border-t border-neutral-900 pt-8 md:flex md:items-center md:justify-between">
 					<div className="flex space-x-6 md:order-2">
 						{social.map((item) => (
-							<a key={item.name} href={item.href} className="text-neutral-500 hover:text-neutral-400">
+							<a
+								key={item.name}
+								href={item.href}
+								className="text-neutral-500 transition-colors duration-200 hover:text-sky-300"
+							>
 								<span className="sr-only">{item.name}</span>
 								<item.icon className="h-6 w-6" aria-hidden="true" />
 							</a>
 						))}
 					</div>
 					<p className="mt-8 text-sm leading-5 text-neutral-400 md:order-1 md:mt-0">
-						&copy; {new Date().getFullYear()} Jasper Gorchov. All rights reserved.
+						&copy; {new Date().getFullYear()} Jasper Gorchov. All rights
+						reserved.
 					</p>
 				</div>
 			</div>
