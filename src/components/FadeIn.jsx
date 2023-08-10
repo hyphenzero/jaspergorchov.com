@@ -7,15 +7,19 @@ const FadeInStaggerContext = createContext(false)
 
 const viewport = { once: true, margin: '0px 0px -200px' }
 
-export function FadeIn(props) {
+export function FadeIn({ y = true, scale = false, ...props }) {
 	let shouldReduceMotion = useReducedMotion()
 	let isInStaggerGroup = useContext(FadeInStaggerContext)
 
 	return (
 		<motion.div
 			variants={{
-				hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
-				visible: { opacity: 1, y: 0 },
+				hidden: {
+					opacity: 0,
+					y: shouldReduceMotion ? 0 : y ? 24 : 0,
+					scale: shouldReduceMotion ? 0 : scale ? 0.925 : 1,
+				},
+				visible: { opacity: 1, y: 0, scale: 1 },
 			}}
 			transition={{ duration: 0.5 }}
 			{...(isInStaggerGroup

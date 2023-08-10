@@ -1,10 +1,17 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-import { Bars2Icon } from '@heroicons/react/24/solid'
+import clsx from 'clsx'
+import { Dialog } from '@headlessui/react'
+import { Bars2Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import WavePattern from './WavePattern'
-import Logo from './Logo'
-import { SecondaryButton } from './Button'
+import { Parallax } from './Parallax'
+import { WavePattern } from './WavePattern'
+import { Logo } from './Logo'
+import { Button } from './Button'
 
 const navigation = [
 	{ name: 'About', href: '/about' },
@@ -41,20 +48,13 @@ const social = [
 	},
 ]
 
-export function RootLayout({ children }) {
-	return (
-		<>
-			<Header />
-			<main className="min-h-full w-screen overflow-x-hidden">
-				<WavePattern fade="fromTopRight" parallax />
-				{children}
-			</main>
-			<Footer />
-		</>
-	)
-}
-
 function Header() {
+	const router = useRouter()
+
+	const isActiveRoute = (href) => {
+		return router.pathname === href
+	}
+
 	return (
 		<header className="absolute inset-x-0 top-0 z-50 mx-auto w-full max-w-7xl">
 			<nav
@@ -66,26 +66,29 @@ function Header() {
 						<Logo />
 					</Link>
 					<div className="hidden lg:flex lg:gap-x-10 motion-reduce:lg:gap-x-5">
+						{/* 'flex items-center rounded-lg py-1 text-sm font-medium hover:backdrop-blur-3xl hover:bg-sky-300/5 hover:px-3 motion-reduce:px-3 transition-all duration-300' */}
 						{navigation.map((item) => (
 							<Link
 								key={item.name}
 								href={item.href}
-								className="group flex items-center rounded-lg py-1 text-sm font-medium hover:backdrop-blur-3xl hover:bg-sky-300/10 hover:px-3 motion-reduce:px-3 transition-all duration-300"
+								className={`flex items-center rounded-full py-1 text-sm font-medium transition-all duration-300 hover:bg-neutral-900 hover:px-4 hover:backdrop-blur-3xl motion-reduce:px-3 ${
+									isActiveRoute(item.href) ? 'text-sky-300' : 'text-white'
+								}`}
 							>
-								<span className="mb-px absolute opacity-0 transition-opacity duration-300 text-sky-300 group-hover:opacity-100 motion-reduce:group-hover:hidden font-grid">→</span>
-								<div className="text-neutral-100 transition-[all,_margin] duration-300 group-hover:ml-4 group-hover:text-sky-300">
-									{item.name}
-								</div>
+								{/* <span className="mb-px absolute opacity-0 transition-opacity duration-300 text-sky-300 group-hover:opacity-100 motion-reduce:group-hover:hidden font-grid">→</span> */}
+								{item.name}
 							</Link>
 						))}
 					</div>
 				</div>
 				<div className="flex items-center max-lg:space-x-4">
-					<Link href="/contact">
-						<SecondaryButton>Contact</SecondaryButton>
+					<Link href="/contact" className="rounded-full">
+						<Button secondary className="shadow-neutral-950">
+							Contact
+						</Button>
 					</Link>
-					<div className="rounded-full p-3 transition duration-200 hover:bg-neutral-900 border border-transparent hover:border- lg:hidden">
-						<Bars2Icon className="h-6 w-6 text-neutral-100" />
+					<div className="rounded-full p-3 lg:hidden">
+						<Bars2Icon className="h-6 w-6 text-white" />
 					</div>
 				</div>
 			</nav>
@@ -95,30 +98,47 @@ function Header() {
 
 function Footer() {
 	return (
-		<footer aria-labelledby="footer-heading">
+		<footer aria-labelledby="footer-heading" className="mt-32">
 			<h2 id="footer-heading" className="sr-only">
 				Footer
 			</h2>
-			<div className="mx-auto max-w-7xl px-6 pb-8 pt-16 sm:pt-24 lg:px-8 lg:pt-32">
-				<div className="mt-8 border-t border-neutral-900 pt-8 md:flex md:items-center md:justify-between">
-					<div className="flex space-x-6 md:order-2">
-						{social.map((item) => (
-							<a
-								key={item.name}
-								href={item.href}
-								className="text-neutral-500 transition-colors duration-200 hover:text-sky-300"
-							>
-								<span className="sr-only">{item.name}</span>
-								<item.icon className="h-6 w-6" aria-hidden="true" />
-							</a>
-						))}
-					</div>
-					<p className="mt-8 text-sm leading-5 text-neutral-400 md:order-1 md:mt-0">
+			<div className="mx-auto max-w-7xl border-t border-neutral-900 px-6 py-8 md:flex md:items-center md:justify-between lg:px-8">
+				<div className="flex justify-center space-x-6 md:order-2">
+					{social.map((item) => (
+						<a
+							key={item.name}
+							href={item.href}
+							className="text-neutral-500 transition-colors duration-200 hover:text-sky-300"
+						>
+							<span className="sr-only">{item.name}</span>
+							<item.icon className="h-6 w-6 rounded-full" aria-hidden="true" />
+						</a>
+					))}
+				</div>
+				<div className="mt-8 md:order-1 md:mt-0">
+					<p className="text-center text-xs leading-5 text-neutral-500">
 						&copy; {new Date().getFullYear()} Jasper Gorchov. All rights
 						reserved.
 					</p>
 				</div>
 			</div>
 		</footer>
+	)
+}
+
+export function RootLayout({ children, wavePattern = true }) {
+	return (
+		<>
+			<Header />
+			<main className="min-h-full w-screen overflow-hidden">
+				{wavePattern && (
+					<div className="absolute inset-0 -z-10 h-screen w-screen overflow-x-clip">
+						<WavePattern className="absolute left-0 top-0 -z-10 h-screen max-w-none overflow-clip bg-cover bg-center [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)] max-sm:-translate-x-96" />
+					</div>
+				)}
+				{children}
+			</main>
+			<Footer />
+		</>
 	)
 }

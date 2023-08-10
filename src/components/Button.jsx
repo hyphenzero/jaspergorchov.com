@@ -1,15 +1,26 @@
-export function SecondaryButton({ children }) {
-	return (
-		<div className="flex items-center justify-center font-display rounded-full border border-neutral-800 bg-neutral-950 px-6 py-2 text-sm font-semibold text-neutral-100 shadow-xl shadow-neutral-950 ring-sky-300 transition-colors duration-200 hover:border-neutral-700 hover:bg-neutral-900 focus:outline-none focus:ring-2 ring-offset-1">
-			{children}
-		</div>
-	)
-}
+import clsx from 'clsx'
 
-export function PrimaryButton({ children }) {
+export function Button({
+	secondary = false,
+	glow = false,
+	leadingIcon,
+	trailingIcon,
+	className,
+	children,
+}) {
 	return (
-		<div className="flex items-center justify-center font-semibold font-display rounded-full border-t border-sky-200 bg-gradient-to-t from-sky-400 to-sky-300 px-6 py-2 text-sm text-neutral-950 shadow-xl shadow-neutral-950 transition-[all,_background-image] duration-200 focus:outline-none focus:ring-2 ring-sky-300 ring-offset-1 hover:from-sky-600 hover:to-sky-400">
-			{children}
+		<div
+			className={clsx(
+				'group flex items-center justify-center rounded-full px-6 py-2 font-display text-sm font-semibold shadow-xl ring-sky-300 ring-offset-1 backdrop-blur-3xl transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2',
+				!secondary && 'bg-sky-300 font-bold text-neutral-900 hover:bg-sky-200',
+				secondary &&
+					'bg-neutral-900 text-white hover:border-neutral-700 hover:bg-neutral-800',
+				className,
+			)}
+		>
+			{leadingIcon && <div className="mr-2 h-3.5 w-3.5">{leadingIcon}</div>}{' '}
+			{children}{' '}
+			{trailingIcon && <div className="ml-2 h-3.5 w-3.5">{trailingIcon}</div>}
 		</div>
 	)
 }

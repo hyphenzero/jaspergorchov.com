@@ -1,10 +1,6 @@
-export default function Logo() {
+export function Logo() {
 	return (
-		<svg
-			viewBox="0 0 45 32"
-			aria-hidden="true"
-			className="h-6 text-neutral-100"
-		>
+		<svg viewBox="0 0 45 32" aria-hidden="true" className="h-6 text-white">
 			<path
 				fill="currentColor"
 				fillRule="evenodd"

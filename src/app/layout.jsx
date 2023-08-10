@@ -5,7 +5,7 @@ import './globals.css'
 export const metadata = {
 	title: {
 		template: '%s - Jasper Gorchov',
-		default: 'Jasper Gorchov - Software Developer & 3D Artist',
+		default: 'Jasper Gorchov - Software Developer & 3D Designer',
 	},
 }
 

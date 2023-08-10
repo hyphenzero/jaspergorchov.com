@@ -1,37 +1,12 @@
-'use client'
-
-import { motion, useScroll, useTransform } from 'framer-motion'
 import clsx from 'clsx'
 
-export default function WavePattern({ fade, parallax }) {
-	const fadeFromTopRight = fade === 'fromTopRight'
-	const fadeFromTop = fade === 'fromTop'
-	const fadeFromBottom = fade === 'fromBottom'
-	const fadeFromLeft = fade === 'fromLeft'
-	const fadeFromRight = fade === 'fromRight'
-
-	let { scrollYProgress } = useScroll()
-	let y = useTransform(scrollYProgress, [0, 1], ['0%', '0%'])
-
+export function WavePattern({ className }) {
 	return (
-		<motion.svg
+		<svg
 			viewBox="0 0 1440 743"
 			fill="none"
-			style={parallax ? { y } : {}}
-			className={clsx(
-				'absolute right-0 top-0 -z-10 h-screen max-w-none bg-cover bg-center stroke-neutral-800',
-				fadeFromTopRight &&
-					'[mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)]',
-				fadeFromTop && '[mask-image:linear-gradient(white,transparent)]',
-				fadeFromBottom &&
-					'[mask-image:linear-gradient(to_top,white,transparent)]',
-				fadeFromLeft &&
-					'[mask-image:linear-gradient(to_right,white,transparent)]',
-				fadeFromRight &&
-					'[mask-image:linear-gradient(to_left,white,transparent)]',
-			)}
+			className={clsx('stroke-neutral-800', className)}
 		>
-			
 			<path
 				d="M0 22.2185C0 22.2185 209.817 -362.861 720 -108.891C1230.18 145.077 1440 -240 1440 -240"
 				strokeWidth="1"
@@ -156,6 +131,6 @@ export default function WavePattern({ fade, parallax }) {
 				d="M0 742.218C0 742.218 209.817 357.139 720 611.109C1230.18 865.077 1440 480 1440 480"
 				strokeWidth="1"
 			/>
-		</motion.svg>
+		</svg>
 	)
 }
