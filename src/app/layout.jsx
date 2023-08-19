@@ -1,8 +1,6 @@
-import { cloneElement } from 'react'
-
 import { RootLayout } from '@/components/RootLayout'
 
-import './globals.css'
+import '@/styles/tailwind.css'
 
 export const metadata = {
   title: {
@@ -13,7 +11,7 @@ export const metadata = {
 
 export default function Layout({ children }) {
   return (
-    <html lang="en" className="h-full bg-neutral-950 antialiased">
+    <html lang="en" className="h-full bg-neutral-950 antialiased accent-sky-300">
       <body className="flex min-h-full flex-col">
         <RootLayout>{children}</RootLayout>
       </body>

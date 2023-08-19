@@ -1,14 +1,12 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
-import clsx from 'clsx'
 import { Dialog } from '@headlessui/react'
 import { Bars2Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import { Parallax } from './Parallax'
+import { FadeIn, FadeInStagger } from './FadeIn'
 import { WavePattern } from './WavePattern'
 import { Logo } from './Logo'
 import { Button } from './Button'
@@ -49,51 +47,89 @@ const social = [
 ]
 
 function Header() {
-  const router = useRouter()
-
-  const isActiveRoute = (href) => {
-    return router.pathname === href
-  }
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className="absolute inset-x-0 top-0 z-50 mx-auto w-full max-w-7xl">
+    <header className=" inset-x-0 top-0 z-50 mx-auto w-full max-w-7xl">
       <nav
-        className="flex items-center justify-between p-6 lg:px-8"
+        className="flex items-center justify-between px-6 py-8 lg:px-8"
         aria-label="Global"
       >
         <div className="flex items-center lg:space-x-20">
-          <Link
-            href="/"
-            aria-label="Home"
-            className="flex aspect-square items-center justify-center rounded-full outline outline-2 outline-offset-2 focus-visible:outline-sky-400"
-          >
+          <Link href="/" aria-label="Home" className="flex rounded-md">
             <Logo />
           </Link>
-          <div className="hidden lg:flex lg:gap-x-10 motion-reduce:lg:gap-x-5">
-            {/* 'flex items-center rounded-lg py-1 text-sm font-medium hover:backdrop-blur-3xl hover:bg-sky-300/5 hover:px-3 motion-reduce:px-3 transition-all duration-300' */}
+          <div className="hidden lg:flex lg:gap-x-5">
             {navigation.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
-                className={`flex items-center rounded-full py-1 text-sm font-medium outline outline-2 outline-offset-2 outline-transparent transition-all duration-300 hover:bg-neutral-900 hover:px-4 hover:backdrop-blur-3xl focus-visible:px-4 focus-visible:outline-sky-400 motion-reduce:px-3 ${
-                  isActiveRoute(item.href) ? 'text-sky-300' : 'text-white'
-                }`}
+                className="px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:text-sky-300"
               >
-                {/* <span className="mb-px absolute opacity-0 transition-opacity duration-300 text-sky-300 group-hover:opacity-100 motion-reduce:group-hover:hidden font-grid">→</span> */}
                 {item.name}
               </Link>
             ))}
           </div>
         </div>
         <div className="flex items-center max-lg:space-x-4">
-          <Button href="/contact" className="shadow-neutral-950">
-            Contact
-          </Button>
-          <div className="rounded-full p-3 lg:hidden">
+          <Button href="/contact">Contact</Button>
+          <button
+            type="button"
+            className="rounded-md p-3 lg:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <span className="sr-only">Open main menu</span>
             <Bars2Icon className="h-6 w-6 text-white" />
-          </div>
+          </button>
         </div>
       </nav>
+      <Dialog
+        as="div"
+        className="lg:hidden"
+        open={mobileMenuOpen}
+        onClose={setMobileMenuOpen}
+      >
+        <div className="fixed inset-0 z-50" />
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-neutral-950/75 px-6 py-8 backdrop-blur-xl sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+          <div className="flex items-center justify-between">
+            <Link href="/" aria-label="Home" className="flex rounded-md">
+              <Logo />
+            </Link>
+            <button
+              type="button"
+              className="rounded-md p-3 lg:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              <span className="sr-only">Close menu</span>
+              <XMarkIcon className="h-6 w-6 text-white" />
+            </button>
+          </div>
+          <div className="mt-6">
+            <div className="-my-6">
+              <FadeInStagger
+                faster
+                className="flex flex-col space-y-3 pb-3 pt-6"
+              >
+                {navigation.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-neutral-950"
+                  >
+                    <FadeIn className="flex">{item.name}</FadeIn>
+                  </Link>
+                ))}
+                <Link
+                  href="/contact"
+                  className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-neutral-950"
+                >
+                  <FadeIn className="flex">Contact</FadeIn>
+                </Link>
+              </FadeInStagger>
+            </div>
+          </div>
+        </Dialog.Panel>
+      </Dialog>
     </header>
   )
 }
@@ -110,7 +146,7 @@ function Footer() {
             <a
               key={item.name}
               href={item.href}
-              className="text-neutral-400 transition-colors duration-200 hover:text-white"
+              className="text-neutral-400 transition-colors duration-200 hover:text-sky-300"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon className="h-6 w-6 rounded-full" aria-hidden="true" />
@@ -135,7 +171,7 @@ export function RootLayout({ social, children, wavePattern = true }) {
       <main className="min-h-full w-screen overflow-hidden">
         {wavePattern && (
           <div className="absolute inset-0 -z-10 h-screen w-screen overflow-x-clip">
-            <WavePattern className="absolute left-0 top-0 -z-10 h-screen max-w-none overflow-clip bg-cover bg-center [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)] max-sm:-translate-x-96" />
+            <WavePattern className="absolute left-0 top-0 -z-10 w-[110vw] scale-[2.3] overflow-clip bg-cover bg-center [mask-image:radial-gradient(100%_100%_at_top_right,white,transparent)] max-sm:-translate-x-36 sm:scale-150 lg:scale-100" />
           </div>
         )}
         {children}

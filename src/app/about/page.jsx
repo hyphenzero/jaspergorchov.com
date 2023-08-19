@@ -2,6 +2,12 @@ import { Container } from '@/components/Container'
 import { PageIntro } from '@/components/PageIntro'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 
+export const metadata = {
+  title: 'About',
+  description:
+    'We believe in efficiency and maximizing our resources to provide the best value to our clients.',
+}
+
 export default function About() {
   return (
     <>

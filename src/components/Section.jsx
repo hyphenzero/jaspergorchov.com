@@ -1,22 +1,14 @@
 import clsx from 'clsx'
 
-export function Section({ floating, children, className }) {
+export function Section({ children, className }) {
   return (
     <div
       className={clsx(
-        'rounded-3xl py-14 sm:py-32',
-        floating ? 'bg-white text-neutral-950' : 'bg-neutral-912 text-white',
+        'my-24 rounded-3xl bg-neutral-912 py-24 text-white sm:my-32 sm:py-32',
         className,
       )}
     >
-      <div
-        className={clsx(
-          'mx-auto w-full px-8',
-          floating ? 'max-w-5xl' : 'max-w-7xl',
-        )}
-      >
-        {children}
-      </div>
+      <div className="mx-auto w-full max-w-7xl px-6">{children}</div>
     </div>
   )
 }

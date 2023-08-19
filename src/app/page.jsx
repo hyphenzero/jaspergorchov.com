@@ -1,8 +1,3 @@
-import Link from 'next/link'
-import Image from 'next/image'
-
-import clsx from 'clsx'
-import { PlayIcon, ChevronRightIcon } from '@heroicons/react/20/solid'
 import {
   CubeIcon,
   GlobeAltIcon,
@@ -10,17 +5,17 @@ import {
   WindowIcon,
 } from '@heroicons/react/24/outline'
 
-import { Container } from '@/components/Container'
-import { Section } from '@/components/Section'
-import { Tag } from '@/components/Tags'
-import { LargeText } from '@/components/LargeText'
 import { Button } from '@/components/Button'
-import { SpinOnScroll } from '@/components/SpinOnScroll'
-import { ProjectsGrid, Project } from '@/components/ProjectsGrid'
-import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { ContactSection } from '@/components/ContactSection'
-import imageDashedRings from '@/images/dashed-rings.webp'
-import imageTorusKnot from '@/images/torus-knot.webp'
+import { Container } from '@/components/Container'
+import { Embed3D } from '@/components/Embed3D'
+import { FadeIn, FadeInStagger } from '@/components/FadeIn'
+import { Projects } from '@/components/Projects'
+import { Section } from '@/components/Section'
+import { TagListItem } from '@/components/TagList'
+import { TextSection } from '@/components/TextSection'
+import { Window } from '@/components/Window'
+import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 const services = [
   {
@@ -41,66 +36,9 @@ const services = [
   },
 ]
 
-const projects = [
-  {
-    id: '1',
-    href: '/work/',
-    title: 'Client 1',
-    date: 'March 2023',
-    description: 'Project description 1',
-    medium: '3D Design',
-    image: null,
-  },
-  {
-    id: '2',
-    href: '/work/',
-    title: 'Client 2',
-    date: 'April 2023',
-    description: 'Project description 2',
-    medium: '3D Design',
-    image: null,
-  },
-  {
-    id: '3',
-    href: '/work/',
-    title: 'Client 3',
-    date: 'June 2023',
-    description: 'Project description 3',
-    medium: '3D Design',
-    image: null,
-  },
-  {
-    id: '4',
-    href: '/work/',
-    title: 'Client 4',
-    date: 'July 2023',
-    description: 'Project description 4',
-    medium: '3D Design',
-    image: null,
-  },
-  {
-    id: '5',
-    href: '/work/',
-    title: 'Client 5',
-    date: 'July 2023',
-    description: 'Project description 5',
-    medium: '3D Design',
-    image: null,
-  },
-  {
-    id: '6',
-    href: '/work/',
-    title: 'Client 6',
-    date: 'July 2023',
-    description: 'Project description 6',
-    medium: '3D Design',
-    image: null,
-  },
-]
-
 function Services() {
   return (
-    <Section className="mt-32">
+    <Section className="py-24 sm:py-32">
       <FadeIn className="flex items-center gap-x-8">
         <h2 className="font-display text-sm font-semibold tracking-wider text-white">
           A wide range of possibilities
@@ -110,12 +48,12 @@ function Services() {
       <FadeInStagger faster>
         <ul
           role="list"
-          className="relative mt-10 grid grid-cols-2 gap-10 sm:grid-cols-2"
+          className="relative mt-10 grid grid-cols-2 gap-8 sm:grid-cols-2 sm:gap-10"
         >
           {services.map((service) => (
             <li key={service.name}>
               <FadeIn className="flex items-center">
-                <Tag>{service.name}</Tag>
+                <TagListItem as="div">{service.name}</TagListItem>
               </FadeIn>
             </li>
           ))}
@@ -125,15 +63,30 @@ function Services() {
   )
 }
 
+function Demo() {
+  return (
+    <Section>
+      <Window fadeIn>
+        <Embed3D
+          scene="https://prod.spline.design/QCe-iZKiwWvj9Zex/scene.splinecode"
+          className="mt-3 sm:mt-5"
+        />
+      </Window>
+    </Section>
+  )
+}
+
 export const metadata = {
   description:
     'I’m Jasper Gorchov, and I craft immersive web-based apps and beautiful 3D illustrations.',
 }
 
-export default function Home({ social }) {
+export default async function Home({ social }) {
+  let projects = (await loadMDXMetadata('work')).slice(0, 3)
+
   return (
     <>
-      <Container className="mt-24 py-32 sm:py-48 lg:py-56">
+      <Container className="py-24 sm:py-32 md:py-56">
         <FadeIn className="max-w-2xl sm:mx-auto sm:text-center">
           <h1 className="font-display text-5xl font-medium tracking-tight text-white [text-wrap:balance] sm:text-7xl">
             Software Developer <br className="max-sm:hidden" />& 3D Designer
@@ -147,51 +100,22 @@ export default function Home({ social }) {
             </span>
           </p>
           <div className="mt-8 w-full items-center sm:flex sm:justify-center">
-            {/* <Link href="https://youtube.com/watch/" className="rounded-full">
-							<Button className="shadow-neutral-950 sm:w-fit">
-								Browse work
-							</Button>
-						</Link> */}
-            <Button
-              href="/work"
-              // leadingIcon={<PlayIcon className="text-neutral-500 group-hover:text-neutral-300 transition-colors duration-200" />}
-            >
-              Browse work
-            </Button>
+            <Button href="/work">Browse work</Button>
           </div>
-
-          {/* <ArrowDownIcon className="mt-8 w-5 h-5 text-neutral-700 mx-auto" /> */}
         </FadeIn>
       </Container>
 
       <Services />
 
-      <div aria-hidden={true} className="flex w-full justify-center">
-        <div className="relative flex w-full max-w-3xl items-center justify-center py-20 max-sm:scale-150 max-sm:py-48">
-          <Image src={imageDashedRings} alt="" className="w-full" />
-          <FadeIn className="absolute">
-            <h2 className="font-display text-[40vw] font-bold text-white lg:text-[20rem]">
-              3D<span className="absolute">.</span>
-            </h2>
-          </FadeIn>
-          <SpinOnScroll className="absolute w-full">
-            <Image src={imageTorusKnot} alt="" />
-          </SpinOnScroll>
-        </div>
-      </div>
+      <TextSection
+        className="py-32"
+        title="Building digital experiences"
+        text="I create stunning web-based apps, sites, and experiences that immerse users in the future of 3D. I deeply incorporate 3D content into my designs, seamlessly blending virtual and real elements to elevate user engagement and create unforgettable interactions."
+      />
 
-      <LargeText text="I create stunning web-based apps, sites, and experiences that immerse users in another dimension." />
+      <Demo />
 
-      <ProjectsGrid title="Featured Projects" moreButton moreButtonHref="/work">
-        {projects.map((project) => (
-          <Project
-            key={project.id}
-            client={project.title}
-            description={project.description}
-            href={project.href}
-          />
-        ))}
-      </ProjectsGrid>
+      <Projects projects={projects} featured className="py-24 sm:py-32" />
 
       <ContactSection social={social} />
     </>
