@@ -13,11 +13,12 @@ export default async function Playground() {
 
   return (
     <>
-			<PageIntro eyebrow="Playground" title="Exploring new ideas">
-				Discover my creative experiments — projects created to explore new ideas and techniques.
-			</PageIntro>
+      <PageIntro eyebrow="Playground" title="Exploring new ideas">
+        Discover my creative experiments — projects created to explore new ideas
+        and techniques.
+      </PageIntro>
 
-      <Projects projects={experiments} className="pt-16 sm:pt-26" />
+      <Projects projects={experiments} className="sm:pt-26 pt-16" />
     </>
   )
 }

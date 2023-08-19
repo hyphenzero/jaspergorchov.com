@@ -1,3 +1,5 @@
+import Image from 'next/image'
+
 import {
   CubeIcon,
   GlobeAltIcon,
@@ -8,13 +10,13 @@ import {
 import { Button } from '@/components/Button'
 import { ContactSection } from '@/components/ContactSection'
 import { Container } from '@/components/Container'
-import { Embed3D } from '@/components/Embed3D'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { Projects } from '@/components/Projects'
 import { Section } from '@/components/Section'
 import { TagListItem } from '@/components/TagList'
 import { TextSection } from '@/components/TextSection'
 import { Window } from '@/components/Window'
+import imageProject1 from './work/project-1/hero.jpg'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 const services = [
@@ -67,10 +69,7 @@ function Demo() {
   return (
     <Section>
       <Window fadeIn>
-        <Embed3D
-          scene="https://prod.spline.design/QCe-iZKiwWvj9Zex/scene.splinecode"
-          className="mt-3 sm:mt-5"
-        />
+        <Image src={imageProject1} alt="" className="translate-y-[5%]" />
       </Window>
     </Section>
   )

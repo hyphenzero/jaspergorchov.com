@@ -1,8 +1,8 @@
 import glob from 'fast-glob'
 
 const exportNames = {
-	work: 'project',
-	playground: 'experiment',
+  work: 'project',
+  playground: 'experiment',
 }
 
 export async function loadMDXMetadata(directory) {

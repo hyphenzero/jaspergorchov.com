@@ -12,7 +12,7 @@ export function TagListItem({ as: Component = 'li', className, children }) {
   return (
     <Component
       className={clsx(
-        'rounded-full bg-white px-4 py-1.5 font-display font-semibold text-base text-neutral-950',
+        'rounded-full bg-white px-4 py-1.5 font-display text-base font-semibold text-neutral-950',
         className,
       )}
     >

@@ -9,11 +9,11 @@ export const MDXComponents = {
     return (
       <div
         className={clsx(
-          'group isolate relative my-10 overflow-hidden rounded-3xl bg-neutral-912 max-sm:-mx-6',
+          'group relative isolate my-10 overflow-hidden rounded-3xl bg-neutral-912 max-sm:-mx-6',
           className,
         )}
-			>
-				<div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/10" />
+      >
+        <div className="absolute inset-0 rounded-3xl ring-1 ring-inset ring-white/10" />
         <Image {...props} className="aspect-[16/10] w-full object-cover" />
       </div>
     )

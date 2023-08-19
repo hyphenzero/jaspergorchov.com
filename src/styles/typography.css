@@ -21,7 +21,7 @@
 
   /* Headings */
   :where(h2) {
-		color: theme(colors.white);
+    color: theme(colors.white);
     font-weight: theme(fontWeight.semibold);
     font-family: theme(fontFamily.display);
     font-variation-settings: theme(fontFamily.display[1].fontVariationSettings);
@@ -31,7 +31,7 @@
   }
 
   :where(h3) {
-		color: theme(colors.white);
+    color: theme(colors.white);
     font-weight: theme(fontWeight.semibold);
     font-family: theme(fontFamily.display);
     font-variation-settings: theme(fontFamily.display[1].fontVariationSettings);
@@ -66,9 +66,9 @@
     color: theme(colors.neutral.500);
   }
 
-	:where(li) strong {
-		color: theme(colors.neutral.300);
-	}
+  :where(li) strong {
+    color: theme(colors.neutral.300);
+  }
 
   :where(li > *),
   :where(li li) {

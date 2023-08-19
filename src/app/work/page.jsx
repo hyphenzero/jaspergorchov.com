@@ -14,10 +14,11 @@ export default async function Work() {
   return (
     <>
       <PageIntro eyebrow="Work" title="Crafting experiences">
-				Explore my creative endeavors — meticulously crafted to transform ideas into tangible works.
-			</PageIntro>
+        Explore my creative endeavors — meticulously crafted to transform ideas
+        into tangible works.
+      </PageIntro>
 
-      <Projects projects={projects} className="pt-16 sm:pt-26" />
+      <Projects projects={projects} className="sm:pt-26 pt-16" />
     </>
   )
 }
