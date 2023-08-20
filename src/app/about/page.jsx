@@ -13,20 +13,17 @@ export default function About() {
     <>
       <PageIntro eyebrow="About" title="Hi, I’m Jasper">
         <p>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam
-          quidem consequuntur debitis error esse voluptatem numquam unde quod
-          perferendis amet. Asperiores in nobis corporis ipsa blanditiis odit,
-          pariatur facere vitae!
+          I’m Jasper Gorchov, and I craft immersive web-based apps and aesthetic
+          3D illustrations. I harness the combination of these powerful mediums
+          to create the future of digital interations and experiences.
         </p>
         <div className="mt-10 max-w-2xl space-y-6 text-base">
           <p>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam
-            maiores officiis, corrupti, libero inventore enim ex sint cupiditate
-            culpa expedita quis eum, reprehenderit dolores nisi? Nihil
-            voluptatem molestiae eum architecto cumque animi tenetur
-            voluptatibus, sapiente dignissimos corporis ad debitis, quibusdam
-            soluta cupiditate esse optio. Iste quam cum aspernatur
-            exercitationem error.
+            I create stunning web-based apps, sites, and experiences that are
+            meticulously crafted to transform ideas into tangible works. I
+            deeply incorporate 3D content into my designs, seamlessly blending
+            virtual and real elements to elevate user engagement and create
+            unforgettable interactions.
           </p>
           <p>
             Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque

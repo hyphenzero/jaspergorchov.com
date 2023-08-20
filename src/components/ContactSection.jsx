@@ -32,29 +32,36 @@ export function ContactSection() {
                 projects
               </p>
             </div>
-            <div className="mt-10 flex space-x-24 border-t border-neutral-800 pt-10 text-sm text-neutral-300">
-              <div className="flex flex-col space-y-1">
-                <strong className="text-base mb-1 font-semibold text-white">Email</strong>
+            <ul
+              role="list"
+              className="mt-10 grid grid-cols-1 gap-10 border-t border-neutral-800 pt-10 text-sm text-neutral-300 sm:grid-cols-2"
+            >
+              <li className="flex flex-col space-y-1">
+                <div className="font-display text-sm font-semibold tracking-wider text-white">
+                  Email
+                </div>
                 <Link
                   href="mailto:hello@jaspergorchov.com"
-                  className="transition-colors duration-200 hover:text-sky-300"
+                  className="w-fit transition-colors duration-200 hover:text-sky-300"
                 >
                   hello@jaspergorchov.com
                 </Link>
-              </div>
-              <div className="flex flex-col space-y-1">
-                <strong className="text-base mb-1 font-semibold text-white">Socials</strong>
+              </li>
+              <li className="flex flex-col space-y-1">
+                <div className="font-display text-sm font-semibold tracking-wider text-white">
+                  Socials
+                </div>
                 {social.map((item) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="transition-colors duration-200 hover:text-sky-300"
+                    className="w-fit transition-colors duration-200 hover:text-sky-300"
                   >
                     {item.name}
                   </Link>
                 ))}
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
       </FadeIn>

@@ -4,7 +4,6 @@ import Image from 'next/image'
 
 import clsx from 'clsx'
 
-import { LinkArrow } from './LinkArrow'
 import { FadeIn, FadeInStagger } from './FadeIn'
 import { Button } from './Button'
 
@@ -36,6 +35,7 @@ export function Projects({
                   <div className="relative aspect-[16/9] w-full sm:aspect-[2/1] lg:aspect-[3/2]">
                     <Image
                       {...project.image}
+                      alt=""
                       className="rounded-2xl bg-neutral-900 object-cover"
                       fill
                       unoptimized
@@ -69,7 +69,6 @@ export function Projects({
                       <a href={project.href}>
                         <span className="absolute inset-0" />
                         {project.title}
-                        <LinkArrow />
                       </a>
                     </h3>
                     <p className="mt-3 line-clamp-3 text-sm text-neutral-400">

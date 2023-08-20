@@ -14,7 +14,6 @@ import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { Projects } from '@/components/Projects'
 import { Section } from '@/components/Section'
 import { TagListItem } from '@/components/TagList'
-import { TextSection } from '@/components/TextSection'
 import { Window } from '@/components/Window'
 import imageProject1 from './work/project-1/hero.jpg'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
@@ -65,6 +64,28 @@ function Services() {
   )
 }
 
+function TextSection() {
+  return (
+    <div className="flex items-center justify-center py-32">
+      <div className="relative w-full">
+        <FadeIn className="mx-auto flex max-w-5xl gap-5 px-6 max-sm:flex-col sm:gap-8">
+          <h2 className="w-full font-display text-3xl font-medium text-white [text-wrap:balance] sm:text-right sm:text-4xl">
+            Building digital experiences
+          </h2>
+          <span className="sr-only"> - </span>
+          <p className="text-lg text-neutral-400 [text-wrap:balance] sm:text-xl">
+            I create stunning web-based apps, sites, and experiences that are
+            meticulously crafted to transform ideas into tangible works. I
+            deeply incorporate 3D content into my designs, seamlessly blending
+            virtual and real elements to elevate user engagement and create
+            unforgettable interactions.
+          </p>
+        </FadeIn>
+      </div>
+    </div>
+  )
+}
+
 function Demo() {
   return (
     <Section>
@@ -106,11 +127,7 @@ export default async function Home({ social }) {
 
       <Services />
 
-      <TextSection
-        className="py-32"
-        title="Building digital experiences"
-        text="I create stunning web-based apps, sites, and experiences that immerse users in the future of 3D. I deeply incorporate 3D content into my designs, seamlessly blending virtual and real elements to elevate user engagement and create unforgettable interactions."
-      />
+      <TextSection />
 
       <Demo />
 
