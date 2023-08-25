@@ -36,7 +36,7 @@ export function ContactSection() {
               role="list"
               className="mt-10 grid grid-cols-1 gap-10 border-t border-neutral-800 pt-10 text-sm text-neutral-300 sm:grid-cols-2"
             >
-              <li className="flex flex-col space-y-1">
+              <li className="flex flex-col space-y-2">
                 <div className="font-display text-sm font-semibold tracking-wider text-white">
                   Email
                 </div>
@@ -47,7 +47,7 @@ export function ContactSection() {
                   hello@jaspergorchov.com
                 </Link>
               </li>
-              <li className="flex flex-col space-y-1">
+              <li className="flex flex-col space-y-2">
                 <div className="font-display text-sm font-semibold tracking-wider text-white">
                   Socials
                 </div>

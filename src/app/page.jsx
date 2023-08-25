@@ -11,11 +11,10 @@ import { Button } from '@/components/Button'
 import { ContactSection } from '@/components/ContactSection'
 import { Container } from '@/components/Container'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
-import { Projects } from '@/components/Projects'
 import { Section } from '@/components/Section'
+import { Projects } from '@/components/Projects'
+import { ServicesDetail } from '@/components/ServicesDetail'
 import { TagListItem } from '@/components/TagList'
-import { Window } from '@/components/Window'
-import imageProject1 from './work/project-1/hero.jpg'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 const services = [
@@ -66,7 +65,7 @@ function Services() {
 
 function TextSection() {
   return (
-    <div className="flex items-center justify-center py-32">
+    <div className="flex items-center justify-center py-20">
       <div className="relative w-full">
         <FadeIn className="mx-auto flex max-w-5xl gap-5 px-6 max-sm:flex-col sm:gap-8">
           <h2 className="w-full font-display text-3xl font-medium text-white [text-wrap:balance] sm:text-right sm:text-4xl">
@@ -83,16 +82,6 @@ function TextSection() {
         </FadeIn>
       </div>
     </div>
-  )
-}
-
-function Demo() {
-  return (
-    <Section>
-      <Window fadeIn>
-        <Image src={imageProject1} alt="" className="translate-y-[5%]" />
-      </Window>
-    </Section>
   )
 }
 
@@ -129,7 +118,7 @@ export default async function Home({ social }) {
 
       <TextSection />
 
-      <Demo />
+      <ServicesDetail />
 
       <Projects projects={projects} featured className="py-24 sm:py-32" />
 

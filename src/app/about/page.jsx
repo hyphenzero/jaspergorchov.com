@@ -1,6 +1,4 @@
-import { Container } from '@/components/Container'
 import { PageIntro } from '@/components/PageIntro'
-import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 
 export const metadata = {
   title: 'About',
@@ -25,14 +23,7 @@ export default function About() {
             virtual and real elements to elevate user engagement and create
             unforgettable interactions.
           </p>
-          <p>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Doloremque
-            vitae modi debitis facilis pariatur possimus cumque quas suscipit,
-            repudiandae deleniti accusamus quod molestias libero sit ullam
-            perspiciatis animi, eligendi labore veniam sunt saepe magnam quos
-            ducimus nihil. Eius, quam a nulla eveniet amet velit. Vitae
-            voluptatum, est quaerat ipsum obcaecati inventore iusto.
-          </p>
+          
         </div>
       </PageIntro>
     </>

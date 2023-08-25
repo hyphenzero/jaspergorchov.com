@@ -26,8 +26,7 @@ export default async function ProjectLayout({ children, _segments }) {
               title={project.title}
               centered
             >
-              <p>{project.description}</p>
-              <div className="mt-16">
+              <div className="mt-10">
                 <Container>
                   <TagList className="mx-auto flex max-w-5xl items-center justify-center">
                     <TagListItem>

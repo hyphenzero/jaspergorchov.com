@@ -27,12 +27,12 @@ export function Projects({
         </h2>
       )}
       <FadeInStagger faster>
-        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-12 px-6 sm:grid-cols-2 lg:grid-cols-3 lg:px-8">
+        <div className="mx-auto grid w-full max-w-7xl grid-cols-1 gap-20 px-6 sm:grid-cols-2 sm:gap-12 lg:grid-cols-3 lg:px-8">
           {projects.map((project) => (
             <article key={project.id}>
               <FadeIn className="flex h-full flex-col items-start justify-between">
                 {images && (
-                  <div className="relative aspect-[16/9] w-full sm:aspect-[2/1] lg:aspect-[3/2]">
+                  <div className="relative aspect-video h-full w-full lg:aspect-[3/2]">
                     <Image
                       {...project.image}
                       alt=""
@@ -64,7 +64,7 @@ export function Projects({
                       {project.service}
                     </div>
                   </div>
-                  <div className="group relative mt-auto">
+                  <div className="group relative">
                     <h3 className="mt-5 font-display text-lg font-semibold text-white transition-colors duration-200 group-hover:text-sky-300">
                       <a href={project.href}>
                         <span className="absolute inset-0" />

@@ -26,8 +26,7 @@ export default async function ExperimentLayout({ children, _segments }) {
               title={experiment.title}
               centered
             >
-              <p>{experiment.description}</p>
-              <div className="mt-16">
+              <div className="mt-10">
                 <Container>
                   <TagList className="mx-auto flex max-w-5xl items-center justify-center">
                     <TagListItem>
