@@ -23,7 +23,6 @@ export default function About() {
             virtual and real elements to elevate user engagement and create
             unforgettable interactions.
           </p>
-          
         </div>
       </PageIntro>
     </>

@@ -12,30 +12,30 @@ import clsx from 'clsx'
 
 import { Section } from '@/components/Section'
 import { FadeIn, FadeInStagger } from './FadeIn'
-import imageProject1 from 'src/app/work/project-1/hero.jpg'
-import imageProject2 from 'src/app/work/project-2/hero.jpg'
-import imageProject3 from 'src/app/work/project-3/hero.jpg'
+import imageSoftware from 'src/app/work/project-2/hero.jpg'
+import image3D from 'src/app/work/compositions-1/hero.webp'
+import imageExperiences from 'src/app/work/project-3/hero.jpg'
 
 const services = [
   {
     name: 'Software Development',
     description:
       'Crafting modern and user-centric UIs with an innovative approach to enhance user experience and overall feel.',
-    image: imageProject1,
+    image: imageSoftware,
     icon: RectangleGroupIcon,
   },
   {
     name: '3D Design',
     description:
-      'Infusing semi-abstract architectural landscapes with exquisite elements, resulting in a dynamic and modern style in my 3D design work.',
-    image: imageProject2,
+      'Infusing semi-abstract scenes with semi-realistic elements, resulting in a dynamic and modern style.',
+    image: image3D,
     icon: CubeIcon,
   },
   {
     name: 'Digital Experiences',
     description:
       'Combining powerful elements of UI design with high-quality 3D art to form the next generation of interactive digital experiences.',
-    image: imageProject3,
+    image: imageExperiences,
     icon: UserCircleIcon,
   },
 ]
@@ -55,7 +55,9 @@ function Service({ service, isActive, className, ...props }) {
       <h3 className="mt-6 text-left font-display text-xl font-semibold text-white">
         {service.name}
       </h3>
-      <p className="mt-2 text-sm text-left text-neutral-400">{service.description}</p>
+      <p className="mt-2 text-left text-sm text-neutral-400">
+        {service.description}
+      </p>
     </div>
   )
 }
@@ -118,9 +120,13 @@ function ServicesDesktop() {
                 key={service.name}
                 className={clsx(
                   'transition duration-500 ease-in-out ui-not-focus-visible:outline-none',
-                  serviceIndex !== selectedIndex && 'opacity-60',
+                  serviceIndex !== selectedIndex && 'opacity-60 grayscale',
                 )}
-                style={{ transform: `translateX(calc(${selectedIndex * -844}px + ${selectedIndex * -48}px` }}
+                style={{
+                  transform: `translateX(calc(${selectedIndex * -844}px + ${
+                    selectedIndex * -48
+                  }px`,
+                }}
                 aria-hidden={serviceIndex !== selectedIndex}
               >
                 <div className="relative aspect-video h-auto w-[52.75rem] overflow-clip rounded-xl shadow-xl">
