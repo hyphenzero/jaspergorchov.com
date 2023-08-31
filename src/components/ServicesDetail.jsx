@@ -13,8 +13,8 @@ import clsx from 'clsx'
 import { Section } from '@/components/Section'
 import { FadeIn, FadeInStagger } from './FadeIn'
 import imageSoftware from 'src/app/work/project-2/hero.jpg'
-import image3D from 'src/app/work/compositions-1/hero.webp'
-import imageExperiences from 'src/app/work/project-3/hero.jpg'
+import image3D from 'src/app/playground/refractions/closeup-1.webp'
+import imageExperiences from 'src/app/work/compositions-1/hero.webp'
 
 const services = [
   {

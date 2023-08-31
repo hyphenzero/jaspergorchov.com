@@ -4,7 +4,7 @@
   line-height: theme(fontSize.xl[1].lineHeight);
 
   --shiki-color-text: theme(colors.white);
-  --shiki-color-background: theme(colors.neutral.950);
+  --shiki-color-background: theme(colors.neutral.800);
   --shiki-token-constant: theme(colors.neutral.300);
   --shiki-token-string: theme(colors.neutral.400);
   --shiki-token-comment: theme(colors.neutral.500);
@@ -67,7 +67,7 @@
   }
 
   :where(li) strong {
-    color: theme(colors.neutral.300);
+    color: theme(colors.white);
   }
 
   :where(li > *),
@@ -111,7 +111,7 @@
   /* Code blocks */
   :where(pre) {
     display: flex;
-    background-color: theme(colors.neutral.950);
+    background-color: theme(colors.neutral.800);
     border-radius: theme(borderRadius.3xl);
     overflow-x: auto;
     margin-top: theme(spacing.10);
@@ -139,18 +139,24 @@
 
   /* <hr> */
   :where(hr) {
-    border-color: theme(colors.neutral.950 / 0.1);
-    margin-top: theme(spacing.24);
-    margin-bottom: theme(spacing.24);
+    border-color: theme(colors.neutral.900);
+    margin-top: theme(spacing.12);
+    margin-bottom: theme(spacing.12);
   }
 
   /* Inline text */
   :where(a) {
+		color: theme(colors.white);
     text-decoration: underline;
+		text-decoration-color: theme(colors.sky.300);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.15em;
     text-decoration-skip-ink: none;
-    font-weight: theme(fontWeight.semibold);
+    font-weight: theme(fontWeight.medium);
+  }
+
+	:where(a):hover {
+    text-decoration-thickness: 2px;
   }
 
   :where(strong) {
@@ -160,6 +166,7 @@
   :where(code:not(pre code)) {
     font-size: calc(18 / 20 * 1em);
     font-weight: theme(fontWeight.semibold);
+		color: theme(colors.white);
 
     &::before,
     &::after {
