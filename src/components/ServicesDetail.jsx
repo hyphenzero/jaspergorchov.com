@@ -12,9 +12,9 @@ import clsx from 'clsx'
 
 import { Section } from '@/components/Section'
 import { FadeIn, FadeInStagger } from './FadeIn'
-import imageSoftware from 'src/app/work/project-2/hero.jpg'
-import image3D from 'src/app/playground/refractions/closeup-1.webp'
-import imageExperiences from 'src/app/work/compositions-1/hero.webp'
+import imageSoftware from 'src/app/work/chatgpt-redesign/settings.png'
+import image3D from 'src/app/playground/refractions/closeup-1.png'
+import imageExperiences from 'src/app/work/compositions-1/hero.png'
 
 const services = [
   {
@@ -49,7 +49,7 @@ function Service({ service, isActive, className, ...props }) {
       )}
       {...props}
     >
-      <div className="w-fit rounded-full bg-white p-3 text-neutral-950">
+      <div className="w-fit rounded-full bg-white p-3 text-neutral-912">
         <service.icon className="h-7 w-7" />
       </div>
       <h3 className="mt-6 text-left font-display text-xl font-semibold text-white">
@@ -70,7 +70,7 @@ function ServicesMobile() {
           <Service service={service} className="mx-auto max-w-2xl" isActive />
           <div className="relative mt-10 pb-10">
             <div className="absolute -inset-x-4 bottom-0 top-8 sm:-inset-x-6" />
-            <div className="relative aspect-video h-auto w-full overflow-clip rounded-xl shadow-xl">
+            <div className="relative aspect-[16/10] h-auto w-full overflow-clip rounded-xl shadow-xl">
               <Image
                 className="object-cover"
                 src={service.image}
@@ -129,7 +129,7 @@ function ServicesDesktop() {
                 }}
                 aria-hidden={serviceIndex !== selectedIndex}
               >
-                <div className="relative aspect-video h-auto w-[52.75rem] overflow-clip rounded-xl shadow-xl">
+                <div className="relative aspect-[16/10] h-auto w-[52.75rem] overflow-clip rounded-xl shadow-xl">
                   <Image
                     className="object-cover"
                     src={service.image}

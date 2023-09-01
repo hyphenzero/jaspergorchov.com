@@ -9,12 +9,18 @@ export const MDXComponents = {
     return (
       <div
         className={clsx(
-          'relative isolate my-12 aspect-[16/10] h-full w-full overflow-hidden rounded-xl bg-neutral-912',
+          'relative isolate my-12 overflow-hidden rounded-xl bg-neutral-912',
           className,
         )}
       >
         <div className="absolute inset-0 z-10 rounded-xl ring-1 ring-inset ring-white/10" />
-        <Image {...props} alt="" fill className="object-cover" unoptimized />
+				<Image
+					{...props}
+					alt=""
+					sizes="(min-width: 768px) 42rem, 100vw"
+					className="aspect-[16/10] w-full object-cover"
+					quality={100}
+				/>
       </div>
     )
   },
