@@ -20,7 +20,7 @@ function Stats() {
             ['Experiments', numberOfExperiments],
             ['Years of experience', yearsOfExperience],
           ].map(([label, value]) => (
-            <FadeIn className="flex flex-col-reverse border-l border-neutral-800 pl-8">
+						<FadeIn key={label} className="flex flex-col-reverse border-l border-neutral-800 pl-8">
               <dt className="mt-2 text-base text-neutral-400">{label}</dt>
               <dd className="font-display text-3xl font-semibold text-white sm:text-4xl">
                 {value}
