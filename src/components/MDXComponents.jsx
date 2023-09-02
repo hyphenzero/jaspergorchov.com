@@ -14,13 +14,13 @@ export const MDXComponents = {
         )}
       >
         <div className="absolute inset-0 z-10 rounded-xl ring-1 ring-inset ring-white/10" />
-				<Image
-					{...props}
-					alt=""
-					sizes="(min-width: 768px) 42rem, 100vw"
-					className="aspect-[16/10] w-full object-cover"
-					quality={100}
-				/>
+        <Image
+          {...props}
+          alt=""
+          sizes="(min-width: 768px) 42rem, 100vw"
+          className="aspect-[3/2] w-full object-cover"
+          quality={100}
+        />
       </div>
     )
   },

@@ -13,23 +13,23 @@ import clsx from 'clsx'
 import { Section } from '@/components/Section'
 import { FadeIn, FadeInStagger } from './FadeIn'
 import imageSoftware from 'src/app/work/chatgpt-redesign/settings.png'
-import image3D from 'src/app/playground/refractions/closeup-1.png'
-import imageExperiences from 'src/app/work/compositions-1/hero.png'
+import imageExperiences from 'src/app/playground/refractions/closeup-1.png'
+import image3D from 'src/app/work/compositions-1/hero.png'
 
 const services = [
-  {
-    name: 'Software Development',
-    description:
-      'Crafting modern and user-centric UIs with an innovative approach to enhance user experience and overall feel.',
-    image: imageSoftware,
-    icon: RectangleGroupIcon,
-  },
   {
     name: '3D Design',
     description:
       'Infusing semi-abstract scenes with semi-realistic elements, resulting in a dynamic and modern style.',
     image: image3D,
     icon: CubeIcon,
+	},
+	{
+    name: 'Software Development',
+    description:
+      'Crafting modern and user-centric UIs with an innovative approach to enhance user experience and overall feel.',
+    image: imageSoftware,
+    icon: RectangleGroupIcon,
   },
   {
     name: 'Digital Experiences',
@@ -113,7 +113,7 @@ function ServicesDesktop() {
               ))}
             </FadeInStagger>
           </Tab.List>
-          <Tab.Panels className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-neutral-900 bg-neutral-950 p-16 shadow-inner shadow-black/25">
+          <FadeIn as="Tab.Panels" className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-neutral-900 bg-neutral-950 p-16 shadow-inner shadow-black/25">
             {services.map((service, serviceIndex) => (
               <Tab.Panel
                 static
@@ -129,7 +129,7 @@ function ServicesDesktop() {
                 }}
                 aria-hidden={serviceIndex !== selectedIndex}
               >
-                <div className="relative aspect-[16/10] h-auto w-[52.75rem] overflow-clip rounded-xl shadow-xl">
+                <div className="relative aspect-[3/2] h-auto w-[52.75rem] overflow-clip rounded-xl shadow-xl">
                   <Image
                     className="object-cover"
                     src={service.image}
@@ -141,7 +141,7 @@ function ServicesDesktop() {
                 </div>
               </Tab.Panel>
             ))}
-          </Tab.Panels>
+          </FadeIn>
         </>
       )}
     </Tab.Group>

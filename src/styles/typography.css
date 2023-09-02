@@ -146,16 +146,16 @@
 
   /* Inline text */
   :where(a) {
-		color: theme(colors.white);
+    color: theme(colors.white);
     text-decoration: underline;
-		text-decoration-color: theme(colors.sky.300);
+    text-decoration-color: theme(colors.sky.300);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.15em;
     text-decoration-skip-ink: none;
     font-weight: theme(fontWeight.medium);
   }
 
-	:where(a):hover {
+  :where(a):hover {
     text-decoration-thickness: 2px;
   }
 
@@ -166,7 +166,7 @@
   :where(code:not(pre code)) {
     font-size: calc(18 / 20 * 1em);
     font-weight: theme(fontWeight.semibold);
-		color: theme(colors.white);
+    color: theme(colors.white);
 
     &::before,
     &::after {

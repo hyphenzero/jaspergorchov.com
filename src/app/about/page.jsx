@@ -1,4 +1,37 @@
+import { Container } from '@/components/Container'
 import { PageIntro } from '@/components/PageIntro'
+import { FadeIn, FadeInStagger } from '@/components/FadeIn'
+import { ContactSection } from '@/components/ContactSection'
+import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
+
+let numberOfProjects = (await loadMDXMetadata('work')).length
+
+let numberOfExperiments = (await loadMDXMetadata('playground')).length
+
+const yearsOfExperience = new Date().getFullYear() - 2021
+
+function Stats() {
+  return (
+    <Container className="pt-30 pb-10 sm:pb-12 sm:pt-36">
+      <FadeInStagger>
+        <dl className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:auto-cols-fr lg:grid-flow-col lg:grid-cols-none">
+          {[
+            ['Projects', numberOfProjects],
+            ['Experiments', numberOfExperiments],
+            ['Years of experience', yearsOfExperience],
+          ].map(([label, value]) => (
+            <FadeIn className="flex flex-col-reverse border-l border-neutral-800 pl-8">
+              <dt className="mt-2 text-base text-neutral-400">{label}</dt>
+              <dd className="font-display text-3xl font-semibold text-white sm:text-4xl">
+                {value}
+              </dd>
+            </FadeIn>
+          ))}
+        </dl>
+      </FadeInStagger>
+    </Container>
+  )
+}
 
 export const metadata = {
   title: 'About',
@@ -25,6 +58,10 @@ export default function About() {
           </p>
         </div>
       </PageIntro>
+
+      <Stats />
+
+      <ContactSection />
     </>
   )
 }

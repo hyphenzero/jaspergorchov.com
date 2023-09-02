@@ -14,8 +14,10 @@ export default async function Playground() {
   return (
     <>
       <PageIntro eyebrow="Playground" title="Exploring new ideas">
-        Discover my creative experiments — projects created to explore new ideas
-        and techniques.
+        <p>
+          Discover my creative experiments — projects created to explore new
+          ideas and techniques.
+        </p>
       </PageIntro>
 
       <Projects projects={experiments} className="sm:pt-26 pt-16" />
