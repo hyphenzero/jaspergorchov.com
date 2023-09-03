@@ -2,10 +2,6 @@
 
 My personal website, built using [Tailwind CSS](https://tailwindcss.com) and [Next.js](https://nextjs.org).
 
-## License
-
-You may not use this source code in commercial projects, products, or applications without obtaining explicit written permission from the author.
-
 ## Technologies
 
 To learn more about the technologies used in this site, see the following resources:
