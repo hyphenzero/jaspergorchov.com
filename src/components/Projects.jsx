@@ -4,8 +4,8 @@ import Image from 'next/image'
 
 import clsx from 'clsx'
 
-import { FadeIn, FadeInStagger } from './FadeIn'
 import { Button } from './Button'
+import { FadeIn, FadeInStagger } from './FadeIn'
 
 export function Projects({
   projects,

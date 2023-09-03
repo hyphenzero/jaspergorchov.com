@@ -9,8 +9,8 @@ import { Button } from '@/components/Button'
 import { ContactSection } from '@/components/ContactSection'
 import { Container } from '@/components/Container'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
-import { Section } from '@/components/Section'
 import { Projects } from '@/components/Projects'
+import { Section } from '@/components/Section'
 import { ServicesDetail } from '@/components/ServicesDetail'
 import { TagListItem } from '@/components/TagList'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
@@ -25,7 +25,11 @@ const services = [
     icon: CubeIcon,
   },
   {
-    name: 'Web Design',
+    name: (
+      <>
+        <span className="max-sm:hidden">Web</span> Development
+      </>
+    ),
     icon: GlobeAltIcon,
   },
   {
@@ -96,11 +100,11 @@ export default async function Home({ social }) {
       <Container className="py-24 sm:py-32 md:py-56">
         <FadeIn className="max-w-2xl sm:mx-auto sm:text-center">
           <h1 className="font-display text-5xl font-medium tracking-tight text-white [text-wrap:balance] sm:text-7xl">
-            Software Developer <br className="max-sm:hidden" />& 3D Designer
+            Full-Stack Developer <br className="max-sm:hidden" />& 3D Designer
           </h1>
           <p className="mt-6 text-xl text-neutral-400">
             I’m Jasper Gorchov, and I craft immersive web-based apps and
-            aesthetic 3D illustrations.{' '}
+            beautiful 3D illustrations.{' '}
             <span className="max-sm:hidden">
               I harness the combination of these powerful mediums to create the
               future of digital interations and experiences.

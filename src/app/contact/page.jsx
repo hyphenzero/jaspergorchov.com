@@ -2,11 +2,11 @@ import Link from 'next/link'
 
 import clsx from 'clsx'
 
+import { ContactForm } from '@/components/ContactForm'
 import { Container } from '@/components/Container'
 import { FadeIn } from '@/components/FadeIn'
 import { PageIntro } from '@/components/PageIntro'
 import { SocialMedia } from '@/components/SocialMedia'
-import { ContactForm } from '@/components/ContactForm'
 import { TagListItem } from '@/components/TagList'
 
 const available = false

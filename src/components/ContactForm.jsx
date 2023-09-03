@@ -2,8 +2,8 @@
 
 import { useId } from 'react'
 
-import { FadeIn } from './FadeIn'
 import { Button } from './Button'
+import { FadeIn } from './FadeIn'
 
 function TextInput({ label, ...props }) {
   let id = useId()

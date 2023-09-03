@@ -1,7 +1,7 @@
-import { Container } from '@/components/Container'
-import { PageIntro } from '@/components/PageIntro'
-import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { ContactSection } from '@/components/ContactSection'
+import { Container } from '@/components/Container'
+import { FadeIn, FadeInStagger } from '@/components/FadeIn'
+import { PageIntro } from '@/components/PageIntro'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 let numberOfProjects = (await loadMDXMetadata('work')).length
@@ -20,7 +20,10 @@ function Stats() {
             ['Experiments', numberOfExperiments],
             ['Years of experience', yearsOfExperience],
           ].map(([label, value]) => (
-						<FadeIn key={label} className="flex flex-col-reverse border-l border-neutral-800 pl-8">
+            <FadeIn
+              key={label}
+              className="flex flex-col-reverse border-l border-neutral-800 pl-8"
+            >
               <dt className="mt-2 text-base text-neutral-400">{label}</dt>
               <dd className="font-display text-3xl font-semibold text-white sm:text-4xl">
                 {value}
@@ -44,7 +47,7 @@ export default function About() {
     <>
       <PageIntro eyebrow="About" title="Hi, I’m Jasper">
         <p>
-          I’m Jasper Gorchov, and I craft immersive web-based apps and aesthetic
+          I’m Jasper Gorchov, and I craft immersive web-based apps and beautiful
           3D illustrations. I harness the combination of these powerful mediums
           to create the future of digital interations and experiences.
         </p>

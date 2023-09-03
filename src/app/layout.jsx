@@ -1,11 +1,10 @@
 import { RootLayout } from '@/components/RootLayout'
-
 import '@/styles/tailwind.css'
 
 export const metadata = {
   title: {
     template: '%s - Jasper Gorchov',
-    default: 'Jasper Gorchov - Software Developer & 3D Designer',
+    default: 'Jasper Gorchov - Full-Stack Developer & 3D Designer',
   },
 }
 

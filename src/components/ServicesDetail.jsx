@@ -2,18 +2,18 @@
 
 import Image from 'next/image'
 
+import { Tab } from '@headlessui/react'
 import {
-  UserCircleIcon,
   CubeIcon,
   RectangleGroupIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/solid'
-import { Tab } from '@headlessui/react'
 import clsx from 'clsx'
 
-import { Section } from '@/components/Section'
 import { FadeIn, FadeInStagger } from './FadeIn'
-import imageSoftware from 'src/app/work/chatgpt-redesign/settings.png'
+import { Section } from '@/components/Section'
 import imageExperiences from 'src/app/playground/refractions/closeup-1.png'
+import imageDevelopment from 'src/app/work/chatgpt-redesign/settings.png'
 import image3D from 'src/app/work/compositions-1/hero.png'
 
 const services = [
@@ -23,12 +23,12 @@ const services = [
       'Infusing semi-abstract scenes with semi-realistic elements, resulting in a dynamic and modern style.',
     image: image3D,
     icon: CubeIcon,
-	},
-	{
-    name: 'Software Development',
+  },
+  {
+    name: 'Web Development',
     description:
       'Crafting modern and user-centric UIs with an innovative approach to enhance user experience and overall feel.',
-    image: imageSoftware,
+    image: imageDevelopment,
     icon: RectangleGroupIcon,
   },
   {
@@ -113,7 +113,10 @@ function ServicesDesktop() {
               ))}
             </FadeInStagger>
           </Tab.List>
-          <FadeIn as="Tab.Panels" className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-neutral-900 bg-neutral-950 p-16 shadow-inner shadow-black/25">
+          <FadeIn
+            as="Tab.Panels"
+            className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-neutral-900 bg-neutral-950 p-16 shadow-inner shadow-black/25"
+          >
             {services.map((service, serviceIndex) => (
               <Tab.Panel
                 static

@@ -1,16 +1,16 @@
 'use client'
 
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 import { Dialog } from '@headlessui/react'
 import { Bars2Icon, XMarkIcon } from '@heroicons/react/24/outline'
 
-import { FadeIn, FadeInStagger } from './FadeIn'
-import { WavePattern } from './WavePattern'
-import { Logo } from './Logo'
 import { Button } from './Button'
+import { FadeIn, FadeInStagger } from './FadeIn'
+import { Logo } from './Logo'
 import { SocialMedia } from './SocialMedia'
+import { WavePattern } from './WavePattern'
 
 const navigation = [
   { name: 'About', href: '/about' },
