@@ -111,7 +111,9 @@ export default async function Home({ social }) {
             </span>
           </p>
           <div className="mt-8 w-full items-center sm:flex sm:justify-center">
-            <Button href="/work">Browse work</Button>
+            <Button arrow href="/work">
+              Browse work
+            </Button>
           </div>
         </FadeIn>
       </Container>

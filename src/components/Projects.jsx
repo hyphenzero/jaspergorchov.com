@@ -83,8 +83,8 @@ export function Projects({
       </FadeInStagger>
       {featured && (
         <div className="mt-20 flex items-center justify-center">
-          <Button href="/work" className="w-fit items-center">
-            See more...
+          <Button arrow href="/work" className="w-fit items-center">
+            See more
           </Button>
         </div>
       )}

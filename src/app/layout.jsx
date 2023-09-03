@@ -10,10 +10,7 @@ export const metadata = {
 
 export default function Layout({ children }) {
   return (
-    <html
-      lang="en"
-      className="h-full bg-neutral-950 antialiased accent-sky-300"
-    >
+    <html lang="en" className="h-full bg-primary antialiased accent-sky-300">
       <body className="flex min-h-full flex-col">
         <RootLayout>{children}</RootLayout>
       </body>

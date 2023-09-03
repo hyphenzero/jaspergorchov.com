@@ -32,7 +32,7 @@ function TextArea({ label, ...props }) {
 
   return (
     <div className="group relative z-0 transition-all focus-within:z-10">
-      <div className="pointer-events-none absolute top-px ml-[1px] flex h-12 w-[calc(100%-2px)] justify-center bg-gradient-to-b from-neutral-912 group-first:rounded-t-2xl group-last:rounded-b-2xl" />
+      <div className="pointer-events-none absolute top-px ml-[1px] flex h-12 w-[calc(100%-2px)] justify-center bg-gradient-to-b from-secondary group-first:rounded-t-2xl group-last:rounded-b-2xl" />
       <textarea
         id={id}
         {...props}
@@ -70,10 +70,6 @@ export function ContactForm({ available }) {
     const email = e.target.email.value
     const company = e.target.company.value
     const subject = e.target.subject.value
-    let budget = null
-    if (available) {
-      budget = e.target.budget.value
-    }
 
     const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=Hello,%20Jasper!%0D%0D%09I’m%20${name},%20and%20I%20work%20with%20${company}.%20I’m%20writing%20to%20you%20about%20${subject}.%0D%0DThanks,%0D${name}%0D${email}`
 
@@ -86,7 +82,7 @@ export function ContactForm({ available }) {
         <h2 className="font-display text-base font-semibold text-white">
           Email me
         </h2>
-        <div className="isolate mt-6 -space-y-px rounded-2xl bg-neutral-912">
+        <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
           <TextInput label="Name" name="name" autoComplete="name" required />
           <TextInput
             label="Email Address"
@@ -119,7 +115,7 @@ export function ContactForm({ available }) {
             </div>
           )}
         </div>
-        <Button type="submit" className="mt-10">
+        <Button arrow type="submit" className="mt-10">
           Compose Email
         </Button>
       </form>

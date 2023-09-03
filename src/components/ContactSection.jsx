@@ -18,14 +18,16 @@ const social = [
 export function ContactSection() {
   return (
     <Container className="py-24 sm:py-32">
-      <FadeIn className="-mx-6 rounded-3xl bg-neutral-912 px-6 py-20 sm:mx-0 sm:py-32 md:px-12">
+      <FadeIn className="-mx-6 rounded-3xl bg-secondary px-6 py-20 sm:mx-0 sm:py-32 md:px-12">
         <div className="mx-auto max-w-4xl">
           <div className="max-w-xl">
             <h2 className="font-display text-3xl font-medium text-white [text-wrap:balance] sm:text-4xl">
               Let’s talk
             </h2>
             <div className="mt-6 flex items-center space-x-6">
-              <Button href="/contact">Contact</Button>
+              <Button arrow href="/contact">
+                Contact
+              </Button>
               <span className="text-neutral-700">/</span>
               <p className="text-base font-medium text-white">
                 Not currently available <br className="sm:hidden" /> for

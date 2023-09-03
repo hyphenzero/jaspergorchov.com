@@ -4,7 +4,7 @@ export function Section({ children, className }) {
   return (
     <div
       className={clsx(
-        'my-24 rounded-3xl bg-neutral-912 py-24 text-white sm:my-32 sm:py-32',
+        'my-24 rounded-3xl bg-secondary py-24 text-white sm:my-32 sm:py-32',
         className,
       )}
     >

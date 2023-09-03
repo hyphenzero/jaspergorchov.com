@@ -25,7 +25,7 @@ function ContactDetails() {
         <strong className="font-semibold text-white">Status:</strong>
         <TagListItem
           as="div"
-          className="flex w-fit space-x-3 rounded-full bg-white px-4 py-1 font-medium text-neutral-950 shadow"
+          className="flex w-fit space-x-3 rounded-full bg-white px-4 py-1 font-medium text-primary shadow"
         >
           {available ? 'Available for new work' : 'Not available for new work'}
         </TagListItem>
@@ -38,26 +38,16 @@ function ContactDetails() {
           Email
         </h2>
         <dl className="mt-6 grid grid-cols-1 gap-8 text-sm sm:grid-cols-2">
-          {[
-            ['General', 'hello@jaspergorchov.com'],
-            ['Work Inquiries', 'work@jaspergorchov.com', true],
-          ].map(([label, email, disabled = false]) => (
-            <div
-              key={email}
-              className={clsx(disabled && 'cursor-not-allowed opacity-50')}
-            >
+          {[['General', 'hello@jaspergorchov.com']].map(([label, email]) => (
+            <div key={email}>
               <dt className="font-semibold text-white">{label}</dt>
               <dd className="w-fit text-neutral-400">
-                {disabled ? (
-                  <span>{email}</span>
-                ) : (
-                  <Link
-                    href={`mailto:${email}`}
-                    className="transition-colors duration-200 hover:text-sky-300"
-                  >
-                    {email}
-                  </Link>
-                )}
+                <Link
+                  href={`mailto:${email}`}
+                  className="transition-colors duration-200 hover:text-sky-300"
+                >
+                  {email}
+                </Link>
               </dd>
             </div>
           ))}

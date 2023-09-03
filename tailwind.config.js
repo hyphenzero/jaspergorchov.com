@@ -31,11 +31,9 @@ module.exports = {
 				],
 			},
 			colors: {
-				neutral: {
-					912: '#0e0e0e',
-					925: '#111111',
-        },
-      }
+				primary: '#0a0a0a',
+				secondary: '#0e0e0e',
+      },
 		},
 	},
 	plugins: [

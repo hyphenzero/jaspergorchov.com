@@ -9,7 +9,7 @@ export const MDXComponents = {
     return (
       <div
         className={clsx(
-          'relative isolate my-12 overflow-hidden rounded-xl bg-neutral-912',
+          'relative isolate my-12 overflow-hidden rounded-xl bg-secondary',
           className,
         )}
       >

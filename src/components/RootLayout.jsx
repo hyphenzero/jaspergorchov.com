@@ -62,7 +62,7 @@ function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-50" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-neutral-950/75 px-6 py-8 backdrop-blur-xl sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-primary/75 px-6 py-8 backdrop-blur-xl sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
           <div className="flex items-center justify-between">
             <Link href="/" aria-label="Home" className="flex rounded-md">
               <Logo />
@@ -86,14 +86,14 @@ function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-neutral-950"
+                    className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-primary"
                   >
                     <FadeIn className="flex">{item.name}</FadeIn>
                   </Link>
                 ))}
                 <Link
                   href="/contact"
-                  className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-neutral-950"
+                  className="-mx-2.5 rounded-lg px-2.5 py-1.5 text-base font-medium text-white transition-colors duration-200 hover:bg-white hover:text-primary"
                 >
                   <FadeIn className="flex">Contact</FadeIn>
                 </Link>

@@ -49,7 +49,7 @@ export default async function ProjectLayout({ children, _segments }) {
 
       {moreProjects.length > 0 && (
         <Projects
-          className="mt-24 bg-gradient-to-b from-neutral-912 pt-24 sm:mt-32 sm:pt-32 lg:mt-40"
+          className="mt-24 bg-gradient-to-b from-secondary pt-24 sm:mt-32 sm:pt-32 lg:mt-40"
           title="More projects"
           images={false}
           projects={moreProjects}
