@@ -2,9 +2,7 @@ const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
 	content: [
-		'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
-		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/**/*.{js,jsx,mdx}',
 	],
 	theme: {
 		fontSize: {
@@ -32,7 +30,7 @@ module.exports = {
 			},
 			colors: {
 				primary: '#0a0a0a',
-				secondary: '#0e0e0e',
+				secondary: '#111111',
       },
 		},
 	},

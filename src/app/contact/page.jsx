@@ -1,7 +1,5 @@
 import Link from 'next/link'
 
-import clsx from 'clsx'
-
 import { ContactForm } from '@/components/ContactForm'
 import { Container } from '@/components/Container'
 import { FadeIn } from '@/components/FadeIn'
@@ -9,7 +7,7 @@ import { PageIntro } from '@/components/PageIntro'
 import { SocialMedia } from '@/components/SocialMedia'
 import { TagListItem } from '@/components/TagList'
 
-const available = false
+export const available = false
 
 function ContactDetails() {
   return (
@@ -18,7 +16,7 @@ function ContactDetails() {
         My details
       </h2>
       <p className="mt-6 text-base text-neutral-400">
-        Contact me any way you like — I’ll get back to you as soon a I can.
+        Contact me any way you like — I’ll get back to you as soon as I can.
       </p>
 
       <div className="mt-6 flex items-center gap-x-6">
@@ -31,27 +29,39 @@ function ContactDetails() {
         </TagListItem>
       </div>
 
-      <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2" />
-
       <div className="mt-16 border-t border-neutral-800 pt-16">
-        <h2 className="font-display text-base font-semibold text-white">
-          Email
-        </h2>
-        <dl className="mt-6 grid grid-cols-1 gap-8 text-sm sm:grid-cols-2">
-          {[['General', 'hello@jaspergorchov.com']].map(([label, email]) => (
-            <div key={email}>
-              <dt className="font-semibold text-white">{label}</dt>
-              <dd className="w-fit text-neutral-400">
+        <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
+          <div>
+            <h2 className="font-display text-base font-semibold text-white">
+              Email
+            </h2>
+            <div className="mt-6 text-sm">
+              <p className="w-fit text-neutral-400">
                 <Link
-                  href={`mailto:${email}`}
+                  href="mailto:hello@jaspergorchov.com"
                   className="transition-colors duration-200 hover:text-sky-300"
                 >
-                  {email}
+                  hello@jaspergorchov.com
                 </Link>
-              </dd>
+              </p>
             </div>
-          ))}
-        </dl>
+          </div>
+          <div>
+            <h2 className="font-display text-base font-semibold text-white">
+              Timezone
+            </h2>
+            <div className="mt-6 text-sm">
+              <p className="w-fit text-neutral-400">
+                {new Date().toLocaleTimeString([], {
+                  hour: 'numeric',
+                  minute: '2-digit',
+                  hour12: true,
+                })}{" "}
+                <span className="text-neutral-600">(UTC -07:00)</span>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="mt-16 border-t border-neutral-800 pt-16">

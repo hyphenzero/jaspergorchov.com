@@ -1,15 +1,18 @@
 'use client'
 
-import { useId } from 'react'
+import { useId, useState } from 'react'
+
+import { Tab } from '@headlessui/react'
+import clsx from 'clsx'
 
 import { Button } from './Button'
 import { FadeIn } from './FadeIn'
 
-function TextInput({ label, ...props }) {
+function TextInput({ label, required, ...props }) {
   let id = useId()
 
   return (
-    <div className="group relative z-0 transition-all focus-within:z-10">
+    <div className="group relative z-0 focus-within:z-10">
       <input
         type="text"
         id={id}
@@ -20,28 +23,6 @@ function TextInput({ label, ...props }) {
       <label
         htmlFor={id}
         className="pointer-events-none absolute left-6 top-1/2 -mt-3 origin-left text-base/6 text-neutral-400 transition-all duration-200 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-white peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-white"
-      >
-        {label}
-      </label>
-    </div>
-  )
-}
-
-function TextArea({ label, ...props }) {
-  let id = useId()
-
-  return (
-    <div className="group relative z-0 transition-all focus-within:z-10">
-      <div className="pointer-events-none absolute top-px ml-[1px] flex h-12 w-[calc(100%-2px)] justify-center bg-gradient-to-b from-secondary group-first:rounded-t-2xl group-last:rounded-b-2xl" />
-      <textarea
-        id={id}
-        {...props}
-        placeholder=" "
-        className="peer block h-64 w-full border border-neutral-800 bg-transparent px-6 pb-6 pt-12 text-base/6 text-neutral-400 transition focus:border-white focus:outline-none focus:ring-0 group-first:rounded-t-2xl group-last:rounded-b-2xl"
-      ></textarea>
-      <label
-        htmlFor={id}
-        className="pointer-events-none absolute left-6 top-12 -mt-3 origin-left text-base/6 text-neutral-400 transition-all duration-200 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-white peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-white"
       >
         {label}
       </label>
@@ -63,62 +44,246 @@ function RadioInput({ label, ...props }) {
 }
 
 export function ContactForm({ available }) {
+  const [formContent, setFormContent] = useState({
+    name: '',
+    email: '',
+    job_title: '',
+    company: '',
+    subject: '',
+  })
+
   function handleSubmit(e) {
     e.preventDefault()
 
-    const name = e.target.name.value
-    const email = e.target.email.value
-    const company = e.target.company.value
-    const subject = e.target.subject.value
+    const { name, job_title, company, subject } = formContent
 
-    const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=Hello,%20Jasper!%0D%0D%09I’m%20${name},%20and%20I%20work%20with%20${company}.%20I’m%20writing%20to%20you%20about%20${subject}.%0D%0DThanks,%0D${name}%0D${email}`
+    const intro =
+      job_title.trim() !== ''
+        ? `I’m ${name}, a ${job_title} at ${company}.`
+        : `I’m ${name}, and I work with ${company}.`
+
+    const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
+      `Hello, Jasper!\n\n\t${intro} I’m writing to you about ${subject.toLowerCase()}.\n\n\t...\n\nThanks,\n${name}`,
+    )}`
 
     window.location.href = mailtoUrl
   }
 
+  function handleFieldChange(e) {
+    const { name, value } = e.target
+
+    setFormContent({
+      ...formContent,
+      [name]: value,
+    })
+  }
+
+  const isFormFilled = Object.values(formContent).some(
+    (value) => value.trim() !== '',
+  )
+
+  function renderFieldOrPlaceholder(field, placeholderText) {
+    return field.trim() !== '' ? (
+      <span className="text-white font-medium">{field}</span>
+    ) : (
+      <div className="inline-flex rounded-md mx-0.5 bg-neutral-800 px-2 text-white font-medium">
+        {placeholderText}
+      </div>
+    )
+  }
+
+  const workEmailPreview = (
+    <>
+      Hello, Jasper!
+      <br />
+      <br />
+      &emsp;I’m {renderFieldOrPlaceholder(formContent.name, 'Name')}, a{' '}
+      {renderFieldOrPlaceholder(formContent.job_title, 'Job Title')} at{' '}
+      {renderFieldOrPlaceholder(formContent.company, 'Company')}. I’m writing to
+      you about{' '}
+      <span className="lowercase">
+        {renderFieldOrPlaceholder(formContent.subject, 'Subject')}
+      </span>
+      .
+      <br />
+      <br />
+      &emsp;...
+      <br />
+      <br />
+      Thanks,
+      <br />
+      {renderFieldOrPlaceholder(formContent.name, 'Name')}
+    </>
+  )
+
+  const generalEmailPreview = (
+    <>
+      Hello, Jasper!
+      <br />
+      <br />
+      &emsp;I’m {renderFieldOrPlaceholder(formContent.name, 'Name')}, and I’m
+      writing to you about{' '}
+      <span className="lowercase">
+        {renderFieldOrPlaceholder(formContent.subject, 'Subject')}
+      </span>
+      .
+      <br />
+      <br />
+      &emsp;...
+      <br />
+      <br />
+      Thanks,
+      <br />
+      {renderFieldOrPlaceholder(formContent.name, 'Name')}
+    </>
+  )
+
   return (
     <FadeIn className="lg:order-last">
-      <form onSubmit={handleSubmit}>
-        <h2 className="font-display text-base font-semibold text-white">
-          Email me
-        </h2>
-        <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
-          <TextInput label="Name" name="name" autoComplete="name" required />
-          <TextInput
-            label="Email Address"
-            type="email"
-            name="email"
-            autoComplete="email"
-            required
-          />
-          <TextInput
-            label="Company"
-            name="company"
-            autoComplete="organization"
-          />
-          <TextInput label="Subject" name="subject" required />
-          {available && (
-            <div className="border border-neutral-800 px-6 py-8 first:rounded-t-2xl last:rounded-b-2xl">
-              <fieldset>
-                <legend className="text-base/6 text-neutral-400">Budget</legend>
-                <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
-                  <RadioInput label="$25K – $50K" name="budget" value="25" />
-                  <RadioInput label="$50K – $100K" name="budget" value="50" />
-                  <RadioInput label="$100K – $150K" name="budget" value="100" />
-                  <RadioInput
-                    label="More than $150K"
-                    name="budget"
-                    value="150"
-                  />
-                </div>
-              </fieldset>
-            </div>
-          )}
+      <Tab.Group>
+        <div className="flex w-full justify-between items-center">
+          <h2 className="font-display text-base font-semibold text-white">
+            Email me
+          </h2>
+
+          <Tab.List className="flex space-x-1 rounded-xl bg-neutral-900 p-1">
+            <Tab
+              disabled={!available}
+              className={clsx(
+                'font-display ui-selected:bg-white rounded-lg ui-selected:text-primary font-medium px-5 py-1  ui-not-selected:text-neutral-400',
+                available
+                  ? 'ui-not-selected:hover:bg-neutral-800'
+                  : 'cursor-not-allowed',
+              )}
+            >
+              Work inquiries
+            </Tab>
+            <Tab className="font-display ui-selected:bg-white rounded-lg ui-selected:text-primary font-medium px-5 py-1 ui-not-selected:text-neutral-400 ui-not-selected:hover:bg-neutral-800">
+              General
+            </Tab>
+          </Tab.List>
         </div>
-        <Button arrow type="submit" className="mt-10">
-          Compose Email
-        </Button>
-      </form>
+
+        <Tab.Panels>
+          <Tab.Panel>
+            <div
+              aria-hidden="true"
+              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-neutral-400"
+            >
+              <p className="text-base/6">
+                {isFormFilled ? (
+                  workEmailPreview
+                ) : (
+                  <span className="flex items-center justify-center text-center h-48">
+                    Fill out the form to generate an email.
+                  </span>
+                )}
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
+                <TextInput
+                  label="Subject"
+                  name="subject"
+                  required
+                  onChange={handleFieldChange}
+                />
+                <TextInput
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  required
+                  onChange={handleFieldChange}
+                />
+                <TextInput
+                  label="Job Title"
+                  name="job_title"
+                  onChange={handleFieldChange}
+                />
+                <TextInput
+                  label="Company"
+                  name="company"
+                  autoComplete="organization"
+                  required
+                  onChange={handleFieldChange}
+                />
+                {available && (
+                  <div className="border border-neutral-800 px-6 py-8 first:rounded-t-2xl last:rounded-b-2xl">
+                    <fieldset>
+                      <legend className="text-base/6 text-neutral-400">
+                        Budget
+                      </legend>
+                      <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
+                        <RadioInput
+                          label="$25K – $50K"
+                          name="budget"
+                          value="25"
+                        />
+                        <RadioInput
+                          label="$50K – $100K"
+                          name="budget"
+                          value="50"
+                        />
+                        <RadioInput
+                          label="$100K – $150K"
+                          name="budget"
+                          value="100"
+                        />
+                        <RadioInput
+                          label="More than $150K"
+                          name="budget"
+                          value="150"
+                        />
+                      </div>
+                    </fieldset>
+                  </div>
+                )}
+              </div>
+              <Button arrow type="submit" className="mt-10">
+                Compose Email
+              </Button>
+            </form>
+          </Tab.Panel>
+          <Tab.Panel>
+            <div
+              aria-hidden="true"
+              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-neutral-400"
+            >
+              <p className="text-base/6">
+                {isFormFilled ? (
+                  generalEmailPreview
+                ) : (
+                  <span className="flex items-center justify-center text-center h-48">
+                    Fill out the form to generate an email.
+                  </span>
+                )}
+              </p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+              <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
+                <TextInput
+                  label="Subject"
+                  name="subject"
+                  required
+                  onChange={handleFieldChange}
+                />
+                <TextInput
+                  label="Name"
+                  name="name"
+                  autoComplete="name"
+                  required
+                  onChange={handleFieldChange}
+                />
+              </div>
+              <Button arrow type="submit" className="mt-10">
+                Compose Email
+              </Button>
+            </form>
+          </Tab.Panel>
+        </Tab.Panels>
+      </Tab.Group>
     </FadeIn>
   )
 }

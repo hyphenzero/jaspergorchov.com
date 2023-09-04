@@ -1,10 +1,12 @@
 'use client'
 
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
 import { Dialog } from '@headlessui/react'
 import { Bars2Icon, XMarkIcon } from '@heroicons/react/24/outline'
+import clsx from 'clsx'
 
 import { Button } from './Button'
 import { FadeIn, FadeInStagger } from './FadeIn'
@@ -19,10 +21,12 @@ const navigation = [
 ]
 
 function Header() {
+  const pathname = usePathname()
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   return (
-    <header className=" inset-x-0 top-0 z-50 mx-auto w-full max-w-7xl">
+    <header className="inset-x-0 top-0 z-50 mx-auto w-full max-w-7xl">
       <nav
         className="flex items-center justify-between px-6 py-8 lg:px-8"
         aria-label="Global"
@@ -36,7 +40,10 @@ function Header() {
               <Link
                 key={item.name}
                 href={item.href}
-                className="px-3 py-2 text-sm font-medium text-white transition-colors duration-200 hover:text-sky-300"
+                className={clsx(
+                  'px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:text-sky-300 rounded-full target:text-sky-300',
+                  pathname === item.href ? 'bg-neutral-900' : '',
+                )}
               >
                 {item.name}
               </Link>

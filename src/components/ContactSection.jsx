@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { Button } from '@/components/Button'
 import { Container } from '@/components/Container'
 import { FadeIn } from '@/components/FadeIn'
+import { available } from 'src/app/contact/page'
 
 const social = [
   {
@@ -30,8 +31,7 @@ export function ContactSection() {
               </Button>
               <span className="text-neutral-700">/</span>
               <p className="text-base font-medium text-white">
-                Not currently available <br className="sm:hidden" /> for
-                projects
+								{available ? 'Available for new work' : 'Not available for new work'}
               </p>
             </div>
             <ul
@@ -51,7 +51,7 @@ export function ContactSection() {
               </li>
               <li className="flex flex-col space-y-2">
                 <div className="font-display text-sm font-semibold tracking-wider text-white">
-                  Socials
+                  Follow me
                 </div>
                 {social.map((item) => (
                   <Link
