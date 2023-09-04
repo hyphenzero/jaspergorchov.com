@@ -93,8 +93,7 @@ function TextSection() {
 }
 
 export const metadata = {
-  description: `I’m Jasper Gorchov, a ${currentAge()}-year-old who is passionate about crafting immersive web-based apps and
-		vibrant 3D illustrations.`,
+  description: `I’m Jasper Gorchov, a ${currentAge()}-year-old who is passionate about crafting immersive web-based apps and vibrant 3D illustrations.`,
 }
 
 export default async function Home({ social }) {
