@@ -27,8 +27,8 @@ function DribbbleIcon(props) {
 }
 
 export const socialMediaProfiles = [
-  { title: 'GitHub', href: 'https://github.com', icon: GitHubIcon },
-  { title: 'Dribbble', href: 'https://dribbble.com', icon: DribbbleIcon },
+  { title: 'GitHub', href: 'https://github.com/hyphenzero', icon: GitHubIcon },
+  { title: 'Dribbble', href: 'https://dribbble.com/hyphenzero', icon: DribbbleIcon },
 ]
 
 export function SocialMedia({ className }) {
