@@ -6,7 +6,6 @@ import { Tab } from '@headlessui/react'
 import clsx from 'clsx'
 
 import { Button } from './Button'
-import { FadeIn } from './FadeIn'
 
 function TextInput({ label, required, ...props }) {
   let id = useId()
@@ -50,9 +49,9 @@ export function ContactForm({ available }) {
     job_title: '',
     company: '',
     subject: '',
-  })
-
-  function handleSubmit(e) {
+	})
+	
+	function handleWorkSubmit(e) {
     e.preventDefault()
 
     const { name, job_title, company, subject } = formContent
@@ -64,6 +63,18 @@ export function ContactForm({ available }) {
 
     const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
       `Hello, Jasper!\n\n\t${intro} I’m writing to you about ${subject.toLowerCase()}.\n\n\t...\n\nThanks,\n${name}`,
+		)}`
+
+    window.location.href = mailtoUrl
+  }
+
+  function handleGeneralSubmit(e) {
+    e.preventDefault()
+
+    const { name, subject } = formContent
+		
+		const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
+      `Hello, Jasper!\n\n\tI’m ${name}, and I’m writing to you about ${subject.toLowerCase()}.\n\n\t...\n\nThanks,\n${name}`,
     )}`
 
     window.location.href = mailtoUrl
@@ -139,7 +150,7 @@ export function ContactForm({ available }) {
   )
 
   return (
-    <FadeIn className="lg:order-last">
+    <div className="lg:order-last">
       <Tab.Group>
         <div className="flex w-full justify-between items-center">
           <h2 className="font-display text-base font-semibold text-white">
@@ -181,7 +192,7 @@ export function ContactForm({ available }) {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleWorkSubmit}>
               <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
                 <TextInput
                   label="Subject"
@@ -261,7 +272,7 @@ export function ContactForm({ available }) {
               </p>
             </div>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleGeneralSubmit}>
               <div className="isolate mt-6 -space-y-px rounded-2xl bg-secondary">
                 <TextInput
                   label="Subject"
@@ -284,6 +295,6 @@ export function ContactForm({ available }) {
           </Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
-    </FadeIn>
+    </div>
   )
 }

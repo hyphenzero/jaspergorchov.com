@@ -11,7 +11,7 @@ export const available = false
 
 function ContactDetails() {
   return (
-    <FadeIn>
+    <div>
       <h2 className="font-display text-base font-semibold text-white">
         My details
       </h2>
@@ -56,6 +56,7 @@ function ContactDetails() {
                   hour: 'numeric',
                   minute: '2-digit',
                   hour12: true,
+									timeZone: 'America/Los_Angeles',
                 })}{" "}
                 <span className="text-neutral-600">(UTC -07:00)</span>
               </p>
@@ -70,7 +71,7 @@ function ContactDetails() {
         </h2>
         <SocialMedia className="mt-6" />
       </div>
-    </FadeIn>
+    </div>
   )
 }
 
@@ -83,10 +84,11 @@ export const metadata = {
 
 export default function Contact() {
   return (
-    <>
+    <FadeIn>
       <PageIntro
         eyebrow="Contact"
-        title={available ? 'Let’s work together' : 'Let’s talk'}
+				title={available ? 'Let’s work together' : 'Let’s talk'}
+				fadeIn={false}
       >
         {available ? (
           <p>I’m always looking for new opportunities.</p>
@@ -104,6 +106,6 @@ export default function Contact() {
           <ContactDetails />
         </div>
       </Container>
-    </>
+    </FadeIn>
   )
 }
