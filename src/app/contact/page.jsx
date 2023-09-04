@@ -56,8 +56,8 @@ function ContactDetails() {
                   hour: 'numeric',
                   minute: '2-digit',
                   hour12: true,
-									timeZone: 'America/Los_Angeles',
-                })}{" "}
+                  timeZone: 'America/Los_Angeles',
+                })}{' '}
                 <span className="text-neutral-600">(UTC -07:00)</span>
               </p>
             </div>
@@ -87,8 +87,8 @@ export default function Contact() {
     <FadeIn>
       <PageIntro
         eyebrow="Contact"
-				title={available ? 'Let’s work together' : 'Let’s talk'}
-				fadeIn={false}
+        title={available ? 'Let’s work together' : 'Let’s talk'}
+        fadeIn={false}
       >
         {available ? (
           <p>I’m always looking for new opportunities.</p>

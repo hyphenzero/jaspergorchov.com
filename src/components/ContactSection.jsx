@@ -31,7 +31,9 @@ export function ContactSection() {
               </Button>
               <span className="text-neutral-700">/</span>
               <p className="text-base font-medium text-white">
-								{available ? 'Available for new work' : 'Not available for new work'}
+                {available
+                  ? 'Available for new work'
+                  : 'Not available for new work'}
               </p>
             </div>
             <ul

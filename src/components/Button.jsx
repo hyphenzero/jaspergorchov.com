@@ -15,7 +15,7 @@ export function Button({ href, arrow = false, className, children, ...props }) {
     return (
       <Link href={href} className={className} {...props}>
         {inner}
-        {arrow && <ArrowUpRightIcon className="ml-1 w-4 h-4 " />}
+        {arrow && <ArrowUpRightIcon className="ml-1 w-4 h-4" />}
       </Link>
     )
   }
@@ -23,7 +23,7 @@ export function Button({ href, arrow = false, className, children, ...props }) {
   return (
     <button className={className} {...props}>
       {inner}
-      {arrow && <ArrowUpRightIcon className="ml-1 w-4 h-4 " />}
+      {arrow && <ArrowUpRightIcon className="ml-1 w-4 h-4" />}
     </button>
   )
 }

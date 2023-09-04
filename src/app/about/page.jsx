@@ -1,7 +1,11 @@
+import Link from 'next/link'
+
 import { ContactSection } from '@/components/ContactSection'
 import { Container } from '@/components/Container'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { PageIntro } from '@/components/PageIntro'
+import { StyledLink } from '@/components/StyledLink'
+import { currentAge } from '@/lib/currentAge'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 let numberOfProjects = (await loadMDXMetadata('work')).length
@@ -47,17 +51,25 @@ export default function About() {
     <>
       <PageIntro eyebrow="About" title="Hi, I’m Jasper">
         <p>
-          I’m Jasper Gorchov, and I craft immersive web-based apps and beautiful
-          3D illustrations. I harness the combination of these powerful mediums
-          to create the future of digital interations and experiences.
+          I’m Jasper Gorchov, a {currentAge()}-year-old who is passionate about
+          crafting immersive web-based apps and vibrant 3D illustrations. I
+          combine these mediums to shape the future of digital interations and
+          experiences.
         </p>
         <div className="mt-10 max-w-2xl space-y-6 text-base">
           <p>
-            I create stunning web-based apps, sites, and experiences that are
-            meticulously crafted to transform ideas into tangible works. I
-            deeply incorporate 3D content into my designs, seamlessly blending
-            virtual and real elements to elevate user engagement and create
-            unforgettable interactions.
+            I started creating websites when I learned HTML with an{' '}
+            <StyledLink href="https://mimo.org">app</StyledLink> on my iPad at
+            age 9. When I first downloaded VScode on my Mac, I was introduced to
+            a world of creative computing as I began to learn about tools like{' '}
+            <StyledLink href="https://tailwindcss.com">Tailwind CSS</StyledLink>
+            . <StyledLink href="https://adamwathan.me">Adam Wathan</StyledLink>{' '}
+            and the Tailwind team have always been a big inspiration for me. In
+            2021 when I was 11, I decided to start learning React and{' '}
+            <StyledLink href="https://nextjs.org">Next.js</StyledLink>, because
+            I knew it would take me to the next level. Now, I create web-based
+            apps, sites, and experiences that are meticulously crafted to
+            transform ideas into tangible works.
           </p>
         </div>
       </PageIntro>

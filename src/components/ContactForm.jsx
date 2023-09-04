@@ -49,9 +49,9 @@ export function ContactForm({ available }) {
     job_title: '',
     company: '',
     subject: '',
-	})
-	
-	function handleWorkSubmit(e) {
+  })
+
+  function handleWorkSubmit(e) {
     e.preventDefault()
 
     const { name, job_title, company, subject } = formContent
@@ -63,7 +63,7 @@ export function ContactForm({ available }) {
 
     const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
       `Hello, Jasper!\n\n\t${intro} I’m writing to you about ${subject.toLowerCase()}.\n\n\t...\n\nThanks,\n${name}`,
-		)}`
+    )}`
 
     window.location.href = mailtoUrl
   }
@@ -72,8 +72,8 @@ export function ContactForm({ available }) {
     e.preventDefault()
 
     const { name, subject } = formContent
-		
-		const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
+
+    const mailtoUrl = `mailto:hello@jaspergorchov.com?subject=${subject}&body=${encodeURIComponent(
       `Hello, Jasper!\n\n\tI’m ${name}, and I’m writing to you about ${subject.toLowerCase()}.\n\n\t...\n\nThanks,\n${name}`,
     )}`
 
@@ -161,7 +161,7 @@ export function ContactForm({ available }) {
             <Tab
               disabled={!available}
               className={clsx(
-                'font-display ui-selected:bg-white rounded-lg ui-selected:text-primary font-medium px-5 py-1  ui-not-selected:text-neutral-400',
+                'text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1  ui-not-selected:text-neutral-400',
                 available
                   ? 'ui-not-selected:hover:bg-neutral-800'
                   : 'cursor-not-allowed',
@@ -169,7 +169,7 @@ export function ContactForm({ available }) {
             >
               Work inquiries
             </Tab>
-            <Tab className="font-display ui-selected:bg-white rounded-lg ui-selected:text-primary font-medium px-5 py-1 ui-not-selected:text-neutral-400 ui-not-selected:hover:bg-neutral-800">
+            <Tab className="text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1 ui-not-selected:text-neutral-400 ui-not-selected:hover:bg-neutral-800">
               General
             </Tab>
           </Tab.List>
