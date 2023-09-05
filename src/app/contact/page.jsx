@@ -6,6 +6,7 @@ import { FadeIn } from '@/components/FadeIn'
 import { PageIntro } from '@/components/PageIntro'
 import { SocialMedia } from '@/components/SocialMedia'
 import { TagListItem } from '@/components/TagList'
+import { Time } from '@/components/Time'
 
 export const available = false
 
@@ -52,13 +53,7 @@ function ContactDetails() {
             </h2>
             <div className="mt-6 text-sm">
               <p className="w-fit text-neutral-400">
-                {new Date().toLocaleTimeString([], {
-                  hour: 'numeric',
-                  minute: '2-digit',
-                  hour12: true,
-                  timeZone: 'America/Los_Angeles',
-                })}{' '}
-                <span className="text-neutral-600">(UTC -07:00)</span>
+                <Time />
               </p>
             </div>
           </div>
