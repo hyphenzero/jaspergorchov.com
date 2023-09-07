@@ -51,10 +51,7 @@ export default function About() {
     <>
       <PageIntro eyebrow="About" title="Hi, I’m Jasper">
         <p>
-          I’m Jasper Gorchov, a {currentAge()}-year-old who is passionate about
-          crafting immersive web-based apps and vibrant 3D illustrations. I
-          combine these mediums to shape the future of digital interations and
-          experiences.
+					I’m Jasper Gorchov, a {currentAge()}-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations. I combine these mediums to shape the future of digital interations and experiences.
         </p>
         <div className="mt-10 max-w-2xl space-y-6 text-base">
           <p>
