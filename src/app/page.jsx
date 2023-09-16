@@ -109,7 +109,7 @@ export default async function Home({ social }) {
           <p className="mt-6 text-xl text-neutral-400">
             I’m Jasper Gorchov, a {currentAge()}-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.{' '}
             <span className="max-sm:hidden">
-              I combine these mediums to shape the future of digital interations
+              I combine these mediums to shape the future of digital interactions
               and experiences.
             </span>
           </p>
