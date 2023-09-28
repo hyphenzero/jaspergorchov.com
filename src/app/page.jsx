@@ -93,7 +93,7 @@ function TextSection() {
 }
 
 export const metadata = {
-  description: `I’m Jasper Gorchov, a {currentAge()}-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.`,
+  description: `I’m Jasper Gorchov, a 13-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.`,
 }
 
 export default async function Home({ social }) {
@@ -107,7 +107,7 @@ export default async function Home({ social }) {
             Full-Stack Developer <br className="max-sm:hidden" />& 3D Designer
           </h1>
           <p className="mt-6 text-xl text-neutral-400">
-            I’m Jasper Gorchov, a {currentAge()}-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.{' '}
+            I’m Jasper Gorchov, a 13-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.{' '}
             <span className="max-sm:hidden">
               I combine these mediums to shape the future of digital interactions
               and experiences.
