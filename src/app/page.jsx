@@ -14,7 +14,6 @@ import { Section } from '@/components/Section'
 import { ServicesDetail } from '@/components/ServicesDetail'
 import { StyledLink } from '@/components/StyledLink'
 import { TagListItem } from '@/components/TagList'
-import { currentAge } from '@/lib/currentAge'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 const services = [

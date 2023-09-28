@@ -5,7 +5,6 @@ import { Container } from '@/components/Container'
 import { FadeIn, FadeInStagger } from '@/components/FadeIn'
 import { PageIntro } from '@/components/PageIntro'
 import { StyledLink } from '@/components/StyledLink'
-import { currentAge } from '@/lib/currentAge'
 import { loadMDXMetadata } from '@/lib/loadMDXMetadata'
 
 let numberOfProjects = (await loadMDXMetadata('work')).length
