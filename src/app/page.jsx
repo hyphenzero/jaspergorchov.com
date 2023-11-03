@@ -46,7 +46,7 @@ function Services() {
         <h2 className="font-display text-sm font-semibold tracking-wider text-white">
           A wide range of possibilities
         </h2>
-        <div className="h-px flex-auto bg-neutral-800/50" />
+        <div className="h-px flex-auto bg-zinc-800/50" />
       </FadeIn>
       <FadeInStagger faster>
         <ul
@@ -76,7 +76,7 @@ function TextSection() {
           </h2>
           <span className="sr-only"> - </span>
           <div className="flex flex-col space-y-6">
-            <p className="text-lg text-neutral-400 [text-wrap:balance] sm:text-xl">
+            <p className="text-lg text-zinc-400 [text-wrap:balance] sm:text-xl">
               Since I taught myself to code at age 9, I have been creating
               web-based apps, sites, and experiences that are meticulously
               crafted to transform ideas into tangible works.
@@ -92,7 +92,7 @@ function TextSection() {
 }
 
 export const metadata = {
-  description: `I’m Jasper Gorchov, a 13-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.`,
+  description: `I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations.`,
 }
 
 export default async function Home({ social }) {
@@ -105,12 +105,8 @@ export default async function Home({ social }) {
           <h1 className="font-display text-5xl font-medium tracking-tight text-white [text-wrap:balance] sm:text-7xl">
             Full-Stack Developer <br className="max-sm:hidden" />& 3D Designer
           </h1>
-          <p className="mt-6 text-xl text-neutral-400">
-            I’m Jasper Gorchov, a 13-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations.{' '}
-            <span className="max-sm:hidden">
-              I combine these mediums to shape the future of digital interactions
-              and experiences.
-            </span>
+          <p className="mt-6 text-xl text-zinc-400">
+            I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations.
           </p>
           <div className="mt-8 w-full items-center sm:flex sm:justify-center">
             <Button arrow href="/work">

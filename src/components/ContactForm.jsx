@@ -17,11 +17,11 @@ function TextInput({ label, required, ...props }) {
         id={id}
         {...props}
         placeholder=" "
-        className="peer block w-full border border-neutral-800 bg-transparent px-6 pb-4 pt-12 text-base/6 text-neutral-400 transition focus:border-white focus:outline-none focus:ring-0 group-first:rounded-t-2xl group-last:rounded-b-2xl"
+        className="peer block w-full border border-zinc-800 bg-transparent px-6 pb-4 pt-12 text-base/6 text-zinc-400 transition focus:border-white focus:outline-none focus:ring-0 group-first:rounded-t-2xl group-last:rounded-b-2xl"
       />
       <label
         htmlFor={id}
-        className="pointer-events-none absolute left-6 top-1/2 -mt-3 origin-left text-base/6 text-neutral-400 transition-all duration-200 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-white peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-white"
+        className="pointer-events-none absolute left-6 top-1/2 -mt-3 origin-left text-base/6 text-zinc-400 transition-all duration-200 peer-focus:-translate-y-4 peer-focus:scale-75 peer-focus:font-semibold peer-focus:text-white peer-[:not(:placeholder-shown)]:-translate-y-4 peer-[:not(:placeholder-shown)]:scale-75 peer-[:not(:placeholder-shown)]:font-semibold peer-[:not(:placeholder-shown)]:text-white"
       >
         {label}
       </label>
@@ -35,7 +35,7 @@ function RadioInput({ label, ...props }) {
       <input
         type="radio"
         {...props}
-        className="h-6 w-6 rounded-full border border-neutral-800 bg-white outline-none checked:border-[0.5rem] checked:border-white focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2"
+        className="h-6 w-6 rounded-full border border-zinc-800 bg-white outline-none checked:border-[0.5rem] checked:border-white focus-visible:ring-1 focus-visible:ring-white focus-visible:ring-offset-2"
       />
       <span className="text-base/6 text-white">{label}</span>
     </label>
@@ -97,7 +97,7 @@ export function ContactForm({ available }) {
     return field.trim() !== '' ? (
       <span className="text-white font-medium">{field}</span>
     ) : (
-      <div className="inline-flex rounded-md mx-0.5 bg-neutral-800 px-2 text-white font-medium">
+      <div className="inline-flex rounded-md mx-0.5 bg-zinc-800 px-2 text-white font-medium">
         {placeholderText}
       </div>
     )
@@ -157,19 +157,19 @@ export function ContactForm({ available }) {
             Email me
           </h2>
 
-          <Tab.List className="flex space-x-1 rounded-xl bg-neutral-900 p-1">
+          <Tab.List className="flex space-x-1 rounded-xl bg-zinc-900 p-1">
             <Tab
               disabled={!available}
               className={clsx(
-                'text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1  ui-not-selected:text-neutral-400',
+                'text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1  ui-not-selected:text-zinc-400',
                 available
-                  ? 'ui-not-selected:hover:bg-neutral-800'
+                  ? 'ui-not-selected:hover:bg-zinc-800'
                   : 'cursor-not-allowed',
               )}
             >
               Work inquiries
             </Tab>
-            <Tab className="text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1 ui-not-selected:text-neutral-400 ui-not-selected:hover:bg-neutral-800">
+            <Tab className="text-sm font-semibold font-display ui-selected:bg-white rounded-lg ui-selected:text-primary px-5 py-1 ui-not-selected:text-zinc-400 ui-not-selected:hover:bg-zinc-800">
               General
             </Tab>
           </Tab.List>
@@ -179,7 +179,7 @@ export function ContactForm({ available }) {
           <Tab.Panel>
             <div
               aria-hidden="true"
-              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-neutral-400"
+              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-zinc-400"
             >
               <p className="text-base/6">
                 {isFormFilled ? (
@@ -220,9 +220,9 @@ export function ContactForm({ available }) {
                   onChange={handleFieldChange}
                 />
                 {available && (
-                  <div className="border border-neutral-800 px-6 py-8 first:rounded-t-2xl last:rounded-b-2xl">
+                  <div className="border border-zinc-800 px-6 py-8 first:rounded-t-2xl last:rounded-b-2xl">
                     <fieldset>
-                      <legend className="text-base/6 text-neutral-400">
+                      <legend className="text-base/6 text-zinc-400">
                         Budget
                       </legend>
                       <div className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-2">
@@ -259,7 +259,7 @@ export function ContactForm({ available }) {
           <Tab.Panel>
             <div
               aria-hidden="true"
-              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-neutral-400"
+              className="mt-6 rounded-2xl p-6 border bg-secondary border-white text-zinc-400"
             >
               <p className="text-base/6">
                 {isFormFilled ? (

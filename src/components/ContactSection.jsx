@@ -29,7 +29,7 @@ export function ContactSection() {
               <Button arrow href="/contact">
                 Contact
               </Button>
-              <span className="text-neutral-700">/</span>
+              <span className="text-zinc-700">/</span>
               <p className="text-base font-medium text-white">
                 {available
                   ? 'Available for new work'
@@ -38,7 +38,7 @@ export function ContactSection() {
             </div>
             <ul
               role="list"
-              className="mt-10 grid grid-cols-1 gap-10 border-t border-neutral-800 pt-10 text-sm text-neutral-300 sm:grid-cols-2"
+              className="mt-10 grid grid-cols-1 gap-10 border-t border-zinc-800 pt-10 text-sm text-zinc-300 sm:grid-cols-2"
             >
               <li className="flex flex-col space-y-2">
                 <div className="font-display text-sm font-semibold tracking-wider text-white">

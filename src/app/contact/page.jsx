@@ -16,7 +16,7 @@ function ContactDetails() {
       <h2 className="font-display text-base font-semibold text-white">
         My details
       </h2>
-      <p className="mt-6 text-base text-neutral-400">
+      <p className="mt-6 text-base text-zinc-400">
         Contact me any way you like — I’ll get back to you as soon as I can.
       </p>
 
@@ -30,14 +30,14 @@ function ContactDetails() {
         </TagListItem>
       </div>
 
-      <div className="mt-16 border-t border-neutral-800 pt-16">
+      <div className="mt-16 border-t border-zinc-800 pt-16">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
           <div>
             <h2 className="font-display text-base font-semibold text-white">
               Email
             </h2>
             <div className="mt-6 text-sm">
-              <p className="w-fit text-neutral-400">
+              <p className="w-fit text-zinc-400">
                 <Link
                   href="mailto:hello@jaspergorchov.com"
                   className="transition-colors duration-200 hover:text-sky-300"
@@ -52,7 +52,7 @@ function ContactDetails() {
               Timezone
             </h2>
             <div className="mt-6 text-sm">
-              <p className="w-fit text-neutral-400">
+              <p className="w-fit text-zinc-400">
                 <CurrentTime />
               </p>
             </div>
@@ -60,7 +60,7 @@ function ContactDetails() {
         </div>
       </div>
 
-      <div className="mt-16 border-t border-neutral-800 pt-16">
+      <div className="mt-16 border-t border-zinc-800 pt-16">
         <h2 className="font-display text-base font-semibold text-white">
           Follow me
         </h2>

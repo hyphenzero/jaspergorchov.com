@@ -25,9 +25,9 @@ function Stats() {
           ].map(([label, value]) => (
             <FadeIn
               key={label}
-              className="flex flex-col-reverse border-l border-neutral-800 pl-8"
+              className="flex flex-col-reverse border-l border-zinc-800 pl-8"
             >
-              <dt className="mt-2 text-base text-neutral-400">{label}</dt>
+              <dt className="mt-2 text-base text-zinc-400">{label}</dt>
               <dd className="font-display text-3xl font-semibold text-white sm:text-4xl">
                 {value}
               </dd>
@@ -50,7 +50,7 @@ export default function About() {
     <>
       <PageIntro eyebrow="About" title="Hi, I’m Jasper">
         <p>
-					I’m Jasper Gorchov, a 13-year-old developer passionate about creating immersive web-based apps and vibrant 3D illustrations. I combine these mediums to shape the future of digital interactions and experiences.
+					I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations. I combine these mediums to shape the future of digital interactions and experiences.
         </p>
         <div className="mt-10 max-w-2xl space-y-6 text-base">
           <p>

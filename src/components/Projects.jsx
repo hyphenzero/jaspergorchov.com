@@ -36,7 +36,7 @@ export function Projects({
                     <Image
                       {...project.image}
                       alt=""
-                      className="rounded-2xl bg-neutral-900 object-cover"
+                      className="rounded-2xl bg-zinc-900 object-cover"
                       fill
                       unoptimized
                     />
@@ -56,10 +56,10 @@ export function Projects({
                     >
                       {project.date.split('-')[0]}
                     </time>
-                    <span className="text-neutral-700">/</span>
+                    <span className="text-zinc-700">/</span>
                     <div
                       href={project.service.href}
-                      className="relative z-10 rounded-full bg-neutral-800/75 px-3 py-1.5 font-medium text-white transition-colors duration-200"
+                      className="relative z-10 rounded-full bg-zinc-800/75 px-3 py-1.5 font-medium text-white transition-colors duration-200"
                     >
                       {project.service}
                     </div>
@@ -71,7 +71,7 @@ export function Projects({
                         {project.title}
                       </a>
                     </h3>
-                    <p className="mt-3 line-clamp-3 text-sm text-neutral-400">
+                    <p className="mt-3 line-clamp-3 text-sm text-zinc-400">
                       {project.description}
                     </p>
                   </div>
