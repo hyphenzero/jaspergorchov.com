@@ -103,7 +103,7 @@ export default async function Home({ social }) {
       <Container className="py-24 sm:py-32 md:py-56">
         <FadeIn className="max-w-2xl sm:mx-auto sm:text-center">
           <h1 className="font-display text-5xl font-medium tracking-tight text-white [text-wrap:balance] sm:text-7xl">
-            Full-Stack Developer <br className="max-sm:hidden" />& 3D Designer
+            13-year-old Web Developer & 3D Artist
           </h1>
           <p className="mt-6 text-xl text-zinc-400">
             I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations.
