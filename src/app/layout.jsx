@@ -4,7 +4,7 @@ import '@/styles/tailwind.css'
 export const metadata = {
   title: {
     template: '%s - Jasper Gorchov',
-    default: 'Jasper Gorchov - Full-Stack Developer & 3D Designer',
+    default: 'Jasper Gorchov - 13-year-old web developer & 3D artist',
   },
 }
 
