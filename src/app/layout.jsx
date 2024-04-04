@@ -1,3 +1,5 @@
+import { Analytics } from '@vercel/analytics/react'
+
 import { RootLayout } from '@/components/RootLayout'
 import '@/styles/tailwind.css'
 
@@ -12,7 +14,8 @@ export default function Layout({ children }) {
   return (
     <html lang="en" className="h-full bg-primary antialiased accent-sky-300">
       <body className="flex min-h-full flex-col">
-        <RootLayout>{children}</RootLayout>
+				<RootLayout>{children}</RootLayout>
+				<Analytics />
       </body>
     </html>
   )
