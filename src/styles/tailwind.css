@@ -1,3 +1,25 @@
-@import './base.css';
-@import './components.css';
-@import './utilities.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import './typography.css';
+
+@layer base {
+  html {
+    font-feature-settings: 'cv11', 'ss01';
+  }
+
+  @font-face {
+    font-family: 'Fira Code';
+    font-weight: 200 900;
+    font-display: block;
+    font-style: normal;
+    src: url('../fonts/FiraCode-VF.woff2') format('woff2');
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-variation-settings: 'opsz' 32;
+  }
+}
