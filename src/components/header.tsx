@@ -1,3 +1,5 @@
+"use client"
+
 import { Bars2Icon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
@@ -6,7 +8,7 @@ import { BadgeButton } from './badge'
 import { Logo } from './logo'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
 
-export function Header({ isScrolled }: { isScrolled: boolean }) {
+export function Header() {
   let pathname = usePathname()
 
   return (
@@ -17,7 +19,7 @@ export function Header({ isScrolled }: { isScrolled: boolean }) {
       <BadgeButton
         color="sky"
         href="/"
-        className={clsx('font-normal max-sm:hidden sm:ml-8', !isScrolled && 'backdrop-blur-[1px]')}
+        className="font-normal max-sm:hidden sm:ml-8"
       >
         <div className="inline-flex items-center gap-x-1.5 font-normal">
           <strong className="font-semibold">jaspergorchov.com v2.0</strong>

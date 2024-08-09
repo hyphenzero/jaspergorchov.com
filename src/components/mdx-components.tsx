@@ -4,13 +4,12 @@ import Image from 'next/image'
 import { Text } from './text'
 
 export const MDXComponents = {
-	
   pre: function Pre({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
       <>
         <pre
           className={clsx(
-            'my-8 max-w-full overflow-x-auto rounded-xl p-4 text-sm/6 ring-1 ring-inset ring-black/10 dark:ring-white/10',
+            'my-8 max-w-full overflow-x-auto rounded-xl border border-zinc-950/10 px-5 py-4 text-sm/6 dark:border-transparent dark:bg-zinc-900',
             className
           )}
         >
@@ -18,19 +17,10 @@ export const MDXComponents = {
         </pre>
       </>
     )
-	},
-	code: function Code({ children, className }: { children: React.ReactNode; className?: string }) {
-		return (
-      <code
-        className={clsx(
-          'relative inset-0 size-full min-w-full',
-          className
-        )}
-      >
-        {children}
-      </code>
-    )
-	},
+  },
+  code: function Code({ children, className }: { children: React.ReactNode; className?: string }) {
+    return <code className={clsx('relative inset-0 size-full min-w-full', className)}>{children}</code>
+  },
   ins: function Ins({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
       <ins
@@ -57,9 +47,9 @@ export const MDXComponents = {
   },
   img: function Img({ className, ...props }: React.ComponentPropsWithoutRef<typeof Image>) {
     return (
-      <div className={clsx('relative my-9 overflow-clip rounded-2xl', className)}>
+      <div className={clsx('relative my-9 overflow-clip rounded-xl', className)}>
         <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
-        <Image {...props} sizes="(min-width: 768px) 42rem, 100vw" className="aspect-video w-full object-cover" />
+        <Image {...props} sizes="(min-width: 768px) 42rem, 100vw" className="aspect-video w-full object-cover" alt="" />
       </div>
     )
   },
@@ -82,7 +72,7 @@ export const MDXComponents = {
   },
   Warning({ children, className }: { children: React.ReactNode; className?: string }) {
     return (
-      <div className={clsx('my-10 flex w-full gap-6 rounded-lg bg-yellow-300/50 p-6 dark:bg-yellow-400/50', className)}>
+      <div className={clsx('my-10 flex w-full gap-6 rounded-xl bg-yellow-300/50 p-6 dark:bg-yellow-400/50', className)}>
         <ExclamationTriangleIcon className="size-5 text-zinc-950 dark:text-white" />
         <Text>{children}</Text>
       </div>

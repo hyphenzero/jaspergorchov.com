@@ -5,6 +5,10 @@ import { NavbarDivider } from '@/components/navbar'
 import { GitHubIcon, InstagramIcon, LinkedInIcon, XIcon } from '@/components/social-icons'
 import { ArrowUpRightIcon, ChevronLeftIcon, ChevronRightIcon, PlayIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
+import { SocialMedia } from '@/components/social-media'
+import { Card } from '@/components/card'
+import Image from 'next/image'
+import workImage from '@/images/work.png'
 
 function SocialLink({
   icon: Icon,
@@ -14,7 +18,7 @@ function SocialLink({
 }) {
   return (
     <Link className="group -m-1 p-1" {...props}>
-      <Icon className="size-6 text-zinc-500 transition duration-100 group-hover:text-sky-400 sm:size-5" />
+      <Icon className="size-6 text-zinc-500 group-hover:text-zinc-700 dark:hover:text-zinc-300 sm:size-5" />
     </Link>
   )
 }
@@ -23,49 +27,53 @@ export default function Home() {
   return (
     <>
       <main>
-        <Container as={FadeInStagger} className="py-16 lg:py-24">
-          <FadeIn>
+        <Container as={FadeIn} className="py-16 lg:py-24">
             <h1 className="text-balance text-3xl font-semibold leading-tight tracking-tight text-zinc-950 sm:text-[length:clamp(2rem,3.75vw,3rem)] dark:text-white">
-              I’m Jasper Gorchov, a 13-year-old developer, designer, and digital artist.
+              I’m Jasper Gorchov, a 13-year-old creative developer and digital artist.
             </h1>
-          </FadeIn>
-          <FadeIn>
-            <div className="mt-10 items-center gap-x-6 sm:flex">
+            <div className="mt-6 items-center gap-x-6 sm:flex">
               <div className="flex items-center gap-x-6">
-                <Button color="sky">Browse work</Button>
+                <Button>Browse work</Button>
                 <Button plain>
                   <PlayIcon />
                   Watch the video
                 </Button>
               </div>
               <div className="flex items-center gap-x-6 max-sm:mt-10">
-                <NavbarDivider className="max-sm:hidden" />
-                <SocialLink href="#" aria-label="Follow on GitHub" icon={GitHubIcon} />
-                {/* <Button plain href="#" aria-label="Follow on GitHub"><GitHubIcon /></Button> */}
-                <SocialLink href="#" aria-label="Follow on X" icon={XIcon} />
-                {/* <Button plain href="#" aria-label="Follow on X"><XIcon /></Button> */}
-                <SocialLink href="#" aria-label="Follow on Instagram" icon={InstagramIcon} />
-                {/* <Button plain href="#" aria-label="Follow on Instagram"><InstagramIcon /></Button> */}
-                <SocialLink href="#" aria-label="Follow on Behance" icon={LinkedInIcon} />
-                {/* <Button plain href="#" aria-label="Follow on Behance"><LinkedInIcon /></Button> */}
+                <NavbarDivider className="mr-2 max-sm:hidden" />
+                <SocialMedia />
               </div>
             </div>
-          </FadeIn>
         </Container>
 
         <Container className="pb-24 sm:pb-[96rem]">
           <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="relative isolate aspect-video w-full overflow-clip rounded-xl">
-              <div className="absolute inset-0 z-10 rounded-xl bg-zinc-100 shadow ring-1 ring-inset ring-slate-900/10 dark:bg-zinc-900 dark:ring-white/10" />
-              {/* <Image alt="" priority fill src={workImage} className="-inset-px object-cover" unoptimized /> */}
+            <div className="relative overflow-clip rounded-xl aspect-video">
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
+              <Image
+								fill
+								className="aspect-video w-full object-cover"
+								alt=""
+								src={workImage}
+							/>
             </div>
-            <div className="relative isolate aspect-video w-full overflow-clip rounded-xl bg-zinc-100 dark:bg-zinc-900">
-              <div className="absolute inset-0 z-10 rounded-xl shadow ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
-              {/* <Image alt="" priority fill src={workImage} className="-inset-px object-cover" unoptimized /> */}
+            <div className="relative overflow-clip rounded-xl aspect-video">
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
+              <Image
+								fill
+								className="aspect-video w-full object-cover"
+								alt=""
+								src={workImage}
+							/>
             </div>
-            <div className="relative isolate aspect-video w-full overflow-clip rounded-xl bg-zinc-100 dark:bg-zinc-900">
-              <div className="absolute inset-0 z-10 rounded-xl shadow ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
-              {/* <Image alt="" priority fill src={workImage} className="-inset-px object-cover" unoptimized /> */}
+						<div className="relative overflow-clip rounded-xl aspect-video">
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-inset ring-slate-900/10 dark:ring-white/10" />
+              <Image
+								fill
+								className="aspect-video w-full object-cover"
+								alt=""
+								src={workImage}
+							/>
             </div>
           </div>
           <div className="mt-8 flex items-center justify-between">

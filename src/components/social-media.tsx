@@ -3,13 +3,24 @@ import Link from 'next/link'
 
 export const socialMediaProfiles = [
   { title: 'GitHub', href: 'https://github.com/hyphenzero', icon: GitHubIcon },
+  { title: 'X', href: 'https://x.com', icon: XIcon },
+  { title: 'Instagram', href: 'https://instagram.com', icon: InstagramIcon },
   { title: 'Behance', href: 'https://behance.net', icon: BehanceIcon },
-  {
-    title: 'Dribbble',
-    href: 'https://dribbble.com/hyphenzero',
-    icon: DribbbleIcon,
-  },
+  { title: 'YouTube', href: 'https://youtube.com', icon: YouTubeIcon },
 ]
+
+export function YouTubeIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
+  return (
+    <svg viewBox="0 0 24 24" data-slot="icon" aria-hidden="true" {...props}>
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M19.812 5.418c.861.23 1.538.907 1.768 1.768C21.998 8.746 22 12 22 12s0 3.255-.418 4.814a2.504 2.504 0 0 1-1.768 1.768c-1.56.419-7.814.419-7.814.419s-6.255 0-7.814-.419a2.505 2.505 0 0 1-1.768-1.768C2 15.255 2 12 2 12s0-3.255.417-4.814a2.507 2.507 0 0 1 1.768-1.768C5.744 5 11.998 5 11.998 5s6.255 0 7.814.418ZM15.194 12 10 15V9l5.194 3Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  )
+}
 
 export function XIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
   return (
@@ -87,15 +98,15 @@ function DribbbleIcon(props: React.ComponentPropsWithoutRef<'svg'>) {
 
 export function SocialMedia({ className }: { className?: string }) {
   return (
-    <ul role="list" className={clsx('flex gap-x-10', className)}>
+    <ul role="list" className={clsx('flex gap-x-6', className)}>
       {socialMediaProfiles.map((socialMediaProfile) => (
         <li key={socialMediaProfile.title}>
           <Link
             href={socialMediaProfile.href}
-            aria-label={socialMediaProfile.title}
-            className={clsx('text-zinc-950 hover:text-zinc-700 dark:text-white dark:hover:text-zinc-300')}
+            aria-label={`Follow on ${socialMediaProfile.title}`}
+            className="group -m-1 p-1"
           >
-            <socialMediaProfile.icon className="size-6" />
+            <socialMediaProfile.icon className="size-6 text-zinc-500 transition group-hover:text-zinc-950 sm:size-5 dark:group-hover:text-white" />
           </Link>
         </li>
       ))}

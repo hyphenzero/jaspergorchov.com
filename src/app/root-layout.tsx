@@ -3,40 +3,49 @@
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { clsx } from 'clsx'
-import { useScroll, easeOut, motion } from 'framer-motion'
+import { motion, useMotionValue, useScroll, useTransform } from 'framer-motion'
+import Lenis from 'lenis'
 import { useEffect, useState } from 'react'
 
 export function RootLayout({ children }: { children: React.ReactNode }) {
-  let [isScrolled, setIsScrolled] = useState(false)
+  let scrollYProgress = useMotionValue(0)
 
+  let padding = useTransform(scrollYProgress, [0, 150], ['1.5rem', '0.2rem'])
+	let borderOpacity = useTransform(scrollYProgress, [0, 150], [0, 0.1])
+	
   useEffect(() => {
-    let offset = 24
     function onScroll() {
-      if (!isScrolled && window.scrollY > offset) {
-        setIsScrolled(true)
-      } else if (isScrolled && window.scrollY <= offset) {
-        setIsScrolled(false)
-      }
+      scrollYProgress.set(window.scrollY)
     }
     onScroll()
     window.addEventListener('scroll', onScroll)
     return () => {
       window.removeEventListener('scroll', onScroll)
     }
-  }, [isScrolled])
+  }, [scrollYProgress])
+
+  useEffect(() => {
+    const lenis = new Lenis()
+
+    function raf(time: number) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+
+    requestAnimationFrame(raf)
+  }, [])
 
   return (
     <>
       <motion.header
-        initial={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }}
-        animate={{ paddingTop: isScrolled ? '0.2rem' : '1.5rem', paddingBottom: isScrolled ? '0.2rem' : '1.5rem' }}
-        transition={{ duration: 1, ease: easeOut, type: 'spring' }}
-        className={clsx(
-          'fixed inset-x-0 top-0 z-10 flex items-center border-b bg-white dark:bg-zinc-950 backdrop-blur-xl [transition:background-color_800ms_cubic-bezier(0.4,0,0.2,1),border-color_800ms_cubic-bezier(0.4,0,0.2,1)]',
-          isScrolled ? 'border-zinc-950/10 dark:border-white/10' : 'border-transparent'
-        )}
+        style={{ paddingTop: padding, paddingBottom: padding }}
+        className={clsx('fixed inset-x-0 top-0 z-10 flex items-center bg-white/80 dark:bg-zinc-950/80 backdrop-blur-lg')}
       >
-        <Header isScrolled={isScrolled} />
+        <motion.div
+          style={{ opacity: borderOpacity }}
+          className="absolute bottom-0 h-px w-full bg-zinc-950 dark:bg-white"
+        />
+        <Header />
       </motion.header>
 
       <div className="mt-[6.5625rem]">{children}</div>

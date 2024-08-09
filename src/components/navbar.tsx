@@ -65,7 +65,7 @@ export const NavbarItem = React.forwardRef(function NavbarItem(
       {current && (
         <motion.span
           layoutId="current-indicator"
-          className="absolute inset-x-2 -bottom-[14.5px] h-0.5 rounded-full bg-zinc-950 dark:bg-white"
+          className="absolute inset-x-2 -bottom-[13.5px] h-0.5 rounded-full bg-zinc-950 dark:bg-white"
         />
       )}
       {'href' in props ? (

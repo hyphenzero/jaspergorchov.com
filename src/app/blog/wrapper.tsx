@@ -5,12 +5,12 @@ import {} from '@/components/social-icons'
 import { FacebookIcon, InstagramIcon, XIcon } from '@/components/social-media'
 import { Tag } from '@/components/tag'
 // import { PageLinks } from '@/components/PageLinks'
-import { Text } from '@/components/text'
 import { formatDate } from '@/lib/formatDate'
 import { loadArticles, type Article, type MDXEntry } from '@/lib/mdx'
 import { LinkIcon } from '@heroicons/react/16/solid'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Text } from '@/components/text'
 
 export default async function BlogArticleWrapper({
   article,
@@ -36,11 +36,11 @@ export default async function BlogArticleWrapper({
             </h1>
             <time
               dateTime={article.date}
-              className="order-first block font-mono text-sm/5 font-semibold uppercase tracking-widest text-sky-500 dark:text-sky-400"
+              className="order-first block font-mono_ text-sm/5_ font-semibold_ uppercase_ tracking-widest_ text-sky-500_ dark:text-sky-400_"
             >
-              {formatDate(article.date, true)}
+              <Text>{formatDate(article.date, true)}</Text>
             </time>
-            <div className="mt-6 flex items-center justify-center gap-4 [&_[data-slot=icon]]:size-5 [&_[data-slot=icon]]:text-zinc-600 [&_[data-slot=icon]]:transition hover:[&_[data-slot=icon]]:text-zinc-950 dark:[&_[data-slot=icon]]:text-zinc-400 dark:hover:[&_[data-slot=icon]]:text-white">
+            <div className="mt-6 flex items-center justify-center gap-6 [&_[data-slot=icon]]:size-5 [&_[data-slot=icon]]:text-zinc-600 [&_[data-slot=icon]]:transition hover:[&_[data-slot=icon]]:text-zinc-950 dark:[&_[data-slot=icon]]:text-zinc-400 dark:hover:[&_[data-slot=icon]]:text-white">
               {article.tags.map((tag) => (
                 <Tag key={tag} tag={tag} />
               ))}
@@ -58,8 +58,12 @@ export default async function BlogArticleWrapper({
           </header>
         </FadeIn>
 
-        <FadeIn wait>
-          <Image src={article.cover} alt="" className="max-sm:hidden_ mt-16 w-dvw sm:mt-24" />
+        <FadeIn wait={1}>
+          <Image
+            src={article.cover}
+            alt=""
+            className="mx-auto mt-16 w-[calc(100%-theme(spacing.4))] rounded-2xl sm:mt-24"
+          />
 
           {/* <div className="sm:hidden mx-auto max-w-3xl px-3">
             <div className="relative my-12 overflow-clip rounded-2xl">

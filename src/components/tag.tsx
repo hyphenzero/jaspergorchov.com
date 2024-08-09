@@ -1,41 +1,14 @@
 import { Badge } from './badge'
 
-const colors: Array<
-  | 'red'
-  | 'orange'
-  | 'amber'
-  | 'yellow'
-  | 'lime'
-  | 'green'
-  | 'emerald'
-  | 'teal'
-  | 'cyan'
-  | 'sky'
-  | 'blue'
-  | 'indigo'
-  | 'violet'
-  | 'purple'
-  | 'fuchsia'
-  | 'pink'
-  | 'rose'
-> = [
+const colors: Array<'red' | 'yellow' | 'green' | 'lime' | 'sky' | 'indigo' | 'purple' | 'pink'> = [
   'red',
-  'orange',
-  'amber',
   'yellow',
-  'lime',
   'green',
-  'emerald',
-  'teal',
-  'cyan',
+  'lime',
   'sky',
-  'blue',
   'indigo',
-  'violet',
   'purple',
-  'fuchsia',
   'pink',
-  'rose',
 ]
 
 const stringToColor = (
@@ -60,7 +33,7 @@ const stringToColor = (
   | 'rose'
   | 'zinc'
   | undefined => {
-  let seed = 36
+  let seed = 0
   for (let i = 0; i < string.length; i++) {
     seed = string.charCodeAt(i) + ((seed << 5) - seed)
   }

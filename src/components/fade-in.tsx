@@ -21,7 +21,7 @@ export function FadeIn({ wait = 1, ...props }: FadeInProps) {
         hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 24 },
         visible: { opacity: 1, y: 0 },
       }}
-      transition={{ delay: wait ? 0.2 * wait : 0, duration: 1, type: 'spring' }}
+      transition={{ delay: wait ? 0.2 * ( wait - 1 ) : 0, duration: 1, type: 'spring' }}
       {...(isInStaggerGroup
         ? {}
         : {

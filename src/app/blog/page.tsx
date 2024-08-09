@@ -1,30 +1,32 @@
-import { FadeIn, FadeInStagger } from '@/components/fade-in'
+import { Container } from '@/components/container'
 import { PageIntro } from '@/components/page-intro'
 import { Tag } from '@/components/tag'
+import { loadArticles } from '@/lib/mdx'
+import { type Metadata } from 'next'
 import { Text } from '@/components/text'
 import { formatDate } from '@/lib/formatDate'
-import { loadArticles } from '@/lib/mdx'
-import { ArrowRightIcon } from '@heroicons/react/16/solid'
-import { type Metadata } from 'next'
+import { Button } from '@/components/button'
+import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
+import { FadeIn, FadeInStagger } from '@/components/fade-in'
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Updates on my projects and things I find interesting.',
+  description: 'Updates on my projects and more.',
 }
 
 export default async function Blog() {
-	let articles = await loadArticles()
+  let articles = await loadArticles()
 
   return (
     <>
-      <PageIntro eyebrow="Blog" title="Updates on my projects and things I find interesting.">
+      <PageIntro eyebrow="Blog" title="Updates on my projects and other interesting things.">
         <p>
-          The latest news on my projects, as well as tools I like, tricks I learn, and cool things I find on the Internet.
+          The latest news on my projects, as well as tools I like, tricks I learn, and other cool things worth sharing.
         </p>
       </PageIntro>
 
-      <main className="mx-auto flex max-w-4xl flex-col justify-center space-y-2">
+      {/* <main className="mx-auto flex max-w-4xl flex-col justify-center space-y-2">
         <FadeInStagger>
           {articles.map((article) => (
             <FadeIn key={article.date}>
@@ -61,7 +63,34 @@ export default async function Blog() {
             </FadeIn>
           ))}
         </FadeInStagger>
-      </main>
+      </main> */}
+
+      <Container as="main" className="">
+        <FadeInStagger className="[&>:not(:first-child)]:mt-24">
+          {articles.map((article) => (
+            <FadeIn
+              key={article.date}
+              className="grid grid-cols-3 border-t border-zinc-950/10 pt-8 dark:border-white/10"
+            >
+              <div className="space-y-3">
+                <time className="block" dateTime={article.date}>
+                  <Text>{formatDate(article.date)}</Text>
+                </time>
+                {article.tags.map((tag) => (
+                  <Tag key={tag} tag={tag} />
+                ))}
+              </div>
+              <Link href={article.href} className="col-span-2">
+                <h3 className="pt-8 text-lg font-medium text-zinc-950 lg:pt-0 dark:text-white">
+                  {article.title}
+                </h3>
+								<Text className="mt-4">{article.description}</Text>
+								<Button outline className="mt-6">Read more <ChevronRightIcon /></Button>
+              </Link>
+            </FadeIn>
+          ))}
+        </FadeInStagger>
+      </Container>
     </>
   )
 }
