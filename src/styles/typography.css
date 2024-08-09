@@ -1,190 +1,150 @@
-.typography {
-  color: theme(colors.zinc.400);
-  font-size: theme(fontSize.xl);
-  line-height: theme(fontSize.xl[1].lineHeight);
+:root {
+  --typography-color: theme(colors.zinc.600);
+  --typography-heading: theme(colors.zinc.950);
+  --typography-strong: theme(colors.zinc.950);
+  --typography-link: theme(colors.zinc.950);
+  --typography-link-underline: theme(colors.zinc.200);
+  --typography-link-underline-hover: theme(colors.zinc.400);
+  --typography-code: theme(colors.zinc.950);
+	--typography-pre-background: theme(colors.transparent);
+	--typography-pre-border: theme(colors.black)/10;
+  --typography-thead-border: theme(colors.zinc.200);
+  --typography-list-marker: theme(colors.zinc.950);
+  --typography-hr: theme(colors.zinc.200);
+}
 
-  --shiki-color-text: theme(colors.white);
-  --shiki-color-background: theme(colors.zinc.800);
-  --shiki-token-constant: theme(colors.zinc.300);
-  --shiki-token-string: theme(colors.zinc.400);
-  --shiki-token-comment: theme(colors.zinc.500);
-  --shiki-token-keyword: theme(colors.zinc.400);
-  --shiki-token-parameter: theme(colors.zinc.400);
-  --shiki-token-function: theme(colors.zinc.300);
-  --shiki-token-string-expression: theme(colors.zinc.300);
-  --shiki-token-punctuation: theme(colors.zinc.400);
+@media (prefers-color-scheme: dark) {
+  :root {
+    --typography-color: theme(colors.zinc.400);
+    --typography-heading: theme(colors.white);
+    --typography-strong: theme(colors.white);
+    --typography-link: theme(colors.white);
+    --typography-link-underline: theme(colors.zinc.600);
+    --typography-link-underline-hover: theme(colors.zinc.400);
+    --typography-code: theme(colors.white);
+		--typography-pre-background: theme(colors.zinc.950);
+    --typography-thead-border: theme(colors.zinc.800);
+    --typography-list-marker: theme(colors.white);
+    --typography-hr: theme(colors.zinc.800);
+
+    .shiki,
+    .shiki span {
+      color: var(--shiki-dark) !important;
+      font-style: var(--shiki-dark-font-style) !important;
+      font-weight: var(--shiki-dark-font-weight) !important;
+      text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
+  }
+}
+
+.typography {
+  color: var(--typography-color);
+  font-size: theme(fontSize.base);
+  line-height: 1.75rem;
+	tab-size: 2;
 
   :where(.typography > *) {
-    margin-top: theme(spacing.6);
-    margin-bottom: theme(spacing.6);
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
   }
 
-  /* Headings */
-  :where(h2) {
-    color: theme(colors.white);
-    font-weight: theme(fontWeight.semibold);
-    font-family: theme(fontFamily.display);
-    font-variation-settings: theme(fontFamily.display[1].fontVariationSettings);
-    font-size: theme(fontSize.2xl);
-    line-height: theme(fontSize.2xl[1].lineHeight);
-    margin-top: theme(spacing.16);
-  }
-
-  :where(h3) {
-    color: theme(colors.white);
-    font-weight: theme(fontWeight.semibold);
-    font-family: theme(fontFamily.display);
-    font-variation-settings: theme(fontFamily.display[1].fontVariationSettings);
-    font-size: theme(fontSize.xl);
-    line-height: theme(fontSize.xl[1].lineHeight);
-    margin-top: theme(spacing.10);
-  }
-
-  :where(h2 + h3) {
-    margin-top: 0;
-  }
-
-  /* Lists */
-  :where(ul, ol) {
-    padding-left: 1.5rem;
-  }
-
-  :where(ul) {
-    list-style-type: disc;
-  }
-
-  :where(ol) {
-    list-style-type: decimal;
-  }
-
-  :where(li) {
-    padding-left: theme(spacing.3);
-    margin-top: theme(spacing.6);
-  }
-
-  :where(li)::marker {
-    color: theme(colors.zinc.500);
-  }
-
-  :where(li) strong {
-    color: theme(colors.white);
-  }
-
-  :where(li > *),
-  :where(li li) {
-    margin-top: theme(spacing.4);
-  }
-
-  :where(ol > li)::marker {
-    font-size: theme(fontSize.base);
-    font-weight: theme(fontWeight.semibold);
-  }
-
-  /* Tables */
-  :where(table) {
-    width: 100%;
-    text-align: left;
-    font-size: theme(fontSize.base);
-    line-height: theme(fontSize.base[1].lineHeight);
-  }
-
-  :where(th) {
-    font-weight: theme(fontWeight.semibold);
-  }
-
-  :where(thead th) {
-    padding-bottom: theme(spacing.6);
-    border-bottom: 1px solid theme(colors.zinc.950);
-  }
-
-  :where(td) {
-    vertical-align: top;
-    padding-top: theme(spacing.6);
-    padding-bottom: theme(spacing.6);
-    border-bottom: 1px solid theme(colors.zinc.950 / 0.1);
-  }
-
-  :where(:is(th, td):not(:last-child)) {
-    padding-right: theme(spacing.6);
-  }
-
-  /* Code blocks */
-  :where(pre) {
-    display: flex;
-    background-color: theme(colors.zinc.800);
-    border-radius: theme(borderRadius.3xl);
-    overflow-x: auto;
-    margin-top: theme(spacing.10);
-    margin-bottom: theme(spacing.10);
-    margin-left: calc(-1 * theme(spacing.6));
-    margin-right: calc(-1 * theme(spacing.6));
-
-    @screen sm {
-      margin-left: auto;
-      margin-right: auto;
-    }
-  }
-
-  :where(pre code) {
-    flex: none;
-    padding: theme(padding.8) theme(padding.6);
-    font-size: theme(fontSize.base);
-    line-height: theme(lineHeight.8);
-    color: theme(colors.white);
-
-    @screen sm {
-      padding: theme(spacing.10);
-    }
-  }
-
-  /* <hr> */
-  :where(hr) {
-    border-color: theme(colors.zinc.900);
-    margin-top: theme(spacing.12);
-    margin-bottom: theme(spacing.12);
-  }
-
-  /* Inline text */
-  :where(a) {
-    color: theme(colors.white);
-    text-decoration: underline;
-    text-decoration-color: theme(colors.sky.300);
-    text-decoration-thickness: 1px;
-    text-underline-offset: 0.15em;
-    text-decoration-skip-ink: none;
-    font-weight: theme(fontWeight.medium);
-  }
-
-  :where(a):hover {
-    text-decoration-thickness: 2px;
+  :where(.lead) {
+    font-size: 1rem;
+    line-height: 1.75rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1.5rem;
   }
 
   :where(strong) {
-    font-weight: theme(fontWeight.semibold);
+    color: var(--typography-strong);
+    font-weight: 600;
+  }
+
+  :where(h1) {
+    color: var(--typography-heading);
+    font-size: 1.5rem;
+    line-height: 2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+
+  :where(h2) {
+    color: var(--typography-heading);
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-top: 4rem;
+    margin-bottom: 0.5rem;
+    scroll-margin-top: 6rem;
+  }
+
+  :where(h3) {
+    color: var(--typography-heading);
+    font-size: 1rem;
+    font-weight: 600;
+    margin-top: 4rem;
+    margin-bottom: 0.5rem;
+    scroll-margin-top: 6rem;
+  }
+
+  :where(h4) {
+    color: var(--typography-heading);
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 0;
+    scroll-margin-top: 6rem;
+  }
+
+  :where(h4 + p) {
+    margin-top: 0.5rem;
+  }
+
+  :where(h2 + h3) {
+    margin-top: 2rem;
+  }
+
+  :where(hr) {
+    border-color: var(--typography-hr);
+    margin-top: 4rem;
+    margin-bottom: 4rem;
+  }
+
+  :where(hr + h2) {
+    margin-top: 4rem;
   }
 
   :where(code:not(pre code)) {
-    font-size: calc(18 / 20 * 1em);
-    font-weight: theme(fontWeight.semibold);
-    color: theme(colors.white);
-
-    &::before,
-    &::after {
-      content: '`';
-    }
+    color: var(--typography-code);
+    font-weight: 600;
+    font-size: 0.9375rem;
   }
 
-  :where(h2 code, h3 code) {
-    font-weight: theme(fontWeight.bold);
+  :where(code:not(pre code)):after,
+  :where(code:not(pre code)):before {
+    content: '`';
   }
 
-  /* Figures */
-  :where(figure) {
-    margin-top: theme(spacing.32);
-    margin-bottom: theme(spacing.32);
+  :where(pre) {
+    background-color: var(--typography-pre-background);
   }
 
-  /* Spacing overrides */
+  :where(pre code) {
+    font-family: theme(fontFamily.code);
+    font-weight: 450;
+  }
+
+  :where(a) {
+    color: var(--typography-link);
+    text-decoration: underline;
+    font-weight: 500;
+    text-decoration-color: var(--typography-link-underline);
+    text-underline-offset: calc(3 / 16 * 1rem);
+  }
+
+  :where(a):hover {
+    text-decoration-color: var(--typography-link-underline-hover);
+  }
+
   :where(.typography:first-child > :first-child),
   :where(li > :first-child) {
     margin-top: 0 !important;
@@ -193,5 +153,44 @@
   :where(.typography:last-child > :last-child),
   :where(li > :last-child) {
     margin-bottom: 0 !important;
+  }
+
+  :where(ul) {
+    padding-left: 1rem;
+    list-style-type: disc;
+  }
+
+  :where(li) {
+    padding-left: 0.25rem;
+  }
+
+  :where(li)::marker {
+    color: var(--typography-list-marker);
+  }
+
+  :where(table) {
+    width: 100%;
+  }
+
+  :where(thead) {
+    border-bottom: 1px solid var(--typography-thead-border);
+  }
+
+  :where(th) {
+    font-weight: 600;
+    color: var(--typography-heading);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  :where(td) {
+    vertical-align: baseline;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    width: 25%;
+  }
+
+  :where(td:last-child) {
+    width: 50%;
   }
 }
