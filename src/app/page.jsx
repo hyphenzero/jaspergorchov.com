@@ -92,7 +92,7 @@ function TextSection() {
 }
 
 export const metadata = {
-  description: `I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations.`,
+  description: `I’m Jasper Gorchov, a 14-year-old developer creating immersive web-based apps and vibrant 3D illustrations.`,
 }
 
 export default async function Home({ social }) {
@@ -103,10 +103,10 @@ export default async function Home({ social }) {
       <Container className="py-24 sm:py-32 md:py-56">
         <FadeIn className="max-w-3xl sm:mx-auto sm:text-center">
           <h1 className="font-display text-5xl font-medium tracking-tight text-white [text-wrap:balance] sm:text-7xl">
-            13-year-old Web Developer & 3D Artist
+            14-year-old Web Developer & 3D Artist
           </h1>
           <p className="max-w-2xl mx-auto mt-6 text-xl text-zinc-400">
-            I’m Jasper Gorchov, a 13-year-old developer creating immersive web-based apps and vibrant 3D illustrations.
+            I’m Jasper Gorchov, a 14-year-old developer creating immersive web-based apps and vibrant 3D illustrations.
           </p>
           <div className="mt-8 w-full items-center sm:flex sm:justify-center">
             <Button arrow href="/work">
