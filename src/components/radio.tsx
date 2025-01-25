@@ -60,7 +60,7 @@ const base = [
   'border border-zinc-950/15 group-data-checked:border-transparent group-data-hover:group-data-checked:border-transparent group-data-hover:border-zinc-950/30 group-data-checked:bg-(--radio-checked-border)',
   'dark:border-white/15 dark:group-data-checked:border-white/5 dark:group-data-hover:group-data-checked:border-white/5 dark:group-data-hover:border-white/30',
   // Inner highlight shadow
-  'after:absolute after:inset-0 after:rounded-full after:shadow-[inset_0_1px_theme(--color-white/15%)]',
+  'after:absolute after:inset-0 after:rounded-full after:shadow-[inset_0_1px_--theme(--color-white/15%)]',
   'dark:after:-inset-px dark:after:hidden dark:after:rounded-full dark:group-data-checked:after:block',
   // Indicator color (light mode)
   '[--radio-indicator:transparent] group-data-checked:[--radio-indicator:var(--radio-checked-indicator)] group-data-hover:group-data-checked:[--radio-indicator:var(--radio-checked-indicator)] group-data-hover:[--radio-indicator:var(--color-zinc-900)]/10',
@@ -123,7 +123,11 @@ export function Radio({
   ...props
 }: { color?: Color; className?: string } & Omit<Headless.RadioProps, 'as' | 'className' | 'children'>) {
   return (
-    <Headless.Radio data-slot="control" {...props} className={clsx(className, 'group inline-flex focus:outline-hidden')}>
+    <Headless.Radio
+      data-slot="control"
+      {...props}
+      className={clsx(className, 'group inline-flex focus:outline-hidden')}
+    >
       <span className={clsx([base, colors[color]])}>
         <span
           className={clsx(

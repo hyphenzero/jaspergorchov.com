@@ -30,7 +30,7 @@ export function DropdownMenu({
       className={clsx(
         className,
         // Anchor positioning
-        '[--anchor-gap:calc(var(--spacing)*2)] [--anchor-padding:calc(var(--spacing)*1)] data-[anchor~=start]:[--anchor-offset:-6px] data-[anchor~=end]:[--anchor-offset:6px] sm:data-[anchor~=start]:[--anchor-offset:-4px] sm:data-[anchor~=end]:[--anchor-offset:4px]',
+        '[--anchor-gap:--spacing(2)] [--anchor-padding:--spacing(1)] data-[anchor~=end]:[--anchor-offset:6px] data-[anchor~=start]:[--anchor-offset:-6px] sm:data-[anchor~=end]:[--anchor-offset:4px] sm:data-[anchor~=start]:[--anchor-offset:-4px]',
         // Base styles
         'isolate w-max rounded-xl p-1',
         // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
@@ -40,11 +40,11 @@ export function DropdownMenu({
         // Popover background
         'bg-white/75 backdrop-blur-xl dark:bg-zinc-800/75',
         // Shadows
-        'shadow-lg ring-1 ring-zinc-950/10 dark:ring-inset dark:ring-white/10',
+        'ring-1 shadow-lg ring-zinc-950/10 dark:ring-white/10 dark:ring-inset',
         // Define grid at the menu level if subgrid is supported
         'supports-[grid-template-columns:subgrid]:grid supports-[grid-template-columns:subgrid]:grid-cols-[auto_1fr_1.5rem_0.5rem_auto]',
         // Transitions
-        'transition data-closed:data-leave:opacity-0 data-leave:duration-100 data-leave:ease-in'
+        'transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0'
       )}
     />
   )
@@ -72,10 +72,10 @@ export function DropdownItem({
     // Use subgrid when available but fallback to an explicit grid layout if not
     'col-span-full grid grid-cols-[auto_1fr_1.5rem_0.5rem_auto] items-center supports-[grid-template-columns:subgrid]:grid-cols-subgrid',
     // Icons
-    '*:data-[slot=icon]:col-start-1 *:data-[slot=icon]:row-start-1 *:data-[slot=icon]:-ml-0.5 *:data-[slot=icon]:mr-2.5 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:mr-2 sm:*:data-[slot=icon]:size-4',
+    '*:data-[slot=icon]:col-start-1 *:data-[slot=icon]:row-start-1 *:data-[slot=icon]:mr-2.5 *:data-[slot=icon]:-ml-0.5 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:mr-2 sm:*:data-[slot=icon]:size-4',
     '*:data-[slot=icon]:text-zinc-500 data-focus:*:data-[slot=icon]:text-white dark:*:data-[slot=icon]:text-zinc-400 dark:data-focus:*:data-[slot=icon]:text-white',
     // Avatar
-    '*:data-[slot=avatar]:-ml-1 *:data-[slot=avatar]:mr-2.5 *:data-[slot=avatar]:size-6 sm:*:data-[slot=avatar]:mr-2 sm:*:data-[slot=avatar]:size-5'
+    '*:data-[slot=avatar]:mr-2.5 *:data-[slot=avatar]:-ml-1 *:data-[slot=avatar]:size-6 sm:*:data-[slot=avatar]:mr-2 sm:*:data-[slot=avatar]:size-5'
   )
 
   return 'href' in props ? (
@@ -86,7 +86,7 @@ export function DropdownItem({
 }
 
 export function DropdownHeader({ className, ...props }: React.ComponentPropsWithoutRef<'div'>) {
-  return <div {...props} className={clsx(className, 'col-span-5 px-3.5 pb-1 pt-2.5 sm:px-3')} />
+  return <div {...props} className={clsx(className, 'col-span-5 px-3.5 pt-2.5 pb-1 sm:px-3')} />
 }
 
 export function DropdownSection({
@@ -114,7 +114,7 @@ export function DropdownHeading({
       {...props}
       className={clsx(
         className,
-        'col-span-full grid grid-cols-[1fr_auto] gap-x-12 px-3.5 pb-1 pt-2 text-sm/5 font-medium text-zinc-500 sm:px-3 sm:text-xs/5 dark:text-zinc-400'
+        'col-span-full grid grid-cols-[1fr_auto] gap-x-12 px-3.5 pt-2 pb-1 text-sm/5 font-medium text-zinc-500 sm:px-3 sm:text-xs/5 dark:text-zinc-400'
       )}
     />
   )
@@ -175,7 +175,7 @@ export function DropdownShortcut({
         <kbd
           key={index}
           className={clsx([
-            'min-w-[2ch] text-center font-sans capitalize text-zinc-400 group-data-focus:text-white forced-colors:group-data-focus:text-[HighlightText]',
+            'min-w-[2ch] text-center font-sans text-zinc-400 capitalize group-data-focus:text-white forced-colors:group-data-focus:text-[HighlightText]',
             // Make sure key names that are longer than one character (like "Tab") have extra space
             index > 0 && char.length > 1 && 'pl-1',
           ])}
