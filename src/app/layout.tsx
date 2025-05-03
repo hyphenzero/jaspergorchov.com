@@ -1,3 +1,4 @@
+import { Header } from '@/components/catalyst-header'
 import type { Metadata } from 'next'
 import './globals.css'
 
@@ -20,7 +21,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
-      <body className="min-h-dvh bg-white text-zinc-950 antialiased dark:bg-zinc-950 dark:text-white">{children}</body>
+      <body className="min-h-dvh bg-white text-zinc-950 antialiased dark:bg-zinc-950 dark:text-white">
+        <Header />
+        {children}
+      </body>
     </html>
   )
 }

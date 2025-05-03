@@ -161,7 +161,7 @@ export function Switch({
         // Checked
         'data-checked:bg-(--switch-bg) data-checked:ring-(--switch-bg-ring) dark:data-checked:bg-(--switch-bg) dark:data-checked:ring-(--switch-bg-ring)',
         // Focus
-        'focus:outline-hidden data-focus:outline data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500',
+        'focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500',
         // Hover
         'data-hover:ring-black/15 data-hover:data-checked:ring-(--switch-bg-ring)',
         'dark:data-hover:ring-white/25 dark:data-hover:data-checked:ring-(--switch-bg-ring)',
@@ -182,7 +182,7 @@ export function Switch({
           // Invisible border so the switch is still visible in forced-colors mode
           'border border-transparent',
           // Unchecked
-          'bg-white ring-1 shadow-sm ring-black/5',
+          'bg-white shadow-sm ring-1 ring-black/5',
           // Checked
           'group-data-checked:bg-(--switch) group-data-checked:shadow-(--switch-shadow) group-data-checked:ring-(--switch-ring)',
           'group-data-checked:translate-x-4 sm:group-data-checked:translate-x-3',

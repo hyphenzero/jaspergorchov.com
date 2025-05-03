@@ -1,7 +1,14 @@
 import type { NextConfig } from 'next'
 
-const nextConfig: NextConfig = {
-  /* config options here */
-}
+const nextConfig = {
+  pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
+  outputFileTracingIncludes: {
+    '/**/*': ['./src/projects/*.mdx'],
+  },
+  experimental: {
+    mdxRs: true,
+  },
+} satisfies NextConfig
 
-export default nextConfig
+const withMDX = require('@next/mdx')()
+module.exports = withMDX(nextConfig)

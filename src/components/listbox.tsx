@@ -84,13 +84,13 @@ export function Listbox<T>({
           // Base styles
           'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-xl p-1 select-none',
           // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
-          'outline outline-1 outline-transparent focus:outline-hidden',
+          'outline outline-transparent focus:outline-hidden',
           // Handle scrolling when menu won't fit in viewport
           'overflow-y-scroll overscroll-contain',
           // Popover background
           'bg-white/75 backdrop-blur-xl dark:bg-zinc-800/75',
           // Shadows
-          'ring-1 shadow-lg ring-zinc-950/10 dark:ring-white/10 dark:ring-inset',
+          'shadow-lg ring-1 ring-zinc-950/10 dark:ring-white/10 dark:ring-inset',
           // Transitions
           'transition-opacity duration-100 ease-in data-closed:data-leave:opacity-0 data-transition:pointer-events-none'
         )}
