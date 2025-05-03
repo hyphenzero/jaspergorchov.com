@@ -44,7 +44,7 @@ export default function Home() {
     <>
       <div className="mx-auto mt-12 max-w-[96rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
         <div className="flex items-end justify-between">
-          <h1 className="flex-1 text-6xl pr-6 font-medium tracking-tight text-pretty text-zinc-900 sm:text-7xl dark:text-white">
+          <h1 className="flex-1 pr-6 text-6xl font-medium tracking-tight text-pretty text-zinc-900 sm:text-7xl dark:text-white">
             Jasper Gorchov
           </h1>
           <p className="w-fit pb-1 text-[1.75rem]/[1.14] font-medium text-zinc-900 dark:text-white">

@@ -64,13 +64,13 @@ export default async function ArticlePage(props: Props) {
       {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
       <div hidden />
 
-      <div className="mx-auto w-full max-w-(--breakpoint-md)">
-        <div className="mt-16 px-4 font-mono text-sm/7 font-medium tracking-widest text-zinc-500 uppercase lg:px-2">
+      <div className="max-w-(--breakpoint-md) mx-auto w-full px-6">
+        <div className="mt-16 font-mono text-sm/7 font-medium uppercase tracking-widest text-zinc-500">
           <time dateTime={post.meta.date}>{formatDate(post.meta.date)}</time>
         </div>
 
         <div className="mb-6 xl:mb-16">
-          <h1 className="inline-block max-w-(--breakpoint-md) text-[2.5rem]/10 tracking-tight text-pretty text-zinc-950 max-lg:font-medium lg:text-6xl dark:text-zinc-200">
+          <h1 className="max-w-(--breakpoint-md) inline-block text-pretty text-[2.5rem]/10 tracking-tight text-zinc-950 max-lg:font-medium lg:text-6xl dark:text-zinc-200">
             {post.meta.title}
           </h1>
         </div>

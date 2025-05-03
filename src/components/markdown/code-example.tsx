@@ -7,7 +7,8 @@ import {
 import { clsx } from 'clsx'
 import dedent from 'dedent'
 import { createHighlighter } from 'shiki'
-import theme from '../syntax-highlighter/theme.json'
+import darkTheme from '../syntax-highlighter/dark-theme.json'
+import lightTheme from '../syntax-highlighter/light-theme.json'
 
 import atApplyInjection from '../syntax-highlighter/at-apply.json'
 import atRulesInjection from '../syntax-highlighter/at-rules.json'
@@ -153,7 +154,10 @@ export function RawHighlightedCode({
   let code = highlighter
     .codeToHtml(codeWithoutPrettierIgnore, {
       lang: example.lang,
-      theme: theme.name,
+      themes: {
+        light: 'theme-light',
+        dark: 'theme-dark',
+      },
       transformers: [
         transformerNotationHighlight({
           classActiveLine: '-mx-5 pl-[calc(var(--spacing)*5-2px)] border-l-2 pr-5 border-sky-400 bg-sky-300/15',
@@ -172,6 +176,10 @@ export function RawHighlightedCode({
         highlightClasses({
           highlightedClassName:
             'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
+          lightHighlightedClassName:
+            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
+          darkHighlightedClassName:
+            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
         }),
         linesToDiv(),
       ],
@@ -186,7 +194,16 @@ function CodeExampleFilename({ filename }: { filename: string }) {
 }
 
 const highlighter = await createHighlighter({
-  themes: [theme],
+  themes: [
+    {
+      type: 'light',
+      ...lightTheme,
+    },
+    {
+      type: 'dark',
+      ...darkTheme,
+    },
+  ],
   langs: [
     atApplyInjection as any,
     atRulesInjection,

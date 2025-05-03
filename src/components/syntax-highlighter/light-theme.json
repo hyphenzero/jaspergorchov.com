@@ -1,5 +1,5 @@
 {
-  "name": "tailwindcss-theme",
+  "name": "theme-light",
   "colors": {
     "foreground": "var(--color-zinc-400)",
     "descriptionForeground": "var(--color-zinc-200)",
