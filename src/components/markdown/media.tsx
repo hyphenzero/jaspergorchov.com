@@ -47,7 +47,7 @@ export function Iframe({ height = 500, children, className, ...props }: React.If
 export function Image({ src, className, ...props }: React.ComponentProps<typeof NextImage>) {
   return (
     <div data-media className={className}>
-      <div className="mx-auto max-w-[calc(var(--breakpoint-lg)-(--spacing(6)))] lg:max-w-[calc(var(--breakpoint-lg)-(--spacing(15.5)))]">
+      <div className="mx-auto max-w-[calc(var(--breakpoint-lg)-(--spacing(6)))] lg:max-w-[calc(var(--breakpoint-lg)-(--spacing(16)))]">
         <div className="not-prose relative -mx-6 h-auto overflow-hidden lg:-mx-8 lg:rounded-xl">
           <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
           {typeof src === 'string' ? (

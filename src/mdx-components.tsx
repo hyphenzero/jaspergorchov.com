@@ -2,6 +2,7 @@ import type { MDXComponents } from 'mdx/types'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 import { CodeExample } from './components/markdown/code-example'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/table'
 
 function getTextContent(node: React.ReactNode): string {
   if (typeof node === 'string' || typeof node === 'number') {
@@ -67,6 +68,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     a(props: any) {
       return <Link {...props} />
     },
+
+    table: (props) => <Table className="not-prose" {...props} />,
+    thead: TableHead,
+    tbody: TableBody,
+    tr: TableRow,
+    th: TableHeader,
+    td: TableCell,
 
     code({ children }: { children: string | ReactNode }) {
       if (typeof children !== 'string') {
