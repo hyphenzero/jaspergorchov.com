@@ -158,7 +158,11 @@
     font-family: var(--font-mono);
     font-weight: var(--font-weight-medium);
     color: var(--prose-code-color);
-		background-color: var(--color-zinc-900);
+		background-color: color-mix(in oklab, var(--color-zinc-200) 65%, transparent);
+		background-color: var(--color-zinc-100);
+		@media (prefers-color-scheme: dark) {
+			background-color: var(--color-zinc-900);
+		}
 		padding: calc(var(--spacing));
 		border-radius: var(--radius-md);
   }
