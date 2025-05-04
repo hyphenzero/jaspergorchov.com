@@ -59,7 +59,7 @@ export async function CodeExample({
 
 export function CodeExampleWrapper({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl px-px pb-px bg-zinc-100 in-data-stack:mt-0 in-data-stack:rounded-none in-[figure]:-mx-1 in-[figure]:-mb-1 dark:bg-zinc-900/50 in-data-stack:[:first-child>&]:rounded-t-xl in-data-stack:[:first-child>&]:*:rounded-t-xl in-data-stack:[:last-child>&]:rounded-b-xl in-data-stack:[:last-child>&]:*:rounded-b-xl">
+    <div className="rounded-xl not-in-data-stack:bg-zinc-100 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:p-px not-dark:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-data-stack:mt-0 in-data-stack:rounded-none in-[figure]:-mx-1 in-[figure]:-mb-1 dark:not-in-data-stack:bg-zinc-900/50">
       <div className={clsx('rounded-xl text-sm in-data-stack:rounded-none', className)}>{children}</div>
     </div>
   )
@@ -68,7 +68,7 @@ export function CodeExampleWrapper({ className, children }: { className?: string
 export function CodeExampleStack({ children }: { children: React.ReactNode }) {
   return (
     <div data-stack>
-      <div className="not-prose rounded-xl in-[figure]:mt-1 in-[figure]:rounded-b-lg in-[figure]:px-0.5 in-[figure]:pb-0.5">
+      <div className="not-prose rounded-xl bg-zinc-100 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:first:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-[figure]:mt-1 in-[figure]:rounded-b-lg in-[figure]:px-0.5 in-[figure]:pb-0.5 dark:bg-zinc-900/50 *:not-has-data-filename:mt-3">
         {children}
       </div>
     </div>
@@ -88,12 +88,7 @@ export function CodeExampleGroup({
     <div>
       <TabGroup className="not-prose">
         <div className="rounded-xl bg-zinc-950 in-[figure]:-mx-1 in-[figure]:-mb-1">
-          <div
-            className={clsx(
-              'rounded-xl p-1 text-sm',
-              className
-            )}
-          >
+          <div className={clsx('rounded-xl p-1 text-sm', className)}>
             <TabList>
               {filenames.map((filename) => (
                 <Tab
@@ -131,7 +126,7 @@ export function HighlightedCode({
     <RawHighlightedCode
       example={example}
       className={clsx(
-        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 *:shadow-sm *:ring *:ring-zinc-950/5 dark:*:border-t dark:*:bg-zinc-900!',
+        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 not-dark:*:shadow-sm *:ring *:ring-zinc-950/5 dark:*:border-t dark:*:bg-zinc-900!',
         '**:[.line]:isolate **:[.line]:not-last:min-h-[1lh]',
         className
       )}
@@ -160,27 +155,22 @@ export function RawHighlightedCode({
       },
       transformers: [
         transformerNotationHighlight({
-          classActiveLine: '-mx-5 pl-[calc(var(--spacing)*5-2px)] border-l-2 pr-5 border-sky-400 bg-sky-300/15',
+          classActiveLine: '-mx-5 pl-[calc(var(--spacing)*5-2px)] border-l-2 pr-5 border-sky-400 bg-sky-300/15 z-10',
         }),
         transformerNotationDiff({
           classLineAdd:
-						"relative -mx-5 border-l-2 border-teal-400 bg-teal-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-teal-400 before:content-['+']",
-						// "absolute inset-x-0 flex border-l-2 pl-3 select-none border-teal-400/75 bg-teal-400/[0.15] before:text-teal-400 before:content-[&quot;+&quot;]",
+            "relative -mx-5 border-l-2 border-teal-400 bg-teal-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-teal-400 before:content-['+']",
           classLineRemove:
             "relative -mx-5 border-l-2 border-red-400 bg-red-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-red-400 before:content-['-']",
           classActivePre: '[:where(&_.line)]:pl-4',
         }),
         transformerNotationWordHighlight({
           classActiveWord:
-            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
+            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-indigo-600/13 dark:before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
         }),
         highlightClasses({
           highlightedClassName:
-            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
-          lightHighlightedClassName:
-            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
-          darkHighlightedClassName:
-            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
+            'highlighted-word relative before:absolute before:-inset-x-0.5 before:-inset-y-0.25 before:-z-10 before:block before:rounded-sm before:bg-indigo-600/13 dark:before:bg-[lab(19.93_-1.66_-9.7)] [.highlighted-word_+_&]:before:rounded-l-none',
         }),
         linesToDiv(),
       ],
@@ -191,7 +181,7 @@ export function RawHighlightedCode({
 }
 
 function CodeExampleFilename({ filename }: { filename: string }) {
-  return <div className="px-3 py-1.5 text-xs/5 text-zinc-500 dark:text-zinc-400">{filename}</div>
+  return <div data-filename className="px-3 py-1.5 text-xs/5 text-zinc-500 dark:text-zinc-400">{filename}</div>
 }
 
 const highlighter = await createHighlighter({

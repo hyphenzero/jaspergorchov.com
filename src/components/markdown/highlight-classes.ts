@@ -4,8 +4,8 @@ import { segment } from './segment'
 
 export interface HighlightClassesOptions {
   highlightedClassName: string
-  lightHighlightedClassName?: string
-  darkHighlightedClassName?: string
+  lightHighlightedClassName?: string // Keep for backward compatibility
+  darkHighlightedClassName?: string // Keep for backward compatibility
 }
 
 const enum ClassState {
@@ -158,13 +158,8 @@ function highlightClassesIn(
     let classEl = create(text.slice(start, end))
     segments.push(classEl)
 
-    // Add theme-specific classes if provided, otherwise fall back to the default
-    if (opts.lightHighlightedClassName && opts.darkHighlightedClassName) {
-      this.addClassToHast(classEl, 'dark:' + opts.darkHighlightedClassName)
-      this.addClassToHast(classEl, opts.lightHighlightedClassName)
-    } else {
-      this.addClassToHast(classEl, opts.highlightedClassName)
-    }
+    // Always use the single highlightedClassName which already includes dark mode styling
+    this.addClassToHast(classEl, opts.highlightedClassName)
 
     last = end
   }

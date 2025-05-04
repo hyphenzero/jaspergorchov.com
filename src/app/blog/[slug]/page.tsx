@@ -69,8 +69,8 @@ export default async function ArticlePage(props: Props) {
           <time dateTime={post.meta.date}>{formatDate(post.meta.date)}</time>
         </div>
 
-        <div className="mb-6 xl:mb-16">
-          <h1 className="max-w-(--breakpoint-md) inline-block text-pretty text-[2.5rem]/10 tracking-tight text-zinc-950 max-lg:font-medium lg:text-6xl dark:text-zinc-200">
+        <div className="mt-2 mb-6 xl:mb-16">
+          <h1 className="max-w-(--breakpoint-md) inline-block text-pretty tracking-tight text-zinc-950 font-medium text-5xl dark:text-zinc-200">
             {post.meta.title}
           </h1>
         </div>
