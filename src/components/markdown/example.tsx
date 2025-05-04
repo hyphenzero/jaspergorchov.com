@@ -31,7 +31,7 @@ export function Example({
   if (!resizable) {
     return (
       <div
-        className={clsx(className, 'not-prose overflow-auto rounded-lg bg-white dark:bg-zinc-950/50', padding && 'p-8')}
+        className={clsx(className, 'not-prose overflow-auto rounded-lg bg-white dark:bg-zinc-950', padding && 'p-8')}
       >
         {children}
       </div>

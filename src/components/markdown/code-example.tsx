@@ -59,7 +59,7 @@ export async function CodeExample({
 
 export function CodeExampleWrapper({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-xl bg-zinc-100 in-data-stack:mt-0 in-data-stack:rounded-none in-[figure]:-mx-1 in-[figure]:-mb-1 dark:bg-zinc-900/50 in-data-stack:[:first-child>&]:rounded-t-xl in-data-stack:[:first-child>&]:*:rounded-t-xl in-data-stack:[:last-child>&]:rounded-b-xl in-data-stack:[:last-child>&]:*:rounded-b-xl">
+    <div className="rounded-xl px-px pb-px bg-zinc-100 in-data-stack:mt-0 in-data-stack:rounded-none in-[figure]:-mx-1 in-[figure]:-mb-1 dark:bg-zinc-900/50 in-data-stack:[:first-child>&]:rounded-t-xl in-data-stack:[:first-child>&]:*:rounded-t-xl in-data-stack:[:last-child>&]:rounded-b-xl in-data-stack:[:last-child>&]:*:rounded-b-xl">
       <div className={clsx('rounded-xl text-sm in-data-stack:rounded-none', className)}>{children}</div>
     </div>
   )
@@ -90,7 +90,7 @@ export function CodeExampleGroup({
         <div className="rounded-xl bg-zinc-950 in-[figure]:-mx-1 in-[figure]:-mb-1">
           <div
             className={clsx(
-              'rounded-xl p-1 text-sm dark:bg-white/5 dark:inset-ring dark:inset-ring-white/10',
+              'rounded-xl p-1 text-sm',
               className
             )}
           >
@@ -164,9 +164,10 @@ export function RawHighlightedCode({
         }),
         transformerNotationDiff({
           classLineAdd:
-            "relative -mx-5 border-l-4 border-teal-400 bg-teal-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-teal-400 before:content-['+']",
+						"relative -mx-5 border-l-2 border-teal-400 bg-teal-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-teal-400 before:content-['+']",
+						// "absolute inset-x-0 flex border-l-2 pl-3 select-none border-teal-400/75 bg-teal-400/[0.15] before:text-teal-400 before:content-[&quot;+&quot;]",
           classLineRemove:
-            "relative -mx-5 border-l-4 border-red-400 bg-red-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-red-400 before:content-['-']",
+            "relative -mx-5 border-l-2 border-red-400 bg-red-300/15 pr-5 pl-8 before:absolute before:left-4 before:text-red-400 before:content-['-']",
           classActivePre: '[:where(&_.line)]:pl-4',
         }),
         transformerNotationWordHighlight({

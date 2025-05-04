@@ -21,9 +21,28 @@ export const meta = {
 
 <Image src={card} alt="Tailwind CSS v4.0" />
 
-Holy shit it's actually done — we just tagged Tailwind CSS v4.0.
-
 Tailwind CSS v4.0 is an all-new version of the framework optimized for performance and flexibility, with a reimagined configuration and customization experience, and taking full advantage of the latest advancements the web platform has to offer.
+
+```tsx
+// [!code highlight]
+import * as Headless from '@headlessui/react'
+import React, { forwardRef } from 'react'
+// [!code ++] 
+import NextLink, { type LinkProps } from 'next/link'
+
+export const Link = forwardRef(function Link(
+  props: { href: string } & React.ComponentPropsWithoutRef<'a'>, // [!code --]
+  props: LinkProps & React.ComponentPropsWithoutRef<'a'>, // [!code ++]
+  ref: React.ForwardedRef<HTMLAnchorElement>
+) {
+  return (
+    <Headless.DataInteractive>
+      <a {...props} ref={ref} /> // [!code --]
+      <NextLink {...props} ref={ref} /> // [!code ++]
+    </Headless.DataInteractive>
+  )
+})
+```
 
 - [New high-performance engine](#new-high-performance-engine) — where full builds are up to 5x faster, and incremental builds are over 100x faster — and measured in microseconds.
 - [Designed for the modern web](#designed-for-the-modern-web) — built on cutting-edge CSS features like cascade layers, registered custom properties with `@property`, and `color-mix()`.
@@ -174,7 +193,7 @@ import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
   plugins: [
-    // [!code highlight:2]
+    // [!code highlight:1]
     tailwindcss(),
   ],
 })
@@ -185,6 +204,8 @@ Tailwind CSS v4.0 is incredibly fast when used as a PostCSS plugin, but you'll g
 ## Automatic content detection
 
 You know how you always had to configure that annoying `content` array in Tailwind CSS v3? In v4.0, we came up with a bunch of heuristics for detecting all of that stuff automatically so you don’t have to configure it at all.
+
+<Image src={card} alt="Tailwind CSS v4.0" />
 
 For example, we automatically ignore anything in your `.gitignore` file to avoid scanning dependencies or generated files that aren’t under version control:
 

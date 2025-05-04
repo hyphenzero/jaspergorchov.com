@@ -4,7 +4,7 @@ export function Video({ className, ...props }: React.VideoHTMLAttributes<HTMLVid
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-zinc-950/10 dark:ring-white/10"></div>
+        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"></div>
         <video autoPlay playsInline loop muted {...props} />
       </div>
     </div>
@@ -15,7 +15,7 @@ export function YouTubeVideo({ className, id, ...props }: React.IframeHTMLAttrib
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-zinc-950/10 dark:ring-white/10"></div>
+        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"></div>
         <iframe
           src={`https://www.youtube.com/embed/${id}`}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -32,7 +32,7 @@ export function Iframe({ height = 500, children, className, ...props }: React.If
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-zinc-950/10 dark:ring-white/10"></div>
+        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"></div>
         <iframe
           allow="accelerometer; ambient-light-sensor; camera; encrypted-media; geolocation; gyroscope; hid; microphone; midi; payment; usb; vr; xr-spatial-tracking"
           className="w-full border-0"
@@ -47,13 +47,22 @@ export function Iframe({ height = 500, children, className, ...props }: React.If
 export function Image({ src, className, ...props }: React.ComponentProps<typeof NextImage>) {
   return (
     <div data-media className={className}>
-      <div className="not-prose relative h-auto w-full overflow-hidden lg:rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-inset ring-zinc-950/10 max-lg:hidden dark:ring-white/10" />
-        {typeof src === 'string' ? (
-          <img src={src} {...props} />
-        ) : (
-          <NextImage priority unoptimized width={768 * 2} src={src} className="aspect-auto h-auto w-full" {...props} />
-        )}
+      <div className="mx-auto max-w-[calc(var(--breakpoint-lg)-(--spacing(6)))] lg:max-w-[calc(var(--breakpoint-lg)-(--spacing(15.5)))]">
+        <div className="not-prose relative -mx-6 h-auto overflow-hidden lg:-mx-8 lg:rounded-xl">
+          <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
+          {typeof src === 'string' ? (
+            <img src={src} {...props} />
+          ) : (
+            <NextImage
+              priority
+              unoptimized
+              width={768 * 2}
+              src={src}
+              className="aspect-auto h-auto w-full"
+              {...props}
+            />
+          )}
+        </div>
       </div>
     </div>
   )

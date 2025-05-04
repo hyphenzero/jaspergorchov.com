@@ -48,7 +48,7 @@ export function Figure({
         <figure
           className={clsx(
             className,
-            'flex flex-col gap-1 rounded-xl bg-zinc-950/5 p-1 inset-ring inset-ring-zinc-950/5 dark:bg-white/10 dark:inset-ring-white/10'
+            'flex flex-col gap-1 rounded-xl bg-zinc-950/5 p-1 dark:bg-zinc-900/50'
           )}
         >
           {children}

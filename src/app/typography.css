@@ -5,7 +5,8 @@
   --prose-link-color: var(--color-zinc-950);
   --prose-code-color: var(--color-zinc-950);
   --prose-marker-color: color-mix(in oklab, var(--color-zinc-700) 25%, transparent);
-  --prose-link-underline-color: var(--color-sky-400);
+  --prose-link-underline-color: var(--color-zinc-200);
+  --prose-link-underline-hover-color: var(--color-zinc-400);
   --prose-th-borders: var(--color-zinc-300);
   --prose-td-borders: var(--color-zinc-200);
   --prose-hr-color: color-mix(in oklab, var(--color-zinc-950) 5%, transparent);
@@ -18,28 +19,34 @@
     --prose-link-color: var(--color-white);
     --prose-code-color: var(--color-white);
     --prose-marker-color: color-mix(in oklab, var(--color-zinc-300) 35%, transparent);
-    --prose-link-underline-color: var(--color-sky-400);
+    --prose-link-underline-color: var(--color-zinc-600);
+    --prose-link-underline-hover-color: var(--color-zinc-400);
     --prose-th-borders: var(--color-zinc-600);
     --prose-td-borders: var(--color-zinc-700);
     --prose-hr-color: color-mix(in oklab, var(--color-white) 10%, transparent);
     --prose-blockquote-border-color: var(--color-zinc-600);
   }
 
+  @media (prefers-color-scheme: dark) {
+    .shiki,
+    .shiki span {
+      color: var(--shiki-dark) !important;
+    }
+  }
+
   color: var(--prose-color);
   font-size: var(--text-sm);
   line-height: 2;
 
-  *:where([data-media], [data-media] *) {
-    @apply max-w-(--breakpoint-xl);
-  }
-
   *:where(:not([data-media], [data-media] *):not(:has([data-media]))) {
-    @apply max-w-(--breakpoint-md);
+    max-width: var(--breakpoint-md);
   }
 
   *:where(:not(.not-prose, .not-prose *)) + *:where(:not(.not-prose, .not-prose *)) {
     margin-top: calc(var(--spacing) * 6);
   }
+
+  @apply **:data-[media]:mt-0 **:data-[media]:py-12 **:[[data-media]+*]:mt-0;
 
   h2:where(:not(.not-prose, .not-prose *)) {
     font-size: var(--text-lg);
@@ -125,18 +132,19 @@
 
   a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) {
     color: var(--prose-link-color);
-    font-weight: var(--font-weight-semibold);
+    font-weight: var(--font-weight-medium);
     text-decoration: underline;
-    text-underline-offset: 3px;
+    -webkit-text-decoration-color: var(--prose-link-underline-color);
     text-decoration-color: var(--prose-link-underline-color);
-    text-decoration-thickness: 1px;
+    text-underline-offset: calc(3 / 16 * 1rem);
     & code {
       font-weight: var(--font-weight-semibold);
     }
   }
 
   a:hover:where(:not(.not-prose, .not-prose *)) {
-    text-decoration-thickness: 2px;
+    -webkit-text-decoration-color: var(--prose-link-underline-hover-color);
+    text-decoration-color: var(--prose-link-underline-hover-color);
   }
 
   a:where(:not(.not-prose, .not-prose *)):has(> [data-media]) {
@@ -309,11 +317,11 @@
   }
 }
 
-.prose-blog {
+/* .prose-blog {
   img:where(:not(.not-prose, .not-prose *)) {
     @media (max-width: theme(--breakpoint-sm)) {
       margin-inline: calc(var(--spacing) * -4);
       max-width: calc(100% + calc(var(--spacing) * 8));
     }
   }
-}
+} */
