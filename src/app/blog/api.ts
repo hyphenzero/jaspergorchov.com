@@ -10,7 +10,8 @@ export async function getBlogPostBySlug(slug: string): Promise<{
   meta: {
     title: string
     date: string
-    excerpt: React.ReactElement
+		excerpt: React.ReactElement
+		tags: string[]
     description: string
     image?: {
       src: string

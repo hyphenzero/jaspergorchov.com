@@ -137,6 +137,7 @@
     -webkit-text-decoration-color: var(--prose-link-underline-color);
     text-decoration-color: var(--prose-link-underline-color);
     text-underline-offset: calc(3 / 16 * 1rem);
+		@apply transition;
   }
 
   a:hover:where(:not(.not-prose, .not-prose *)) {

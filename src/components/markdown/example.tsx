@@ -45,10 +45,10 @@ export function Example({
       className={clsx(className, 'group not-prose relative overflow-hidden sm:overflow-visible')}
     >
       <motion.div
-        style={{ marginRight: useTransform(x, (x) => -x) }}
+				style={{ marginRight: useTransform(x, (x) => -x) }}
         className={clsx(
           padding && 'p-8',
-          '@container relative overflow-auto rounded-lg bg-white dark:bg-zinc-950/50 dark:inset-ring dark:inset-ring-white/5',
+          '@container relative overflow-auto rounded-lg bg-white dark:bg-zinc-950',
           // Add layer on top of example while dragging to prevent issues with iframes
           'group-data-dragging:before:absolute group-data-dragging:before:inset-0'
         )}
@@ -59,9 +59,9 @@ export function Example({
         <motion.div
           title="Drag to resize"
           className={clsx(
-            'pointer-events-auto absolute top-1/2 right-0 z-50 -mt-6 h-12 w-1.5 cursor-ew-resize rounded-full',
+            'pointer-events-auto absolute top-1/2 right-0 z-50 -mt-6 h-12 w-1.5 cursor-ew-resize rounded-full backdrop-blur-xs transition-colors',
             'bg-zinc-950/20 group-data-dragging:bg-zinc-950/40 hover:bg-zinc-950/40',
-            'dark:bg-zinc-500 dark:group-data-dragging:bg-zinc-300 dark:hover:bg-zinc-300'
+            'dark:bg-white/40 dark:group-data-dragging:bg-zinc-300 dark:hover:bg-zinc-300'
           )}
           drag="x"
           dragElastic={0}

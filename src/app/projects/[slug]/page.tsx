@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
 import { formatDate, getProjectBySlug, getProjectSlugs } from '../api'
+import { TagButton } from "@/components/tag"
 
 type Props = {
   params: Promise<{
@@ -51,7 +52,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 }
 
-export default async function ProjectPage(props: Props) {
+export default async function ArticlePage(props: Props) {
   let params = await props.params
   let post = await getProjectBySlug(params.slug)
 
@@ -64,81 +65,34 @@ export default async function ProjectPage(props: Props) {
       {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
       <div hidden />
 
-      <div className="grid grid-cols-1 xl:grid-cols-[22rem_2.5rem_auto] xl:grid-rows-[1fr_auto]">
-        <div className="col-start-2 row-span-2 border-r border-l border-zinc-950/5 max-xl:hidden dark:border-white/10"></div>
+      <div className="flex flex-col mx-auto mt-16 w-full max-w-(--breakpoint-md) px-6">
+        <time
+          className="font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400"
+          dateTime={post.meta.date}
+        >
+          {formatDate(post.meta.date)}
+        </time>
 
-        <div className="max-xl:mx-auto max-xl:w-full max-xl:max-w-(--breakpoint-md)">
-          <div className="mt-16 px-4 font-mono text-sm/7 font-medium tracking-widest text-zinc-500 uppercase lg:px-2">
-            <time dateTime={post.meta.date}>{formatDate(post.meta.date)}</time>
-          </div>
-
-          <div className="mb-6 px-4 lg:px-2 xl:mb-16">
-            <h1 className="inline-block max-w-(--breakpoint-md) text-[2.5rem]/10 tracking-tight text-pretty text-zinc-950 max-lg:font-medium lg:text-6xl dark:text-zinc-200">
-              {post.meta.title}
-            </h1>
-          </div>
-        </div>
-
-        {/* <div className="max-xl:mx-auto max-xl:w-full max-xl:max-w-(--breakpoint-md)">
-          <div className="flex flex-col gap-4">
-            {post.meta.authors.map((author) => (
-              <div
-                direction="to-left"
-                key={author.twitter}
-                className="flex items-center px-4 py-2 font-medium whitespace-nowrap max-xl:before:-left-[100vw]! max-xl:after:-left-[100vw]! xl:px-2 xl:before:hidden"
-              >
-                <Author author={author} />
-              </div>
-            ))}
-          </div>
-        </div> */}
-
-        <div className="max-xl:mx-auto max-xl:mt-16 max-xl:w-full max-xl:max-w-(--breakpoint-md)">
-          <div className="px-4 py-2 lg:px-2">
-            <article className="prose prose-blog max-w-(--breakpoint-md)">
-              <post.Component />
-            </article>
-          </div>
-
-          {/* <div className="mt-16 px-4 py-4 sm:py-2 lg:px-2">
-            <section>
-              <h2 className="text-3xl font-medium tracking-tight text-zinc-900 dark:text-white">
-                Get all of our updates directly to your&nbsp;inbox.
-                <br />
-                Sign up for our newsletter.
-              </h2>
-              <div className="mt-10 max-w-md">
-                <NewsletterForm action="https://app.convertkit.com/forms/3181881/subscriptions" />
-              </div>
-            </section>
-          </div>
-          <div className="mt-46">
-            <FooterSitemap className="*:first:border-l-0 *:last:border-r-0" />
-          </div>
-          <FooterMeta className="px-4 md:px-6 lg:px-8" /> */}
-        </div>
+        <h1 className="mt-2 inline-block max-w-(--breakpoint-md) text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
+          {post.meta.title}
+				</h1>
+				
+				<div className="mt-6 flex items-center gap-x-3">
+					{post.meta.tags.map((tag) => (
+						<TagButton
+							key={tag}
+							className="z-10"
+							href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
+						>
+							{tag}
+						</TagButton>
+					))}
+				</div>
       </div>
+
+      <article className="prose prose-blog mt-6 px-6 *:mx-auto md:mt-12 lg:px-8">
+        <post.Component />
+      </article>
     </>
   )
 }
-
-// function Author({ author }: { author: { avatar: string; twitter: string; name: string } }) {
-//   return (
-//     <div className="flex gap-4">
-//       <Image src={author.avatar} alt="" className="size-12 rounded-full" width={36} height={36} />
-//       <div className="flex flex-col justify-center gap-1 text-sm font-semibold">
-//         <div className="text-zinc-950 dark:text-white">{author.name}</div>
-//         <div>
-//           <a
-//             href={`https://twitter.com/${author.twitter}`}
-//             target="_blank"
-//             rel="noopener noreferrer"
-//             className="text-sky-500 hover:text-sky-600 dark:text-sky-400"
-//           >
-//             @{author.twitter}
-//           </a>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }

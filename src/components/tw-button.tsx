@@ -2,15 +2,7 @@ import clsx from 'clsx'
 import Link from 'next/link'
 import React from 'react'
 
-export default function LinkButton({
-  className,
-  children,
-  href,
-}: {
-  children: React.ReactNode
-  className?: string
-  href: string
-}) {
+export function Button({ className, children, href }: { children: React.ReactNode; className?: string; href: string }) {
   return (
     <Link
       href={href}

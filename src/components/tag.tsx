@@ -34,34 +34,68 @@ const colors = {
   zinc: 'bg-zinc-600/10 text-zinc-700 group-data-hover:bg-zinc-600/20 dark:bg-white/5 dark:text-zinc-400 dark:group-data-hover:bg-white/10',
 }
 
-type BadgeProps = { color?: keyof typeof colors }
+const colorKeys = Object.keys(colors).filter((c) => c !== 'zinc') as (keyof typeof colors)[]
 
-export function Badge({ color = 'zinc', className, ...props }: BadgeProps & React.ComponentPropsWithoutRef<'span'>) {
+function getColorFromText(text: string): keyof typeof colors {
+  let hash = 0
+  const normalized = text.toLowerCase()
+  for (let i = 0; i < normalized.length; i++) {
+    hash = normalized.charCodeAt(i) + ((hash << 5) - hash)
+  }
+  return colorKeys[Math.abs(hash) % colorKeys.length]
+}
+
+const tagColorMap: Partial<Record<string, keyof typeof colors>> = {
+	'3d art': 'indigo',
+	'design': 'rose',
+	'code': 'sky',
+}
+
+type TagProps = { color?: keyof typeof colors }
+
+export function Tag({
+  color = 'zinc',
+  className,
+  children,
+  ...props
+}: TagProps & React.ComponentPropsWithoutRef<'span'>) {
+  const resolvedColor =
+    color === 'zinc' && typeof children === 'string'
+      ? (tagColorMap[children.toLowerCase()] ?? getColorFromText(children.toLowerCase()))
+      : color
+
   return (
     <span
       {...props}
       className={clsx(
         className,
-        'inline-flex items-center gap-x-1.5 rounded-full px-3 py-1 text-sm/5 font-medium sm:text-xs/5 forced-colors:outline',
-        colors[color]
+        'inline-flex items-center gap-x-1.5 rounded-full px-2 py-0.5 text-sm/5 font-medium sm:text-xs/5 forced-colors:outline',
+        colors[resolvedColor]
       )}
-    />
+    >
+      {children}
+    </span>
   )
 }
 
-export const BadgeButton = forwardRef(function BadgeButton(
+export const TagButton = forwardRef(function TagButton(
   {
     color = 'zinc',
     className,
     children,
     ...props
-  }: BadgeProps & { className?: string; children: React.ReactNode } & (
+  }: TagProps & { className?: string; children: React.ReactNode } & (
       | Omit<Headless.ButtonProps, 'as' | 'className'>
       | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
     ),
   ref: React.ForwardedRef<HTMLElement>
 ) {
-  let classes = clsx(
+  const resolvedColor =
+    color === 'zinc' && typeof children === 'string'
+      ? (tagColorMap[children.toLowerCase() as string] ?? getColorFromText(children.toLowerCase() as string))
+      : color
+
+  const classes = clsx(
     className,
     'group relative inline-flex rounded-md focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500'
   )
@@ -69,13 +103,13 @@ export const BadgeButton = forwardRef(function BadgeButton(
   return 'href' in props ? (
     <Link {...props} className={classes} ref={ref as React.ForwardedRef<HTMLAnchorElement>}>
       <TouchTarget>
-        <Badge color={color}>{children}</Badge>
+        <Tag color={resolvedColor}>{children}</Tag>
       </TouchTarget>
     </Link>
   ) : (
     <Headless.Button {...props} className={classes} ref={ref}>
       <TouchTarget>
-        <Badge color={color}>{children}</Badge>
+        <Tag color={resolvedColor}>{children}</Tag>
       </TouchTarget>
     </Headless.Button>
   )

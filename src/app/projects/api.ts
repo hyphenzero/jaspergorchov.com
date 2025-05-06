@@ -11,6 +11,7 @@ export async function getProjectBySlug(slug: string): Promise<{
     title: string
     date: string
     excerpt: React.ReactElement
+    tags: string[]
     description: string
     image?: {
       src: string
@@ -44,9 +45,9 @@ export async function getProjectBySlug(slug: string): Promise<{
 }
 
 export async function getProjectSlugs(): Promise<string[]> {
-  let projects: { slug: string; date: number }[] = []
+  let posts: { slug: string; date: number }[] = []
 
-  let folders = await fs.readdir(path.join(__dirname, '../../blog'))
+  let folders = await fs.readdir(path.join(__dirname, '../../projects'))
 
   await Promise.allSettled(
     folders.map(async (folder) => {
@@ -55,7 +56,7 @@ export async function getProjectSlugs(): Promise<string[]> {
         let post = await getProjectBySlug(folder)
         if (!post) return
 
-        projects.push({
+        posts.push({
           slug: post.slug,
           date: new Date(post.meta.date).getTime(),
         })
@@ -65,9 +66,9 @@ export async function getProjectSlugs(): Promise<string[]> {
     })
   )
 
-  projects.sort((a, b) => b.date - a.date)
+  posts.sort((a, b) => b.date - a.date)
 
-  return projects.map((post) => post.slug)
+  return posts.map((post) => post.slug)
 }
 
 export function formatDate(timestamp: string) {
