@@ -17,7 +17,8 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function Blog({ searchParams }: { searchParams?: { category?: string } }) {
+export default async function Blog(props: { searchParams?: Promise<{ category?: string }> }) {
+  const searchParams = await props.searchParams;
   const allPosts = await getAllBlogPosts()
   const publicPosts = allPosts.filter((post) => !post.meta.private)
 
@@ -38,15 +39,12 @@ export default async function Blog({ searchParams }: { searchParams?: { category
       <h1 className="text-6xl font-medium tracking-tight text-balance text-zinc-900 sm:text-7xl lg:text-7xl dark:text-white">
         Blog
       </h1>
-
       <p className="mt-6 max-w-md text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
         My latest updates, as well as things I find interesting in the worlds of code, design, and digital creativity.
       </p>
-
       <div className="mt-16 flex w-full items-center justify-between">
         <CategorySelector allTags={allTags} selectedCategory={category} />
       </div>
-
       <div className="mt-6">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
@@ -87,5 +85,5 @@ export default async function Blog({ searchParams }: { searchParams?: { category
         )}
       </div>
     </div>
-  )
+  );
 }
