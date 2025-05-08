@@ -1,7 +1,8 @@
 import { TagButton } from '@/components/tag'
+import { formatDate } from '@/lib/api-utils'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
-import { formatDate, getProjectBySlug, getProjectSlugs } from '../api'
+import { getProjectBySlug, getProjectSlugs } from '../../api/projects/route'
 
 type Props = {
   params: Promise<{
@@ -10,13 +11,13 @@ type Props = {
 }
 
 export async function generateStaticParams() {
-  let slugs = await getProjectSlugs()
+  const slugs = await getProjectSlugs()
   return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  let params = await props.params
-  let post = await getProjectBySlug(params.slug)
+  const params = await props.params
+  const post = await getProjectBySlug(params.slug)
 
   if (!post) {
     return notFound()
@@ -30,10 +31,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: post.meta.title,
       description: post.meta.description,
       type: 'article',
-      url: `/blog/${params.slug}`,
+      url: `/projects/${params.slug}`,
       images: [
         {
-          url: post.meta.image ? post.meta.image.src : `/api/og?path=/blog/${params.slug}`,
+          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${params.slug}`,
         },
       ],
     },
@@ -43,7 +44,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description: post.meta.description,
       images: [
         {
-          url: post.meta.image ? post.meta.image.src : `/api/og?path=/blog/${params.slug}`,
+          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${params.slug}`,
         },
       ],
       site: '@tailwindcss',
@@ -53,8 +54,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage(props: Props) {
-  let params = await props.params
-  let post = await getProjectBySlug(params.slug)
+  const params = await props.params
+  const post = await getProjectBySlug(params.slug)
 
   if (!post) {
     return notFound()

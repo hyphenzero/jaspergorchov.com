@@ -1,50 +1,58 @@
-import glob from 'fast-glob'
+import fs from 'node:fs/promises'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-interface Meta {
-  title: string
-  date: string
-  excerpt: React.ReactElement
-  tags: string[]
-  description: string
-  image?: {
-    src: string
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+export async function getBlogPostBySlug(slug: string): Promise<{
+  Component: React.FC
+  meta: {
+    title: string
+    date: string
+    excerpt: React.ReactElement
+    tags: string[]
+    description: string
+    image?: {
+      src: string
+    }
+    private?: boolean
   }
-  private?: boolean
+  slug: string
+} | null> {
+  try {
+    // Check if the file exists
+    if (!(await fs.stat(path.join(__dirname, `../../blog/${slug}/index.mdx`)).catch(() => null))) {
+      return null
+    }
+
+    let module = await import(`../../blog/${slug}/index.mdx`)
+    if (!module.default) {
+      return null
+    }
+
+    return {
+      Component: module.default,
+      meta: {
+        ...module.meta,
+      },
+      slug,
+    }
+  } catch (e) {
+    console.error(e)
+    return null
+  }
 }
 
-async function loadEntries(
-  directory: string,
-  metaName: string
-): Promise<
-  Array<{
-    Component: React.FC
-    meta: Meta
-    slug: string
-  }>
-> {
-  return (
-    await Promise.all(
-      (await glob('**/index.mdx', { cwd: `src/${directory}` })).map(async (filename) => {
-        const module = await import(`../../${directory}/${filename}`)
-        const metadata = module[metaName] as Meta
-        return {
-          Component: module.default,
-          meta: metadata,
-          slug: filename.replace(/\/index\.mdx$/, ''),
-        }
-      })
-    )
-  ).sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
-}
+export async function getBlogPostSlugs(): Promise<string[]> {
+  const folders = (await fs.readdir(path.join(__dirname, '../../blog'))).filter((folder) => !folder.startsWith('.'))
 
-export async function getBlogPostBySlug(slug: string) {
-  const entries = await loadEntries('blog', 'meta')
-  return entries.find((entry) => entry.slug === slug) || null
-}
+  const results = await Promise.all(folders.map((folder) => getBlogPostBySlug(folder)))
 
-export async function getBlogPostSlugs() {
-  const entries = await loadEntries('blog', 'meta')
-  return entries.map((entry) => entry.slug)
+  return results
+    .filter(nonNullable)
+    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+    .map((post) => post.slug)
 }
 
 export function formatDate(timestamp: string) {

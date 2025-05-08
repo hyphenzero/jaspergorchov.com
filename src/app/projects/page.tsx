@@ -1,23 +1,24 @@
 import { TagButton } from '@/components/tag'
+import { formatDate, nonNullable } from '@/lib/api-utils'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { formatDate, getProjectBySlug, getProjectSlugs, nonNullable } from './api'
+import { getProjectBySlug, getProjectSlugs } from '../api/projects/route'
 import { CategorySelector } from './category-selector'
 
 export const metadata: Metadata = {
-  title: 'Blog',
-  description: 'Interesting articles and news from 14-year-old Jasper Gorchov.',
+  title: 'Projects',
+  description: 'Browse my code, design, and 3D art projects.',
   openGraph: {
     type: 'article',
-    title: 'Latest updates - Blog',
-    description: 'All the latest Tailwind CSS news, straight from the team.',
-    images: 'https://tailwindcss.com/api/og?path=/blog',
-    url: 'https://tailwindcss.com/blog',
+    title: 'Projects - Jasper Gorchov',
+    description: 'Browse my code, design, and 3D art projects.',
+    images: 'https://tailwindcss.com/api/og?path=/projects',
+    url: 'https://tailwindcss.com/projects',
   },
 }
 
-export default async function Blog({ searchParams }: { searchParams?: { category?: string } }) {
+export default async function Projects({ searchParams }: { searchParams?: { category?: string } }) {
   const slugs = await getProjectSlugs()
   const allPosts = (await Promise.all(slugs.map(getProjectBySlug)))
     .filter(nonNullable)
@@ -77,7 +78,9 @@ export default async function Blog({ searchParams }: { searchParams?: { category
               </div>
               <div className="relative sm:col-span-2 sm:max-w-2xl">
                 <h2 className="font-semibold text-zinc-950 dark:text-white">{meta.title}</h2>
-                <p className="prose prose-blog **:[a]:relative mt-4 line-clamp-3 leading-7 **:[a]:z-50">{meta.excerpt}</p>
+                <p className="prose prose-blog mt-4 line-clamp-3 leading-7 **:[a]:relative **:[a]:z-50">
+                  {meta.excerpt}
+                </p>
                 <p className="mt-4 flex w-fit items-end gap-1 text-sm font-semibold text-sky-500 dark:text-sky-400">
                   Read more
                   <ChevronRightIcon className="size-4 -translate-x-2 -translate-y-0.25 text-sky-500/50 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 dark:text-sky-400/50" />

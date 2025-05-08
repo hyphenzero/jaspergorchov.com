@@ -1,5 +1,5 @@
 import { Feed } from 'feed'
-import { getBlogPostBySlug, getBlogPostSlugs } from '../api'
+import { getBlogPostBySlug, getBlogPostSlugs } from '../../api/blog/route'
 
 export async function GET(req: Request) {
   let siteUrl = new URL(req.url).origin

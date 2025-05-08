@@ -1,8 +1,9 @@
 import { TagButton } from '@/components/tag'
+import { formatDate, nonNullable } from '@/lib/api-utils'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { formatDate, getBlogPostBySlug, getBlogPostSlugs, nonNullable } from './api'
+import { getBlogPostBySlug, getBlogPostSlugs } from '../api/blog/route'
 import { CategorySelector } from './category-selector'
 
 export const metadata: Metadata = {
@@ -80,9 +81,9 @@ export default async function Blog({ searchParams }: { searchParams?: { category
                 <p className="prose prose-blog mt-4 line-clamp-3 leading-7">{meta.excerpt}</p>
                 <p className="mt-4 flex w-fit items-end gap-1 text-sm font-semibold text-sky-500 dark:text-sky-400">
                   Read more
-                  <ChevronRightIcon className="size-4 -translate-y-0.25 text-sky-500/50 dark:text-sky-400/50 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition" />
+                  <ChevronRightIcon className="size-4 -translate-x-2 -translate-y-0.25 text-sky-500/50 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 dark:text-sky-400/50" />
                 </p>
-                <div className="absolute -inset-5 -z-10 scale-95_ bg-zinc-100/80 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:rounded-2xl dark:bg-zinc-900/50" />
+                <div className="scale-95_ absolute -inset-5 -z-10 bg-zinc-100/80 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:rounded-2xl dark:bg-zinc-900/50" />
               </div>
             </div>
           ))

@@ -1,7 +1,8 @@
 import { TagButton } from '@/components/tag'
+import { formatDate } from '@/lib/api-utils'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
-import { formatDate, getBlogPostBySlug, getBlogPostSlugs } from '../api'
+import { getBlogPostBySlug, getBlogPostSlugs } from '../../api/blog/route'
 
 type Props = {
   params: Promise<{
@@ -10,13 +11,13 @@ type Props = {
 }
 
 export async function generateStaticParams() {
-  let slugs = await getBlogPostSlugs()
+  const slugs = await getBlogPostSlugs()
   return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  let params = await props.params
-  let post = await getBlogPostBySlug(params.slug)
+  const params = await props.params
+  const post = await getBlogPostBySlug(params.slug)
 
   if (!post) {
     return notFound()
@@ -53,8 +54,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage(props: Props) {
-  let params = await props.params
-  let post = await getBlogPostBySlug(params.slug)
+  const params = await props.params
+  const post = await getBlogPostBySlug(params.slug)
 
   if (!post) {
     return notFound()

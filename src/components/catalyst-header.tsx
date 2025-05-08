@@ -1,23 +1,23 @@
-'use client'
+"use client"
 
-import { Dialog, DialogPanel } from '@headlessui/react'
-import { Bars2Icon, XMarkIcon } from '@heroicons/react/16/solid'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useState } from 'react'
-import { Banner } from './banner'
-import { Logo } from './logo'
-import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
+import { Dialog, DialogPanel } from "@headlessui/react"
+import { Bars2Icon, XMarkIcon } from "@heroicons/react/16/solid"
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useState } from "react"
+import { Logo } from "./logo"
+import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from "./navbar"
+import { Banner } from "./banner"
 
 const navigation = [
-  { name: 'About', href: '/about' },
-  { name: 'Projects', href: '/projects' },
-  { name: 'Blog', href: '/blog' },
+  { name: "About", href: "/about" },
+  { name: "Projects", href: "/projects" },
+  { name: "Blog", href: "/blog" },
 ]
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  let pathname = usePathname()
+  const pathname = usePathname()
 
   return (
     <header>
@@ -25,30 +25,16 @@ export function Header() {
         <Link href="/" aria-label="Home">
           <Logo className="size-10 sm:size-8" />
         </Link>
-        <div className="@container flex w-full justify-start pl-2 sm:pl-8">
-          <a
-            href="https://tailwindcss.com/blog/tailwind-plus"
-            className="flex flex-nowrap items-center gap-2 rounded-full px-3 py-2 text-xs/4 whitespace-nowrap ring ring-zinc-950/8 dark:ring-white/8 hover:bg-zinc-950/2 dark:hover:bg-white/2 hover:ring-zinc-950/10 dark:hover:ring-white/10 @max-[22rem]:hidden"
-          >
-            <MegaphoneIcon className="size-4 fill-sky-500 dark:fill-sky-400" />
-            <span className="font-medium">Tailwind UI is now Tailwind Plus</span>
-            <span className="size-0.75 rounded-full bg-current/50" />
-            <div className="flex gap-0.5">
-              <span>Learn more</span>
-              <ChevronRightIcon className="-mr-1 size-4 fill-zinc-950/30 dark:fill-white/30" />
-            </div>
-          </a>
-        </div>
-        {/* <Banner /> */}
+        <Banner />
         <NavbarSpacer />
         <NavbarSection className="max-lg:hidden">
-          <NavbarItem current={pathname.startsWith('/about')} href="/about">
+          <NavbarItem current={pathname.startsWith("/about")} href="/about">
             About
           </NavbarItem>
-          <NavbarItem current={pathname.startsWith('/projects')} href="/projects">
+          <NavbarItem current={pathname.startsWith("/projects")} href="/projects">
             Projects
           </NavbarItem>
-          <NavbarItem current={pathname.startsWith('/blog')} href="/blog">
+          <NavbarItem current={pathname.startsWith("/blog")} href="/blog">
             Blog
           </NavbarItem>
         </NavbarSection>

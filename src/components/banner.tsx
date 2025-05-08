@@ -1,43 +1,74 @@
+'use client'
+
+import type React from 'react'
+
 import { ChevronRightIcon, MegaphoneIcon } from '@heroicons/react/16/solid'
-import { getBlogPostBySlug, getBlogPostSlugs } from '../app/blog/api'
-import { getProjectBySlug, getProjectSlugs } from '../app/projects/api'
+import { useEffect, useState } from 'react'
 
-export async function Banner() {
-  let latestTitle = 'Tailwind UI is now Tailwind Plus'
-
-  try {
-    const blogSlugs = await getBlogPostSlugs()
-    const projectSlugs = await getProjectSlugs()
-
-    let latestBlog = null
-    let latestProject = null
-
-    if (blogSlugs.length > 0) {
-      const latestBlogSlug = blogSlugs[0]
-      latestBlog = await getBlogPostBySlug(latestBlogSlug)
+interface Post {
+  meta: {
+    title: string
+    date: string
+    excerpt: React.ReactElement
+    tags: string[]
+    description: string
+    image?: {
+      src: string
     }
+    private?: boolean
+  }
+  slug: string
+}
 
-    if (projectSlugs.length > 0) {
-      const latestProjectSlug = projectSlugs[0]
-      latestProject = await getProjectBySlug(latestProjectSlug)
-    }
+export function Banner() {
+  const [latestTitle, setLatestTitle] = useState('Tailwind UI is now Tailwind Plus')
+  const [isLoading, setIsLoading] = useState(true)
 
-    if (latestBlog && latestProject) {
-      const latestBlogDate = new Date(latestBlog.meta.date).getTime()
-      const latestProjectDate = new Date(latestProject.meta.date).getTime()
+  useEffect(() => {
+    async function fetchLatestContent() {
+      try {
+        // Fetch latest blog posts and projects
+        const [blogResponse, projectResponse] = await Promise.all([fetch('/api/blog'), fetch('/api/projects')])
 
-      if (latestBlogDate > latestProjectDate) {
-        latestTitle = latestBlog.meta.title
-      } else {
-        latestTitle = latestProject.meta.title
+        if (!blogResponse.ok || !projectResponse.ok) {
+          throw new Error('Failed to fetch content')
+        }
+
+        const blogPosts = (await blogResponse.json()) as Post[]
+        const projects = (await projectResponse.json()) as Post[]
+
+        // Find the latest content by comparing dates
+        let latestContent: Post | null = null
+
+        if (blogPosts.length > 0 && projects.length > 0) {
+          const latestBlog = blogPosts[0]
+          const latestProject = projects[0]
+
+          const latestBlogDate = new Date(latestBlog.meta.date).getTime()
+          const latestProjectDate = new Date(latestProject.meta.date).getTime()
+
+          latestContent = latestBlogDate > latestProjectDate ? latestBlog : latestProject
+        } else if (blogPosts.length > 0) {
+          latestContent = blogPosts[0]
+        } else if (projects.length > 0) {
+          latestContent = projects[0]
+        }
+
+        if (latestContent) {
+          setLatestTitle(latestContent.meta.title)
+        }
+      } catch (error) {
+        console.error('Error fetching latest content:', error)
+      } finally {
+        setIsLoading(false)
       }
-    } else if (latestBlog) {
-      latestTitle = latestBlog.meta.title
-    } else if (latestProject) {
-      latestTitle = latestProject.meta.title
     }
-  } catch (error) {
-    console.error('Error fetching latest blog or project:', error)
+
+    fetchLatestContent()
+  }, [])
+
+  if (isLoading) {
+    return null // Or a skeleton loader if preferred
   }
 
   return (
