@@ -1,7 +1,7 @@
+import { TagButton } from '@/components/tag'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
 import { formatDate, getProjectBySlug, getProjectSlugs } from '../api'
-import { TagButton } from "@/components/tag"
 
 type Props = {
   params: Promise<{
@@ -65,7 +65,7 @@ export default async function ArticlePage(props: Props) {
       {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
       <div hidden />
 
-      <div className="flex flex-col mx-auto mt-16 w-full max-w-(--breakpoint-md) px-6">
+      <div className="mx-auto mt-16 flex w-full max-w-(--breakpoint-md) flex-col px-6">
         <time
           className="font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400"
           dateTime={post.meta.date}
@@ -75,19 +75,15 @@ export default async function ArticlePage(props: Props) {
 
         <h1 className="mt-2 inline-block max-w-(--breakpoint-md) text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
           {post.meta.title}
-				</h1>
-				
-				<div className="mt-6 flex items-center gap-x-3">
-					{post.meta.tags.map((tag) => (
-						<TagButton
-							key={tag}
-							className="z-10"
-							href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
-						>
-							{tag}
-						</TagButton>
-					))}
-				</div>
+        </h1>
+
+        <div className="mt-6 flex items-center gap-x-3">
+          {post.meta.tags.map((tag) => (
+            <TagButton key={tag} href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}>
+              {tag}
+            </TagButton>
+          ))}
+        </div>
       </div>
 
       <article className="prose prose-blog mt-6 px-6 *:mx-auto md:mt-12 lg:px-8">
