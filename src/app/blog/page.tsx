@@ -1,9 +1,8 @@
 import { TagButton } from '@/components/tag'
-import { formatDate, nonNullable } from '@/lib/api-utils'
+import { formatDate, getAllBlogPosts } from '@/lib/api'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { getBlogPostBySlug, getBlogPostSlugs } from '../api/blog/route'
 import { CategorySelector } from './category-selector'
 
 export const metadata: Metadata = {
@@ -19,22 +18,20 @@ export const metadata: Metadata = {
 }
 
 export default async function Blog({ searchParams }: { searchParams?: { category?: string } }) {
-  const slugs = await getBlogPostSlugs()
-  const allPosts = (await Promise.all(slugs.map(getBlogPostBySlug)))
-    .filter(nonNullable)
-    .filter((post) => !post.meta.private)
+  const allPosts = await getAllBlogPosts()
+  const publicPosts = allPosts.filter((post) => !post.meta.private)
 
-  const allTags = Array.from(new Set(allPosts.flatMap((post) => post.meta.tags))).map((tag) => ({
+  const allTags = Array.from(new Set(publicPosts.flatMap((post) => post.meta.tags))).map((tag) => ({
     original: tag,
     normalized: tag.toLowerCase(),
   }))
 
-  const category = (await searchParams)?.category?.toLowerCase() ?? 'all'
+  const category = searchParams?.category?.toLowerCase() ?? 'all'
 
   const posts =
     category === 'all'
-      ? allPosts
-      : allPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
+      ? publicPosts
+      : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   return (
     <div className="relative mx-auto mt-12 max-w-[96rem] px-6 lg:px-8 xl:mt-24">

@@ -1,11 +1,11 @@
+import { getAllBlogPosts } from '@/lib/api'
 import { Feed } from 'feed'
-import { getBlogPostBySlug, getBlogPostSlugs } from '../../api/blog/route'
 
 export async function GET(req: Request) {
-  let siteUrl = new URL(req.url).origin
+  const siteUrl = new URL(req.url).origin
 
-  let feed = new Feed({
-    title: 'Jasper Gorchov’s Blog',
+  const feed = new Feed({
+    title: "Jasper Gorchov's Blog",
     description: 'Stay updated with the latest articles and projects by Jasper Gorchov',
     author: {
       name: 'Jasper Gorchov',
@@ -21,22 +21,15 @@ export async function GET(req: Request) {
     },
   })
 
-  // Get all blog post slugs and then fetch each post
-  const slugs = await getBlogPostSlugs()
-  const posts = await Promise.all(
-    slugs.map(async (slug) => {
-      return await getBlogPostBySlug(slug)
-    })
-  )
+  // Get all blog posts
+  const posts = await getAllBlogPosts()
 
-  // Filter out any null posts and sort by date (newest first)
+  // Filter out any private posts and sort by date (newest first)
   const validPosts = posts
-    .filter((post) => post !== null)
-    .sort((a, b) => new Date(b!.meta.date).getTime() - new Date(a!.meta.date).getTime())
+    .filter((post) => !post.meta.private)
+    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
 
   validPosts.forEach((post) => {
-    if (!post) return
-
     // Convert the React excerpt element to plain text if needed
     // Since we can't easily render React elements to string here,
     // we'll use the description as content

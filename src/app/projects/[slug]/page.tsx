@@ -1,13 +1,12 @@
 import { TagButton } from '@/components/tag'
-import { formatDate } from '@/lib/api-utils'
+import { formatDate, getProjectBySlug, getProjectSlugs } from '@/lib/api'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
-import { getProjectBySlug, getProjectSlugs } from '../../api/projects/route'
 
 type Props = {
-  params: Promise<{
+  params: {
     slug: string
-  }>
+  }
 }
 
 export async function generateStaticParams() {
@@ -16,8 +15,7 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params
-  const post = await getProjectBySlug(params.slug)
+  const post = await getProjectBySlug(props.params.slug)
 
   if (!post) {
     return notFound()
@@ -31,10 +29,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       title: post.meta.title,
       description: post.meta.description,
       type: 'article',
-      url: `/projects/${params.slug}`,
+      url: `/projects/${props.params.slug}`,
       images: [
         {
-          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${params.slug}`,
+          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${props.params.slug}`,
         },
       ],
     },
@@ -44,7 +42,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       description: post.meta.description,
       images: [
         {
-          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${params.slug}`,
+          url: post.meta.image ? post.meta.image.src : `/api/og?path=/projects/${props.params.slug}`,
         },
       ],
       site: '@tailwindcss',
@@ -54,8 +52,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function ArticlePage(props: Props) {
-  const params = await props.params
-  const post = await getProjectBySlug(params.slug)
+  const post = await getProjectBySlug(props.params.slug)
 
   if (!post) {
     return notFound()
