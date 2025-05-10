@@ -43,16 +43,13 @@ export default function Home() {
   return (
     <>
       <div className="mx-auto mt-12 max-w-[96rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
-        <div className="flex items-end justify-between">
-          <h1 className="flex-1 pr-6 text-6xl font-medium tracking-tight text-pretty text-zinc-900 sm:text-7xl dark:text-white">
+        <div className="flex max-md:space-y-6 max-md:flex-col md:items-end md:justify-between">
+          <h1 className="flex-1 pr-6 text-5xl sm:text-6xl font-medium tracking-tight text-pretty text-zinc-900 lg:text-[5rem] dark:text-white">
             Jasper Gorchov
           </h1>
-          <p className="w-fit pb-1 text-[1.75rem]/[1.14] font-medium text-zinc-900 dark:text-white">
-            14-year-old <br /> creative developer.
+          <p className="w-fit md:pb-0.5 lg:pb-1 text-[1.75rem]/[1.14] font-medium text-zinc-900 dark:text-white">
+            14-year-old <br /> creative developer
           </p>
-          {/* <p className="text-[1.75rem]/[1.14] max-w-2xl font-medium text-pretty text-zinc-600 dark:text-zinc-400">
-            14-year-old <br /> creative developer.
-          </p> */}
         </div>
       </div>
 
@@ -62,10 +59,10 @@ export default function Home() {
 
       <div className="mx-auto mt-12 max-w-[96rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
         <p className="font-mono text-[0.8125rem]/6 font-semibold tracking-widest text-pretty text-sky-500 uppercase">
-          UI Blocks
+          Projects
         </p>
         <h2 className="max-w-3xl text-3xl font-medium tracking-tight text-pretty md:text-[2.5rem]/14">
-          Creating high-quality digital experiences.
+          Creating high-quality websites, web apps, and 3D illustrations.
         </h2>
       </div>
     </>

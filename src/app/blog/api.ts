@@ -34,6 +34,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
     return {
       Component: module.default,
       meta: {
+        authors: [],
         ...module.meta,
       },
       slug,
@@ -45,14 +46,30 @@ export async function getBlogPostBySlug(slug: string): Promise<{
 }
 
 export async function getBlogPostSlugs(): Promise<string[]> {
-  const folders = (await fs.readdir(path.join(__dirname, '../../blog'))).filter((folder) => !folder.startsWith('.'))
+  let posts: { slug: string; date: number }[] = []
 
-  const results = await Promise.all(folders.map((folder) => getBlogPostBySlug(folder)))
+  let folders = await fs.readdir(path.join(__dirname, '../../blog'))
 
-  return results
-    .filter(nonNullable)
-    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
-    .map((post) => post.slug)
+  await Promise.allSettled(
+    folders.map(async (folder) => {
+      if (folder.startsWith('.')) return
+      try {
+        let post = await getBlogPostBySlug(folder)
+        if (!post) return
+
+        posts.push({
+          slug: post.slug,
+          date: new Date(post.meta.date).getTime(),
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+  )
+
+  posts.sort((a, b) => b.date - a.date)
+
+  return posts.map((post) => post.slug)
 }
 
 export function formatDate(timestamp: string) {
