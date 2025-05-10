@@ -21,8 +21,8 @@ export async function getProjectBySlug(slug: string): Promise<{
   slug: string
 } | null> {
   try {
-    // Check if the file exists
-    if (!(await fs.stat(path.join(__dirname, `../../projects/${slug}/index.mdx`)).catch(() => null))) {
+    // Check if the file exists using process.cwd() for absolute path
+    if (!(await fs.stat(path.join(process.cwd(), `src/projects/${slug}/index.mdx`)).catch(() => null))) {
       return null
     }
 
@@ -48,24 +48,31 @@ export async function getProjectBySlug(slug: string): Promise<{
 export async function getProjectSlugs(): Promise<string[]> {
   let posts: { slug: string; date: number }[] = []
 
-  let folders = await fs.readdir(path.join(__dirname, '../../projects'))
+  try {
+    // Use process.cwd() to get the absolute path to your project root
+    let folders = await fs.readdir(path.join(process.cwd(), 'src/projects'))
 
-  await Promise.allSettled(
-    folders.map(async (folder) => {
-      if (folder.startsWith('.')) return
-      try {
-        let post = await getProjectBySlug(folder)
-        if (!post) return
+    await Promise.allSettled(
+      folders.map(async (folder) => {
+        if (folder.startsWith('.')) return
+        try {
+          let post = await getProjectBySlug(folder)
+          if (!post) return
 
-        posts.push({
-          slug: post.slug,
-          date: new Date(post.meta.date).getTime(),
-        })
-      } catch (e) {
-        console.error(e)
-      }
-    })
-  )
+          posts.push({
+            slug: post.slug,
+            date: new Date(post.meta.date).getTime(),
+          })
+        } catch (e) {
+          console.error(e)
+        }
+      })
+    )
+  } catch (error) {
+    console.error('Error reading projects directory:', error)
+    // Return empty array if directory doesn't exist
+    return []
+  }
 
   posts.sort((a, b) => b.date - a.date)
 
