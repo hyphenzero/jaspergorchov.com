@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 import { Banner } from './banner'
-import { Logo } from './logo'
+import { Logo } from './logo-box'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
 
 const navigation = [

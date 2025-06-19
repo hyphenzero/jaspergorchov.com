@@ -35,14 +35,19 @@ export default function Home() {
     <>
       <TabGroup>
         <div className="mx-auto grid h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] max-w-[128rem] grid-cols-10 gap-12 p-6 pb-8 sm:h-[calc(100vh-5.25rem)] sm:max-h-[calc(100vh-5.25rem)] lg:px-8 [@media(width>=96rem)]:pt-10">
-          <div className="col-span-4 flex size-full flex-col justify-between space-y-8 [@media(width>=96rem)]:col-span-3">
-            <div className="flex h-full flex-1 grow flex-col space-y-8">
+          <div className="col-span-4 flex size-full flex-col justify-between [@media(width>=96rem)]:col-span-3">
+            {/* Non-scrolling top content */}
+            <div>
               <h1 className="text-6xl tracking-tighter text-pretty sm:text-8xl">Jasper Gorchov</h1>
-              <p className="max-w-2xl text-lg/7 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+              <p className="mt-8 max-w-2xl text-lg/7 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
                 I’m a 14-year-old developer, designer, and 3D artist with immense attention to detail and a love of
                 minimalism.
               </p>
-              <TabList className="@container overflow-y-scroll flex flex-1 grow flex-col space-y-2">
+            </div>
+
+            {/* Scrollable tab list */}
+            <div className="flex-1 overflow-y-auto py-8 pr-2">
+              <TabList className="@container flex flex-col space-y-2">
                 {tabs.map((tab) => (
                   <Tab
                     key={tab.name}
@@ -72,23 +77,15 @@ export default function Home() {
                       >
                         {tab.name}
                       </p>
-                      <p
-                        className={clsx(
-                          'mt-2 text-zinc-600 transition dark:text-zinc-400'
-                          // tab.color === 'sky' && 'group-data-selected:text-sky-900/80',
-                          // tab.color === 'indigo' && 'group-data-selected:text-indigo-900/80',
-                          // tab.color === 'fuchsia' && 'group-data-selected:text-fuchsia-950/80',
-                          // tab.color === 'red' && 'group-data-selected:text-red-900/80'
-                        )}
-                      >
-                        {tab.description}
-                      </p>
+                      <p className="mt-2 text-zinc-600 transition dark:text-zinc-400">{tab.description}</p>
                     </div>
                   </Tab>
                 ))}
               </TabList>
             </div>
-            <div className="flex gap-x-4 *:w-full">
+
+            {/* Sticky buttons at the bottom */}
+            <div className="mt-6 flex shrink-0 gap-x-4 bg-white pt-4 *:w-full dark:bg-zinc-900">
               <Button href="/projects" className="group">
                 Browse work <ChevronRightIcon className="translate-y-px group-hover:translate-x-0.5" />
               </Button>
