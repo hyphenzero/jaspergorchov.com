@@ -46,9 +46,9 @@ function getColorFromText(text: string): keyof typeof colors {
 }
 
 const tagColorMap: Partial<Record<string, keyof typeof colors>> = {
-	'3d art': 'indigo',
-	'design': 'rose',
-	'code': 'sky',
+  '3d art': 'indigo',
+  design: 'rose',
+  code: 'sky',
 }
 
 type TagProps = { color?: keyof typeof colors }

@@ -1,3 +1,4 @@
+import { Container } from '@/components/container'
 import { TagButton } from '@/components/tag'
 import { formatDate, getAllBlogPosts } from '@/lib/api'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 }
 
 export default async function Blog(props: { searchParams?: Promise<{ category?: string }> }) {
-  const searchParams = await props.searchParams;
+  const searchParams = await props.searchParams
   const allPosts = await getAllBlogPosts()
   const publicPosts = allPosts.filter((post) => !post.meta.private)
 
@@ -35,12 +36,12 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
       : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   return (
-    <div className="relative mx-auto mt-12 max-w-[96rem] px-6 lg:px-8 xl:mt-24">
+    <Container className="relative mt-12 xl:mt-24">
       <h1 className="text-6xl font-medium tracking-tight text-balance text-zinc-900 sm:text-7xl lg:text-7xl dark:text-white">
         Blog
       </h1>
-      <p className="mt-6 max-w-md text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
-        My latest updates, as well as things I find interesting in the worlds of code, design, and digital creativity.
+      <p className="mt-6 max-w-192 text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
+        My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and digital creativity.
       </p>
       <div className="mt-16 flex w-full items-center justify-between">
         <CategorySelector allTags={allTags} selectedCategory={category} />
@@ -84,6 +85,6 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
           ))
         )}
       </div>
-    </div>
-  );
+    </Container>
+  )
 }

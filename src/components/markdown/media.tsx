@@ -44,24 +44,37 @@ export function Iframe({ height = 500, children, className, ...props }: React.If
   )
 }
 
+// export function Image({ src, className, ...props }: React.ComponentProps<typeof NextImage>) {
+//   return (
+//     <div data-media className={className}>
+//       <div className="mx-auto max-w-288">
+//         <div className="not-prose relative max-lg:-mx-6 h-auto overflow-hidden lg:rounded-xl">
+//           <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
+//           {typeof src === 'string' ? (
+//             <img src={src} {...props} />
+//           ) : (
+//             <NextImage
+//               priority
+//               unoptimized
+//               width={1024}
+//               src={src}
+//               className="aspect-auto h-auto w-full"
+//               {...props}
+//             />
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
+
 export function Image({ src, className, ...props }: React.ComponentProps<typeof NextImage>) {
   return (
     <div data-media className={className}>
-      <div className="mx-auto max-w-[calc(var(--breakpoint-lg)-(--spacing(6)))] lg:max-w-[calc(var(--breakpoint-lg)-(--spacing(16)))]">
-        <div className="not-prose relative -mx-6 h-auto overflow-hidden lg:-mx-8 lg:rounded-xl">
+      <div className="mx-auto max-w-3xl">
+        <div className="not-prose relative h-auto overflow-hidden rounded-xl">
           <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
-          {typeof src === 'string' ? (
-            <img src={src} {...props} />
-          ) : (
-            <NextImage
-              priority
-              unoptimized
-              width={768 * 2}
-              src={src}
-              className="aspect-auto h-auto w-full"
-              {...props}
-            />
-          )}
+          <NextImage priority unoptimized width={1024} src={src} className="aspect-auto h-auto w-full" {...props} />
         </div>
       </div>
     </div>

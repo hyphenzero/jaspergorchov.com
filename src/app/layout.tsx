@@ -43,7 +43,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
       </head>
-      <body className="min-h-dvh bg-white text-zinc-950 antialiased dark:bg-zinc-950 dark:text-white">
+      <body className="min-h-dvh bg-white antialiased dark:bg-zinc-950">
         <Header latestTitle={latestTitle} latestUrl={latestUrl} />
         {children}
       </body>

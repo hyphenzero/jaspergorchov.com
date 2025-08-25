@@ -20,8 +20,8 @@ export function Header({ latestTitle, latestUrl }: { latestTitle: string; latest
   const pathname = usePathname()
 
   return (
-    <header>
-      <Navbar className="mx-auto max-w-[96rem] p-6 lg:px-8">
+    <header className="sticky top-0 z-50">
+      <Navbar className="mx-auto max-w-288 p-6 lg:px-8">
         <Link href="/" aria-label="Home">
           <Logo className="size-10 sm:size-8" />
         </Link>

@@ -1,44 +1,34 @@
 'use client'
 
-import { Listbox, ListboxLabel, ListboxOption } from '@/components/listbox'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { Link } from '@/components/link'
+import clsx from 'clsx'
+import { motion } from 'motion/react'
 
-export function CategorySelector({
-  allTags,
-  selectedCategory,
-}: {
-  allTags: { original: string; normalized: string }[]
-  selectedCategory: string
-}) {
-  const [category, setCategory] = useState(selectedCategory)
-  const router = useRouter()
-
-  const handleChange = (newCategory: string) => {
-    const normalizedCategory = newCategory.toLowerCase()
-    setCategory(normalizedCategory)
-    const searchParams = new URLSearchParams()
-    if (normalizedCategory !== 'all') searchParams.set('category', normalizedCategory)
-    router.push(`/projects?${searchParams.toString()}`)
-  }
-
-  const unknownCategory = !allTags.some(({ normalized }) => normalized === category) && category !== 'all'
-
+export function CategorySelector({ tags, category }: { tags: { label: string; value: string }[]; category: string }) {
   return (
-    <Listbox name="categories" value={category} onChange={handleChange} className="max-w-36">
-      <ListboxOption value="all">
-        <ListboxLabel>All categories</ListboxLabel>
-      </ListboxOption>
-      {allTags.map(({ original, normalized }) => (
-        <ListboxOption key={normalized} value={normalized}>
-          <ListboxLabel>{original}</ListboxLabel>
-        </ListboxOption>
-      ))}
-      {unknownCategory && (
-        <ListboxOption value={category}>
-          <ListboxLabel className="capitalize">{category}</ListboxLabel>
-        </ListboxOption>
-      )}
-    </Listbox>
+    <nav className="relative mt-20">
+      <div className="pointer-events-none absolute inset-0 z-10 brightness-200" />
+      <ul className="flex gap-4">
+        {tags.map((tag) => (
+          <li key={tag.value}>
+            <Link
+              href={`?category=${encodeURIComponent(tag.value)}`}
+              className={clsx('relative block rounded-full px-2.5 py-1 text-sm font-medium transition')}
+            >
+              {category === tag.value && (
+                <motion.span
+                  layoutId="selected-background"
+                  className="absolute inset-0 z-10 bg-[#F6F6F4] not-dark:mix-blend-difference dark:-z-10 dark:bg-zinc-800 dark:border-t-1 dark:border-white/7"
+                  style={{ borderRadius: 9999 }}
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )}
+
+              <span className="text-zinc-950 dark:text-white">{tag.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   )
 }

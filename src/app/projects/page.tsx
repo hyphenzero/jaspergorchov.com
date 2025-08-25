@@ -1,9 +1,9 @@
-import { TagButton } from '@/components/tag'
+import { Container } from '@/components/container'
 import { formatDate, getAllProjects } from '@/lib/api'
-import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import Image from 'next/image'
 import { CategorySelector } from './category-selector'
+import Link from "next/link"
 
 export const metadata: Metadata = {
   title: 'Projects',
@@ -18,14 +18,22 @@ export const metadata: Metadata = {
 }
 
 export default async function Projects(props: { searchParams?: Promise<{ category?: string }> }) {
-  const searchParams = await props.searchParams;
+  const searchParams = await props.searchParams
   const allPosts = await getAllProjects()
   const publicPosts = allPosts.filter((post) => !post.meta.private)
 
-  const allTags = Array.from(new Set(publicPosts.flatMap((post) => post.meta.tags))).map((tag) => ({
-    original: tag,
-    normalized: tag.toLowerCase(),
-  }))
+  // const allTags = Array.from(new Set(publicPosts.flatMap((post) => post.meta.tags))).map((tag) => ({
+  //   original: tag,
+  //   normalized: tag.toLowerCase(),
+  // }))
+
+  const tags = [
+    { label: 'All categories', value: 'all' },
+    ...Array.from(new Set(publicPosts.flatMap((post) => post.meta.tags))).map((t) => ({
+      label: t,
+      value: t.toLowerCase(),
+    })),
+  ]
 
   const category = searchParams?.category?.toLowerCase() ?? 'all'
 
@@ -35,57 +43,46 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
       : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   return (
-    <div className="relative mx-auto mt-12 max-w-[96rem] px-6 lg:px-8 xl:mt-24">
-      <h1 className="text-6xl font-medium tracking-tight text-balance text-zinc-900 sm:text-7xl lg:text-7xl dark:text-white">
+    <Container className="relative mt-12 xl:mt-24">
+      <h1 className="text-5xl font-medium tracking-tight text-balance text-zinc-950 lg:text-6xl dark:text-white">
         Projects
       </h1>
-      <p className="mt-6 max-w-md text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
-        Browse my code, design, and 3D art projects
+      <p className="mt-6 max-w-2xl text-lg/7 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+        Browse my programming, design, and 3D art projects.
       </p>
-      <div className="mt-16 flex w-full items-center justify-between">
-        <CategorySelector allTags={allTags} selectedCategory={category} />
-      </div>
-      <div className="mt-6">
+      <CategorySelector tags={tags} category={category} />
+      <div className="mt-6 grid grid-cols-1 gap-12 sm:grid-cols-2">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
         ) : (
           posts.map(({ meta, slug }) => (
-            <div
-              key={slug}
-              className="group relative grid grid-cols-1 border-b border-b-zinc-100 py-10 **:cursor-pointer first:border-t first:border-t-zinc-200 max-sm:gap-3 sm:grid-cols-3 dark:border-b-zinc-900 dark:first:border-t-zinc-800"
-            >
-              <Link href={`/projects/${slug}`} className="absolute inset-0 z-10" />
-              <div>
-                <div className="px-2 font-mono text-sm/6 font-medium tracking-widest text-gray-500 uppercase">
-                  {formatDate(meta.date)}
-                </div>
-                <div className="mt-3 flex items-center gap-x-3">
-                  {meta.tags.map((tag) => (
-                    <TagButton
-                      className="z-10"
-                      href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
-                      key={tag}
-                    >
-                      {tag}
-                    </TagButton>
-                  ))}
-                </div>
+            <article key={slug} className="group relative rounded-2xl bg-zinc-100 p-1 dark:bg-zinc-900">
+              <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl">
+                <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
+                {meta.image?.src ? (
+                  <Image priority unoptimized fill src={meta.image.src} alt="" className="size-full object-cover" />
+                ) : null}
               </div>
-              <div className="relative sm:col-span-2 sm:max-w-2xl">
-                <h2 className="font-semibold text-zinc-950 dark:text-white">{meta.title}</h2>
-                <p className="prose prose-blog mt-4 line-clamp-3 leading-7 **:[a]:relative **:[a]:z-50">
-                  {meta.excerpt}
-                </p>
-                <p className="mt-4 flex w-fit items-end gap-1 text-sm font-semibold text-sky-500 dark:text-sky-400">
-                  Read more
-                  <ChevronRightIcon className="size-4 -translate-x-2 -translate-y-0.25 text-sky-500/50 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 dark:text-sky-400/50" />
-                </p>
-                <div className="scale-95_ absolute -inset-5 -z-10 bg-zinc-100/80 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:rounded-2xl dark:bg-zinc-900/50" />
+              <div className="p-4">
+                <div className="flex items-center gap-x-4 text-xs">
+                  <time dateTime={meta.date} className="text-zinc-500 dark:text-zinc-400">
+                    {formatDate(meta.date)}
+                  </time>
+                  {/* <Link
+                    href={meta.tag}
+                    className="relative z-10 rounded-full bg-gray-50 px-3 py-1.5 font-medium text-gray-600 hover:bg-gray-100 dark:bg-gray-800/60 dark:text-gray-300 dark:hover:bg-gray-800"
+                  >
+                    {post.category.title}
+                  </Link> */}
+                </div>
+                <h2 className="mt-3 text-xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-white">
+                  {meta.title}
+                </h2>
               </div>
-            </div>
+            </article>
           ))
         )}
       </div>
-    </div>
-  );
+    </Container>
+  )
 }

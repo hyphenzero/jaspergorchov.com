@@ -16,21 +16,20 @@
     "@react-three/drei": "^10.3.0",
     "@react-three/fiber": "^9.1.2",
     "@shikijs/transformers": "^3.3.0",
-    "@tailwindcss/postcss": "^4.1.10",
+    "@tailwindcss/postcss": "^4.1.12",
     "@types/mdx": "^2.0.13",
     "clsx": "^2.1.1",
     "dedent": "^1.5.3",
     "fast-glob": "^3.3.3",
-    "feed": "^5.0.0",
-    "framer-motion": "^12.9.2",
-    "motion": "^12.5.0",
-    "next": "15.3.4",
+    "feed": "^5.1.0",
+    "motion": "^12.23.12",
+    "next": "15.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-use-measure": "^2.1.7",
     "shiki": "^3.3.0",
     "split-type": "^0.3.4",
-    "tailwindcss": "4.1.10",
+    "tailwindcss": "4.1.12",
     "three": "^0.177.0"
   },
   "devDependencies": {
@@ -66,5 +65,5 @@
       "@tailwindcss/postcss": {}
     }
   },
-  "packageManager": "pnpm@9.15.4"
+  "packageManager": "pnpm@10.15.0"
 }

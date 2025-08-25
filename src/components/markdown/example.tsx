@@ -1,7 +1,7 @@
 'use client'
 
 import { clsx } from 'clsx'
-import { motion, useMotionValue, useTransform } from 'framer-motion'
+import { motion, useMotionValue, useTransform } from 'motion/react'
 import { useEffect, useRef, useState } from 'react'
 
 export function Example({
@@ -45,7 +45,7 @@ export function Example({
       className={clsx(className, 'group not-prose relative overflow-hidden sm:overflow-visible')}
     >
       <motion.div
-				style={{ marginRight: useTransform(x, (x) => -x) }}
+        style={{ marginRight: useTransform(x, (x) => -x) }}
         className={clsx(
           padding && 'p-8',
           '@container relative overflow-auto rounded-lg bg-white dark:bg-zinc-950',

@@ -1,5 +1,5 @@
 import { getFeedResponse } from '@/app/blog/feeds/feed'
 
 export async function GET() {
-  return getFeedResponse('feed.xml')
+  return getFeedResponse('atom.xml')
 }

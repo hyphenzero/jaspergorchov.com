@@ -137,7 +137,7 @@
     -webkit-text-decoration-color: var(--prose-link-underline-color);
     text-decoration-color: var(--prose-link-underline-color);
     text-underline-offset: calc(3 / 16 * 1rem);
-		@apply transition;
+    @apply transition;
   }
 
   a:hover:where(:not(.not-prose, .not-prose *)) {
@@ -159,13 +159,13 @@
     font-family: var(--font-mono);
     font-weight: var(--font-weight-medium);
     color: var(--prose-code-color);
-		background-color: color-mix(in oklab, var(--color-zinc-200) 55%, transparent);
-		@media (prefers-color-scheme: dark) {
-			background-color: var(--color-zinc-900);
-		}
-		padding-inline: var(--spacing);
-		padding-block: calc(var(--spacing) * 0.5);
-		border-radius: var(--radius-md);
+    background-color: color-mix(in oklab, var(--color-zinc-200) 55%, transparent);
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-zinc-900);
+    }
+    padding-inline: var(--spacing);
+    padding-block: calc(var(--spacing) * 0.5);
+    border-radius: var(--radius-md);
   }
 
   :where(h2, h3, h4) code:where(:not(.not-prose, .not-prose *)) {

@@ -45,12 +45,7 @@ export function Figure({
     <div>
       <div className="not-prose isolate">
         {(hint || desktopHint) && <Hint className={desktopHint && 'max-sm:hidden'}>{hint || desktopHint}</Hint>}
-        <figure
-          className={clsx(
-            className,
-            'flex flex-col gap-1 rounded-xl bg-zinc-950/5 p-1 dark:bg-zinc-900/50'
-          )}
-        >
+        <figure className={clsx(className, 'flex flex-col gap-1 rounded-xl bg-zinc-950/5 p-1 dark:bg-zinc-900/50')}>
           {children}
         </figure>
       </div>

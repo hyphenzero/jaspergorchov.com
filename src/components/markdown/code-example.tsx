@@ -6,13 +6,7 @@ import {
 } from '@shikijs/transformers'
 import { clsx } from 'clsx'
 import dedent from 'dedent'
-import { createHighlighter } from 'shiki'
-import darkTheme from '../syntax-highlighter/dark-theme.json'
-import lightTheme from '../syntax-highlighter/light-theme.json'
-
-import atApplyInjection from '../syntax-highlighter/at-apply.json'
-import atRulesInjection from '../syntax-highlighter/at-rules.json'
-import themeFnInjection from '../syntax-highlighter/theme-fn.json'
+import { getHighlighter } from '../../lib/shiki'
 import { highlightClasses } from './highlight-classes'
 import linesToDiv from './lines-to-div'
 
@@ -68,7 +62,7 @@ export function CodeExampleWrapper({ className, children }: { className?: string
 export function CodeExampleStack({ children }: { children: React.ReactNode }) {
   return (
     <div data-stack>
-      <div className="not-prose rounded-xl bg-zinc-100 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:first:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-[figure]:mt-1 in-[figure]:rounded-b-lg in-[figure]:px-0.5 in-[figure]:pb-0.5 dark:bg-zinc-900/50 *:not-has-data-filename:mt-3">
+      <div className="not-prose rounded-xl bg-zinc-100 *:not-has-data-filename:mt-3 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:first:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-[figure]:mt-1 in-[figure]:rounded-b-lg in-[figure]:px-0.5 in-[figure]:pb-0.5 dark:bg-zinc-900/50">
         {children}
       </div>
     </div>
@@ -126,7 +120,7 @@ export function HighlightedCode({
     <RawHighlightedCode
       example={example}
       className={clsx(
-        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 not-dark:*:shadow-sm *:ring *:ring-zinc-950/5 dark:*:border-t dark:*:bg-zinc-900!',
+        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 *:ring *:ring-zinc-950/5 not-dark:*:shadow-sm dark:*:border-t dark:*:bg-zinc-900!',
         '**:[.line]:isolate **:[.line]:not-last:min-h-[1lh]',
         className
       )}
@@ -134,7 +128,7 @@ export function HighlightedCode({
   )
 }
 
-export function RawHighlightedCode({
+export async function RawHighlightedCode({
   example,
   className,
 }: {
@@ -145,6 +139,8 @@ export function RawHighlightedCode({
     .split('\n')
     .filter((line) => !line.includes('prettier-ignore'))
     .join('\n')
+
+  const highlighter = await getHighlighter()
 
   let code = highlighter
     .codeToHtml(codeWithoutPrettierIgnore, {
@@ -181,41 +177,9 @@ export function RawHighlightedCode({
 }
 
 function CodeExampleFilename({ filename }: { filename: string }) {
-  return <div data-filename className="px-3 py-1.5 text-xs/5 text-zinc-500 dark:text-zinc-400">{filename}</div>
+  return (
+    <div data-filename className="px-3 py-1.5 text-xs/5 text-zinc-500 dark:text-zinc-400">
+      {filename}
+    </div>
+  )
 }
-
-const highlighter = await createHighlighter({
-  themes: [
-    {
-      type: 'light',
-      ...lightTheme,
-    },
-    {
-      type: 'dark',
-      ...darkTheme,
-    },
-  ],
-  langs: [
-    atApplyInjection as any,
-    atRulesInjection,
-    themeFnInjection,
-    'astro',
-    'blade',
-    'css',
-    'edge',
-    'elixir',
-    'hbs',
-    'html',
-    'js',
-    'json',
-    'jsx',
-    'mdx',
-    'sh',
-    'svelte',
-    'ts',
-    'tsx',
-    'twig',
-    'vue',
-    'md',
-  ],
-})

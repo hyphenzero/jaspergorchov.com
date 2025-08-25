@@ -47,7 +47,7 @@ export function RadioField({
 
 const base = [
   // Basic layout
-  'relative isolate flex size-[1.1875rem] shrink-0 rounded-full sm:size-[1.0625rem]',
+  'relative isolate flex size-4.75 shrink-0 rounded-full sm:size-4.25',
   // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
   'before:absolute before:inset-0 before:-z-10 before:rounded-full before:bg-white before:shadow-sm',
   // Background color when checked
@@ -71,7 +71,7 @@ const base = [
   // Disabled state
   'group-data-disabled:opacity-50',
   'group-data-disabled:border-zinc-950/25 group-data-disabled:bg-zinc-950/5 group-data-disabled:[--radio-checked-indicator:var(--color-zinc-950)]/50 group-data-disabled:before:bg-transparent',
-  'dark:group-data-disabled:border-white/20 dark:group-data-disabled:bg-white/[2.5%] dark:group-data-disabled:[--radio-checked-indicator:var(--color-white)]/50 dark:group-data-checked:group-data-disabled:after:hidden',
+  'dark:group-data-disabled:border-white/20 dark:group-data-disabled:bg-white/2.5 dark:group-data-disabled:[--radio-checked-indicator:var(--color-white)]/50 dark:group-data-checked:group-data-disabled:after:hidden',
 ]
 
 const colors = {

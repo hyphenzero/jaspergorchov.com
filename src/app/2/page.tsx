@@ -42,7 +42,7 @@ export default function Home() {
                 I’m a 14-year-old developer, designer, and 3D artist with immense attention to detail and a love of
                 minimalism.
               </p>
-              <TabList className="@container overflow-y-scroll flex flex-1 grow flex-col space-y-2">
+              <TabList className="@container flex flex-1 grow flex-col space-y-2 overflow-y-scroll">
                 {tabs.map((tab) => (
                   <Tab
                     key={tab.name}

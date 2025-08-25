@@ -3,7 +3,7 @@
 import * as Headless from '@headlessui/react'
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { clsx } from 'clsx'
-import { MotionValue, motion, useMotionValueEvent, useScroll, useSpring, type HTMLMotionProps } from 'framer-motion'
+import { MotionValue, motion, useMotionValueEvent, useScroll, useSpring, type HTMLMotionProps } from 'motion/react'
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import useMeasure, { type RectReadOnly } from 'react-use-measure'
 import { Link } from './link'

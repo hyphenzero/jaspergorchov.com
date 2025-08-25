@@ -45,13 +45,13 @@ const socialMedia = [
 export default function Home() {
   return (
     <>
-      <div className="relative mx-auto mt-12 grid max-w-[96rem] gap-x-10 px-6 sm:mt-20 lg:mt-24 lg:grid-cols-[3fr_2fr] lg:px-8">
+      <div className="relative mx-auto mt-12 grid max-w-[76rem] gap-x-10 px-6 sm:mt-20 lg:mt-24 lg:grid-cols-[3fr_2fr] lg:px-8">
         <h1 className="mt-6 text-6xl tracking-tighter text-pretty text-zinc-950 sm:text-8xl dark:text-white">
           14-year-old creative developer
         </h1>
         <div className="grid grid-cols-1 grid-rows-[1fr_auto]">
           <p className="mt-6 max-w-2xl text-lg/7 text-pretty text-zinc-500 lg:mt-13 dark:text-zinc-400">
-            I’m Jasper Gorchov — a web developer, 3D digital artist, and designer creating beautiful experiences on the
+            I’m Jasper Gorchov — a web developer, designer, and digital artist creating beautiful experiences on the
             web.
           </p>
           <div className="flex gap-4 pb-3 whitespace-nowrap max-lg:mt-6">

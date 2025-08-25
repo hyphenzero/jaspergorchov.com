@@ -1,5 +1,3 @@
-import { Hero3D } from '@/components/home/hero-3d'
-import { Button } from '@/components/button'
 import { JSX, SVGProps } from 'react'
 
 const socialMedia = [
@@ -44,28 +42,29 @@ const socialMedia = [
 export default function Home() {
   return (
     <>
-      <div className="relative -z-10 -mt-22 h-250 sm:-mt-21">
-        <Hero3D />
-      </div>
-
-      <div className="bg-linear-to-t_ relative mx-auto -translate-y-full flex-col from-white px-6 pb-px lg:px-8 dark:from-zinc-950">
-        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 sm:text-5xl/15 dark:text-white">
-          I’m Jasper Gorchov, a 14-year-old web developer, designer, and 3D artist.
-        </h1>
-
-        <div className="mt-12 flex justify-center gap-6 max-sm:*:w-full">
-          <Button href="/projects" color="sky" className="[--btn-bg:#00A6F4]!">
-            Browse projects
-          </Button>
-          <Button outline href="/blog">
-            Read articles
-          </Button>
+      <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+        <div className="flex max-md:flex-col max-md:space-y-6 md:items-end md:justify-between">
+          <h1 className="flex-1 pr-6 text-5xl font-medium tracking-tight text-pretty text-zinc-900 sm:text-6xl lg:text-[5rem] dark:text-white">
+            Jasper Gorchov
+          </h1>
+          <p className="w-fit text-[1.75rem]/[1.14] font-medium text-zinc-900 md:pb-0.5 lg:pb-1 dark:text-white">
+            14-year-old <br /> creative developer
+          </p>
         </div>
-
-        <div className="absolute inset-x-0 bottom-0 h-screen translate-y-full bg-white dark:bg-zinc-950" />
       </div>
 
-      <div className="h-screen"></div>
+      <div className="mx-auto mt-20 max-w-[107rem] px-6 lg:px-8">
+        <div className="aspect-video w-full rounded-4xl bg-zinc-200 dark:bg-zinc-900" />
+      </div>
+
+      <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+        <p className="font-mono text-[0.8125rem]/6 font-semibold tracking-widest text-pretty text-sky-500 uppercase">
+          Projects
+        </p>
+        <h2 className="max-w-3xl text-3xl font-medium tracking-tight text-pretty md:text-[2.5rem]/14">
+          Creating high-quality websites, web apps, and 3D illustrations.
+        </h2>
+      </div>
     </>
   )
 }

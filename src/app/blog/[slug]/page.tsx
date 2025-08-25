@@ -48,7 +48,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       site: '@tailwindcss',
       creator: '@tailwindcss',
     },
-  };
+  }
 }
 
 export default async function ArticlePage(props: Props) {
@@ -62,7 +62,7 @@ export default async function ArticlePage(props: Props) {
     <>
       {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
       <div hidden />
-      <div className="mx-auto mt-16 flex w-full max-w-(--breakpoint-md) flex-col px-6">
+      <div className="mx-auto mt-16 flex w-full max-w-3xl flex-col px-6">
         <time
           className="font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400"
           dateTime={post.meta.date}
@@ -70,7 +70,7 @@ export default async function ArticlePage(props: Props) {
           {formatDate(post.meta.date)}
         </time>
 
-        <h1 className="mt-2 inline-block max-w-(--breakpoint-md) text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
+        <h1 className="mt-2 inline-block max-w-3xl text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
           {post.meta.title}
         </h1>
 
@@ -82,9 +82,9 @@ export default async function ArticlePage(props: Props) {
           ))}
         </div>
       </div>
-      <article className="prose prose-blog mt-6 px-6 *:mx-auto md:mt-12 lg:px-8">
+      <article className="prose prose-blog mx-auto mt-6 max-w-288 px-6 *:mx-auto md:mt-12 lg:px-8">
         <post.Component />
       </article>
     </>
-  );
+  )
 }
