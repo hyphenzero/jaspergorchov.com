@@ -41,7 +41,8 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
         Blog
       </h1>
       <p className="mt-6 max-w-192 text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
-        My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and digital creativity.
+        My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and
+        digital creativity.
       </p>
       <div className="mt-16 flex w-full items-center justify-between">
         <CategorySelector allTags={allTags} selectedCategory={category} />

@@ -3,7 +3,6 @@ import { formatDate, getAllProjects } from '@/lib/api'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { CategorySelector } from './category-selector'
-import Link from "next/link"
 
 export const metadata: Metadata = {
   title: 'Projects',

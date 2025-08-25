@@ -1,5 +1,5 @@
-import { Hero3D } from '@/components/home/hero-3d'
 import { Button } from '@/components/button'
+import { Hero3D } from '@/components/home/hero-3d'
 import { JSX, SVGProps } from 'react'
 
 const socialMedia = [

@@ -23,8 +23,8 @@ export async function getBlogPostBySlug(slug: string): Promise<{
   slug: string
 } | null> {
   try {
-    // Check if the file exists
-    if (!(await fs.stat(path.join(__dirname, `../blog/${slug}/index.mdx`)).catch(() => null))) {
+    // Check if the file exists using process.cwd() for absolute path
+    if (!(await fs.stat(path.join(process.cwd(), `src/blog/${slug}/index.mdx`)).catch(() => null))) {
       return null
     }
 
@@ -47,14 +47,21 @@ export async function getBlogPostBySlug(slug: string): Promise<{
 }
 
 export async function getBlogPostSlugs(): Promise<string[]> {
-  const folders = (await fs.readdir(path.join(__dirname, '../blog'))).filter((folder) => !folder.startsWith('.'))
+  try {
+    // Use process.cwd() to get the absolute path to your project root
+    const folders = (await fs.readdir(path.join(process.cwd(), 'src/blog'))).filter((folder) => !folder.startsWith('.'))
 
-  const results = await Promise.all(folders.map((folder) => getBlogPostBySlug(folder)))
+    const results = await Promise.all(folders.map((folder) => getBlogPostBySlug(folder)))
 
-  return results
-    .filter(nonNullable)
-    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
-    .map((post) => post.slug)
+    return results
+      .filter(nonNullable)
+      .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+      .map((post) => post.slug)
+  } catch (error) {
+    console.error('Error reading blog directory:', error)
+    // Return empty array if directory doesn't exist
+    return []
+  }
 }
 
 export async function getAllBlogPosts() {
@@ -80,8 +87,8 @@ export async function getProjectBySlug(slug: string): Promise<{
   slug: string
 } | null> {
   try {
-    // Check if the file exists
-    if (!(await fs.stat(path.join(__dirname, `../projects/${slug}/index.mdx`)).catch(() => null))) {
+    // Check if the file exists using process.cwd() for absolute path
+    if (!(await fs.stat(path.join(process.cwd(), `src/projects/${slug}/index.mdx`)).catch(() => null))) {
       return null
     }
 
@@ -104,14 +111,23 @@ export async function getProjectBySlug(slug: string): Promise<{
 }
 
 export async function getProjectSlugs(): Promise<string[]> {
-  const folders = (await fs.readdir(path.join(__dirname, '../projects'))).filter((folder) => !folder.startsWith('.'))
+  try {
+    // Use process.cwd() to get the absolute path to your project root
+    const folders = (await fs.readdir(path.join(process.cwd(), 'src/projects'))).filter(
+      (folder) => !folder.startsWith('.')
+    )
 
-  const results = await Promise.all(folders.map((folder) => getProjectBySlug(folder)))
+    const results = await Promise.all(folders.map((folder) => getProjectBySlug(folder)))
 
-  return results
-    .filter(nonNullable)
-    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
-    .map((post) => post.slug)
+    return results
+      .filter(nonNullable)
+      .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+      .map((post) => post.slug)
+  } catch (error) {
+    console.error('Error reading projects directory:', error)
+    // Return empty array if directory doesn't exist
+    return []
+  }
 }
 
 export async function getAllProjects() {
