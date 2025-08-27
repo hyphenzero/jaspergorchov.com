@@ -70,7 +70,7 @@ function Scene() {
     // Set initial theme color and watch for changes
     const getColor = () => {
       const dark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
-      return dark ? '#18181b' : '#f3f4f6'
+      return dark ? '#202020' : '#ffffff'
     }
 
     setColorHex(getColor())
@@ -198,7 +198,7 @@ export function Hero3D() {
       <div data-hero3d-wrapper className="fixed top-0 left-0 -z-10 h-[1000px] w-screen overflow-hidden">
         <Canvas frameloop="always" className="absolute inset-0 h-full w-full" shadows onCreated={() => setLoaded(true)}>
           <PerspectiveCamera makeDefault position={[0, 0, CAMERA_Z]} fov={CAMERA_FOV} />
-          <ambientLight intensity={1} />
+          <ambientLight intensity={2} />
           <AnimatedLight />
           <Scene />
         </Canvas>

@@ -32,15 +32,15 @@ const styles = {
     // Shim/overlay, inset to match button foreground and used for hover state + highlight shadow
     'after:absolute after:inset-0 after:-z-10 after:rounded-full',
     // Inner highlight shadow
-    'after:shadow-[inset_0_1px_--theme(--color-white/15%)]',
+		'after:shadow-[inset_0_1px_--theme(--color-white/15%)]',
     // White overlay on hover
     'data-active:after:bg-(--btn-hover-overlay) data-hover:after:bg-(--btn-hover-overlay)',
     // Dark mode: `after` layer expands to cover entire button
     'dark:after:-inset-px dark:after:rounded-full',
     // Disabled
-    'data-disabled:before:shadow-none data-disabled:after:shadow-none',
-    // Transitions
-    'transition-colors before:transition-colors after:transition-colors',
+		'data-disabled:before:shadow-none data-disabled:after:shadow-none',
+		// Transitions
+		'transition-colors before:transition-colors after:transition-colors',
   ],
   outline: [
     // Base
@@ -48,7 +48,7 @@ const styles = {
     // Dark mode
     'dark:border-white/10 dark:text-white dark:[--btn-bg:transparent] dark:data-active:bg-white/5 dark:data-hover:bg-white/5',
     // Icon
-    '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
+		'[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
   ],
   plain: [
     // Base
@@ -130,7 +130,7 @@ const styles = {
       '[--btn-icon:var(--color-white)]/60 data-active:[--btn-icon:var(--color-white)]/80 data-hover:[--btn-icon:var(--color-white)]/80',
     ],
     sky: [
-      'text-white [--btn-hover-overlay:var(--color-white)]/10 [--btn-bg:#00A6F4] [--btn-border:var(--color-sky-600)]/80',
+      'text-white [--btn-hover-overlay:var(--color-white)]/10 [--btn-bg:var(--color-sky-500)] [--btn-border:var(--color-sky-600)]/80',
       '[--btn-icon:var(--color-white)]/60 data-active:[--btn-icon:var(--color-white)]/80 data-hover:[--btn-icon:var(--color-white)]/80',
     ],
     blue: [

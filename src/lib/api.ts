@@ -36,7 +36,9 @@ export async function getBlogPostBySlug(slug: string): Promise<{
     return {
       Component: module.default,
       meta: {
-        ...module.meta,
+        // ensure legacy `date` field exists for consumers by falling back to releaseDate
+        ...(module.meta || {}),
+        date: module.meta?.releaseDate ?? module.meta?.date,
       },
       slug,
     }

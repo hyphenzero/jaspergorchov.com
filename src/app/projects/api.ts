@@ -35,7 +35,8 @@ export async function getProjectBySlug(slug: string): Promise<{
       Component: module.default,
       meta: {
         authors: [],
-        ...module.meta,
+        ...(module.meta || {}),
+        date: module.meta?.releaseDate ?? module.meta?.date,
       },
       slug,
     }

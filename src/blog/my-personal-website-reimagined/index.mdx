@@ -4,14 +4,18 @@ import { Iframe } from '@/components/markdown/iframe.tsx'
 import card from './card.jpg'
 import { Image } from '@/components/markdown/media'
 import { CodeExampleStack } from '@/components/markdown/code-example'
-import Link from 'next/link'
 
 export const meta = {
-  title: 'Project #2',
-  description: `This is the second project we're working on together. It will be a lot of fun! It's a great opportunity to learn and grow as a team.`,
-  date: '2025-05-03T19:00:00.000Z',
+  title: 'My personal website, reimagined',
+  description: `This summer I redesigned my personal website, making it my dream platform for sharing my work.`,
+  date: '2025-05-04T19:00:00.000Z',
   image: card,
-  tags: ['3D Art'],
+  excerpt: (
+    <>
+      This summer I completely redesigned my personal website, making it my dream platform for sharing my work.
+    </>
+  ),
+  tags: ['Releases'],
 }
 
 <Image src={card} alt="Tailwind CSS v4.0" />

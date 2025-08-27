@@ -62,7 +62,7 @@ export default async function ArticlePage(props: Props) {
     <>
       {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
       <div hidden />
-      <div className="mx-auto mt-16 flex w-full max-w-3xl flex-col px-6">
+      <div className="mx-auto mt-16 flex w-full max-w-3xl flex-col">
         <time
           className="font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400"
           dateTime={post.meta.date}

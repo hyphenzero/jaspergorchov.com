@@ -2,7 +2,7 @@
 
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
-import { LayoutGroup, motion } from 'motion/react'
+import { AnimatePresence, LayoutGroup, motion } from 'motion/react'
 import React, { forwardRef, useId } from 'react'
 import { TouchTarget } from './button'
 import { Link } from './link'
@@ -32,13 +32,14 @@ export function NavbarSpacer({ className, ...props }: React.ComponentPropsWithou
 export const NavbarItem = forwardRef(function NavbarItem(
   {
     current,
+    animateIndicator,
     className,
     children,
     ...props
   }: { current?: boolean; className?: string; children: React.ReactNode } & (
     | Omit<Headless.ButtonProps, 'as' | 'className'>
     | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
-  ),
+  ) & { animateIndicator?: boolean },
   ref: React.ForwardedRef<HTMLAnchorElement | HTMLButtonElement>
 ) {
   let classes = clsx(
@@ -62,12 +63,26 @@ export const NavbarItem = forwardRef(function NavbarItem(
 
   return (
     <span className={clsx(className, 'relative')}>
-      {current && (
-        <motion.span
-          layoutId="current-indicator"
-          className="absolute inset-x-2.5 -bottom-2.5 h-0.5 origin-center rounded-full bg-zinc-400 dark:bg-zinc-600"
-        />
-      )}
+      <AnimatePresence initial={false}>
+        {current && (
+          <motion.span
+            key="current-indicator"
+            layoutId="current-indicator"
+            // Only play the mount/unmount opacity + scale animation when
+            // `animateIndicator` is true. When switching between navbar items
+            // we rely on the shared layout animation (layoutId) so we omit
+            // initial/exit to prevent the fade/scale effect.
+            {...(animateIndicator
+              ? {
+                  initial: { opacity: 0, scaleX: 0.5 },
+                  animate: { opacity: 1, scaleX: 1 },
+                  exit: { opacity: 0, scaleX: 0.5 },
+                }
+              : {})}
+            className="bg-zinc-400_ dark:bg-zinc-600_ absolute inset-x-2.5 -bottom-[1.40625rem] h-0.5 origin-center rounded-full bg-sky-500 shadow-2xl shadow-sky-400 dark:bg-sky-400"
+          />
+        )}
+      </AnimatePresence>
       {'href' in props ? (
         <Link
           {...props}

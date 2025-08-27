@@ -2,6 +2,19 @@ import { Button } from '@/components/button'
 import { Hero3D } from '@/components/home/hero-3d'
 import { JSX, SVGProps } from 'react'
 
+const getAge = (s?: string): number | null => {
+  if (!s) return null
+  const b = new Date(s)
+  if (Number.isNaN(+b)) return null
+  const now = new Date()
+  let age = now.getUTCFullYear() - b.getUTCFullYear()
+  const bThisYear = Date.UTC(now.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate())
+  if (Date.now() < bThisYear) age--
+  return age
+}
+
+const age = getAge(process.env.BIRTHDAY)
+
 const socialMedia = [
   {
     name: 'GitHub',
@@ -49,12 +62,14 @@ export default function Home() {
       </div>
 
       <div className="bg-linear-to-t_ relative mx-auto -translate-y-full flex-col from-white px-6 pb-px lg:px-8 dark:from-zinc-950">
-        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 sm:text-5xl/15 dark:text-white">
-          I’m Jasper Gorchov, a 14-year-old web developer, designer, and 3D artist.
+        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 md:text-5xl/15 dark:text-white">
+          {age
+            ? `I’m Jasper Gorchov, a ${age}-year-old web developer, designer, and 3D artist.`
+            : `I’m Jasper Gorchov, a web developer, designer, and 3D artist.`}
         </h1>
 
         <div className="mt-12 flex justify-center gap-6 max-sm:*:w-full">
-          <Button href="/projects" color="sky" className="[--btn-bg:#00A6F4]!">
+          <Button href="/projects" color="sky">
             Browse projects
           </Button>
           <Button outline href="/blog">

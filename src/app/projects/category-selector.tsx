@@ -15,10 +15,19 @@ export function CategorySelector({ tags, category }: { tags: { label: string; va
               href={`?category=${encodeURIComponent(tag.value)}`}
               className={clsx('relative block rounded-full px-2.5 py-1 text-sm font-medium transition')}
             >
+              {/* {category === tag.value && (
+                <motion.span
+                  layoutId="selected-background"
+                  className="absolute inset-0 z-10 bg-[#F6F6F4] not-dark:mix-blend-difference dark:-z-10 dark:border-t-1 dark:border-white/10 dark:bg-zinc-700"
+                  style={{ borderRadius: 9999 }}
+                  transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                />
+              )} */}
+
               {category === tag.value && (
                 <motion.span
                   layoutId="selected-background"
-                  className="absolute inset-0 z-10 bg-[#F6F6F4] not-dark:mix-blend-difference dark:-z-10 dark:border-t-1 dark:border-white/7 dark:bg-zinc-800"
+                  className="absolute inset-0 bg-zinc-200 -z-10 dark:border-t dark:border-white/10 dark:bg-zinc-700"
                   style={{ borderRadius: 9999 }}
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
