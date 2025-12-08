@@ -6,7 +6,8 @@ import atApplyInjection from '../components/syntax-highlighter/at-apply.json'
 import atRulesInjection from '../components/syntax-highlighter/at-rules.json'
 import themeFnInjection from '../components/syntax-highlighter/theme-fn.json'
 
-// Cache the promise so multiple imports return the same highlighter instance
+// Lazily initialize and cache a single shiki highlighter instance. The cached
+// promise allows multiple callers to await the same initialization.
 let highlighterPromise: Promise<any> | null = null
 
 export function getHighlighter() {

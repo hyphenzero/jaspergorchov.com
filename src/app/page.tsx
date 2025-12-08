@@ -1,5 +1,9 @@
 import { Button } from '@/components/button'
-import { Hero3D } from '@/components/home/hero-3d'
+import { Container } from "@/components/container"
+import { Hero } from '@/components/home/hero-new'
+import { RecentProjects } from '@/components/home/recent-projects'
+import { getAllProjects } from '@/lib/api'
+import { ChevronRightIcon } from "@heroicons/react/16/solid"
 import { JSX, SVGProps } from 'react'
 
 const getAge = (s?: string): number | null => {
@@ -54,33 +58,49 @@ const socialMedia = [
   },
 ]
 
-export default function Home() {
+export default async function Home() {
+  const projects = await getAllProjects()
+
+  // Remove non-serializable fields (like the MDX Component function)
+  // before passing data into client components. Client components
+  // cannot receive functions from server components.
+  const serializableProjects = projects.map(({ Component, ...rest }) => rest)
   return (
     <>
-      <div className="relative -z-10 -mt-22 h-250 sm:-mt-21">
-        <Hero3D />
+      <div className="absolute inset-0 isolate -z-10 h-[75dvh] min-h-200">
+        <div className="absolute inset-x-0 top-0 z-10 h-1/4 bg-linear-to-b from-white dark:from-zinc-950" />
+        <div className="absolute inset-x-0 bottom-0 z-10 h-1/3 bg-linear-to-t from-white dark:from-zinc-950" />
+        <Hero />
       </div>
 
-      <div className="bg-linear-to-t_ relative mx-auto -translate-y-full flex-col from-white px-6 pb-px lg:px-8 dark:from-zinc-950">
-        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 md:text-5xl/15 dark:text-white">
-          {age
+      <div className="relative mx-auto mt-[clamp(50rem,75vh,75vh)] -translate-y-full flex-col px-6 pb-12 lg:px-8">
+        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 dark:text-shadow-lg md:text-5xl/15 dark:text-white">
+          {/* {age
             ? `I’m Jasper Gorchov, a ${age}-year-old web developer, designer, and 3D artist.`
-            : `I’m Jasper Gorchov, a web developer, designer, and 3D artist.`}
+            : `I’m Jasper Gorchov, a web developer, designer, and 3D artist.`} */}
+          I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>
 
         <div className="mt-12 flex justify-center gap-6 max-sm:*:w-full">
           <Button href="/projects" color="sky">
-            Browse projects
+            Browse projects <ChevronRightIcon className="-mr-1!" />
           </Button>
           <Button outline href="/blog">
-            Read articles
+            Read articles <ChevronRightIcon className="-mr-1!" />
           </Button>
         </div>
-
-        <div className="absolute inset-x-0 bottom-0 h-screen translate-y-full bg-white dark:bg-zinc-950" />
       </div>
 
-      <div className="h-screen"></div>
+      <RecentProjects projects={serializableProjects} />
+
+      <Container className="mt-56">
+        <p className="font-mono text-sm font-semibold tracking-widest text-sky-500 uppercase max-2xl:mb-4 dark:text-sky-400">
+          Web development
+        </p>
+				<h2 className="mt-4 text-[2.5rem]/10 font-medium tracking-tight text-zinc-950 dark:text-white">Crafting the best web experiences I can.</h2>
+				<p className="mt-6 max-w-(--breakpoint-md) text-base/7 text-zinc-600 dark:text-zinc-400">With over 4 years of experience, I use modern web technologies such as Next.js and Tailwind CSS to build websites and web apps that not only are designed with attention to detail, but also include exceptional functionality.</p>
+				<div className="w-full aspect-16/10 bg-zinc-200 dark:bg-zinc-800 rounded-2xl mt-24"></div>
+      </Container>
     </>
   )
 }

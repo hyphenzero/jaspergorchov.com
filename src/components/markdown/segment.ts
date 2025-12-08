@@ -8,23 +8,13 @@ const CLOSE_BRACKET = 0x5d
 const DOUBLE_QUOTE = 0x22
 const SINGLE_QUOTE = 0x27
 
-// This is a shared buffer that is used to keep track of the current nesting level
-// of parens, brackets, and braces. It is used to determine if a character is at
-// the top-level of a string. This is a performance optimization to avoid memory
-// allocations on every call to `segment`.
+// Shared stack buffer to track expected closing brackets. Reused to avoid
+// allocating a new array on every call for performance.
 const closingBracketStack = new Uint8Array(256)
 
 /**
- * This splits a string on a top-level character.
- *
- * Regex doesn't support recursion (at least not the JS-flavored version),
- * so we have to use a tiny state machine to keep track of paren placement.
- *
- * Expected behavior using commas:
- * var(--a, 0 0 1px rgb(0, 0, 0)), 0 0 1px rgb(0, 0, 0)
- *        ┬              ┬  ┬    ┬
- *        x              x  x    ╰──────── Split because top-level
- *        ╰──────────────┴──┴───────────── Ignored b/c inside >= 1 levels of parens
+ * Split `input` on the given `separator` but only when the separator is at the
+ * top level (not nested inside quotes, parens, brackets, or braces).
  */
 export function segment(input: string, separator: string) {
   // SAFETY: We can use an index into a shared buffer because this function is
@@ -47,11 +37,10 @@ export function segment(input: string, separator: string) {
 
     switch (char) {
       case BACKSLASH:
-        // The next character is escaped, so we skip it.
+        // Skip escaped character
         idx += 1
         break
-      // Strings should be handled as-is until the end of the string. No need to
-      // worry about balancing parens, brackets, or curlies inside a string.
+      // Inside a quoted string: skip until the matching quote (handles escapes).
       case SINGLE_QUOTE:
       case DOUBLE_QUOTE:
         // Ensure we don't go out of bounds.
@@ -85,11 +74,7 @@ export function segment(input: string, separator: string) {
       case CLOSE_CURLY:
       case CLOSE_PAREN:
         if (stackPos > 0 && char === closingBracketStack[stackPos - 1]) {
-          // SAFETY: The buffer does not need to be mutated because the stack is
-          // only ever read from or written to its current position. Its current
-          // position is only ever incremented after writing to it. Meaning that
-          // the buffer can be dirty for the next use and still be correct since
-          // reading/writing always starts at position `0`.
+          // Pop expected closer if it matches.
           stackPos--
         }
         break

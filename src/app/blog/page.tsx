@@ -36,17 +36,17 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
       : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   return (
-    <Container className="relative mt-12 xl:mt-24">
-      <h1 className="text-6xl font-medium tracking-tight text-balance text-zinc-900 sm:text-7xl lg:text-7xl dark:text-white">
+    <Container className="relative mt-48">
+      <h1 className="text-5xl font-medium tracking-tight text-balance text-zinc-950 lg:text-6xl dark:text-white">
         Blog
       </h1>
-      <p className="mt-6 max-w-192 text-lg/8 text-balance text-zinc-700 dark:text-zinc-300">
+      <p className="mt-8 max-w-2xl text-lg/9 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
         My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and
         digital creativity.
-      </p>
-      <div className="mt-16 flex w-full items-center justify-between">
-        <CategorySelector allTags={allTags} selectedCategory={category} />
-      </div>
+			</p>
+			
+			<CategorySelector allTags={allTags} selectedCategory={category} />
+			
       <div className="mt-6">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>

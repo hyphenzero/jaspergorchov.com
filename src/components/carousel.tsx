@@ -170,12 +170,13 @@ export function Carousel() {
     <div className="overflow-hidden py-32" ref={setReferenceWindowRef}>
       <div
         ref={scrollRef}
+        // apply visible padding from the --scroll-padding variable so snap/start have space
+        style={{ paddingInline: 'var(--scroll-padding)' }}
         className={clsx([
           'mt-16 flex gap-8',
           '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
           'snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth',
-          // '[--scroll-padding:max(calc(var(--spacing)*6),calc((100vw-var(--maxWidth-7xl))/2))] lg:[--scroll-padding:max(calc(var(--spacing)*8),calc((100vw-var(--maxWidth-7xl))/2))]',
-          'px-[calc(max((100vw-var(--maxWidth-7xl))/2,0px)+var(--spacing)*6)] lg:px-96',
+          '[--scroll-padding:max(calc(var(--spacing)*6),calc((100vw-72rem)/2))] lg:[--scroll-padding:max(calc(var(--spacing)*8),calc((100vw-72rem)/2))]',
         ])}
       >
         {testimonials.map(({ img, name, title, quote }, testimonialIndex) => (

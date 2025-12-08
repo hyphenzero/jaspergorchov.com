@@ -11,74 +11,68 @@ import { Logo } from './logo-box'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
 
 const navigation = [
-  { name: 'About', href: '/about' },
   { name: 'Projects', href: '/projects' },
   { name: 'Blog', href: '/blog' },
+  { name: 'Contact', href: '/contact' },
 ]
 
-export function Header({ latestTitle, latestUrl }: { latestTitle: string; latestUrl: string }) {
+export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const [animateIndicator, setAnimateIndicator] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const prevPathRef = useRef<string | null>(null)
 
-  // helper to determine if a path belongs to the top-level nav group
+  /** Return true when the given path is inside a top-level nav route. */
   const isNavPath = (p: string | null) => {
     if (!p) return false
     return navigation.some((item) => p.startsWith(item.href))
   }
 
   useEffect(() => {
-    // store previous pathname before it updates
+    // keep the previous pathname for transition decisions
     prevPathRef.current = pathname
   }, [pathname])
 
   useEffect(() => {
-    // toggle scrolled state when user scrolls past 100px
-    const onScroll = () => {
-      setScrolled(window.scrollY > 100)
-    }
-
-    // run once on mount to set initial state
+    // update `scrolled` when window scroll passes 100px; initialize once.
+    const onScroll = () => setScrolled(window.scrollY > 20)
     onScroll()
-
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   const router = useRouter()
 
+  /**
+   * Handle navigation clicks:
+   * - Prevent default navigation.
+   * - Set animation flag when transitioning between nav and non-nav pages.
+   * - Wait briefly to allow the animation state to render, then navigate.
+   */
   async function handleNavClick(e: React.MouseEvent | null, target: string) {
     if (e) e.preventDefault()
     const prev = prevPathRef.current ?? pathname
     const prevIsNav = isNavPath(prev)
     const targetIsNav = isNavPath(target)
 
-    // Play enter animation when navigating from a non-nav page into a nav page.
-    // Play exit animation when navigating from a nav page to a non-nav page (e.g. clicking the logo).
     const shouldAnimate = (targetIsNav && !prevIsNav) || (!targetIsNav && prevIsNav)
     setAnimateIndicator(shouldAnimate)
 
-    // give React a moment to render the animate state before navigating so
-    // the exit animation can run on the indicator.
+    // Allow the indicator animation state to apply before routing.
     await new Promise((r) => setTimeout(r, 40))
     router.push(target)
-
-    // Clear the flag shortly after navigation so subsequent nav-item-to-nav-item
-    // transitions use the shared layout animation rather than the mount/unmount animation.
     setTimeout(() => setAnimateIndicator(false), 400)
   }
 
   return (
     <header
       className={clsx(
-        'sticky top-0 z-50 transition-[-webkit-backdrop-filter,backdrop-filter] duration-500',
-        // scrolled ? 'backdrop-blur-md' : 'backdrop-blur-none'
-        'backdrop-blur-md'
+        'absolute fixed inset-x-0 top-0 z-50 transition-[-webkit-backdrop-filter,backdrop-filter] duration-500',
+        scrolled ? 'bg-white/90 backdrop-blur-md dark:bg-zinc-950/90' : 'backdrop-blur-none'
       )}
     >
-      <Navbar className="relative mx-auto max-w-288 px-6 pt-5 pb-5.25 lg:px-8">
+      <Navbar className="relative mx-auto max-w-7xl px-6 pt-5 pb-5.25 lg:px-8">
         <div
           className={clsx(
             'absolute inset-x-0 top-full mx-6 h-px -translate-y-px transition-colors duration-500 lg:mx-8',
@@ -89,7 +83,7 @@ export function Header({ latestTitle, latestUrl }: { latestTitle: string; latest
         <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')}>
           <Logo className="size-10 sm:size-8" />
         </Link>
-        <Banner latestTitle={latestTitle} latestUrl={latestUrl} />
+        <Banner />
         <NavbarSpacer />
         <NavbarSection className="max-lg:hidden">
           {navigation.map((item) => (

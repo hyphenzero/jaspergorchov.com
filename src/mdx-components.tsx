@@ -14,6 +14,8 @@ function getTextContent(node: React.ReactNode): string {
       return ''
     }
 
+    // Dive into element children to extract text for slug generation.
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return getTextContent(node.props.children)
   }
@@ -28,11 +30,11 @@ function getTextContent(node: React.ReactNode): string {
 function slugify(str: React.ReactNode) {
   return getTextContent(str)
     .toLowerCase()
-    .trim() // Remove whitespace from both ends of a string
-    .replace(/\s+/g, '-') // Replace spaces with -
-    .replace(/&/g, '-and-') // Replace & with 'and'
-    .replace(/[^\w\-]+/g, '') // Remove all non-word characters except for -
-    .replace(/\-\-+/g, '-') // Replace multiple - with single -
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/&/g, '-and-')
+    .replace(/[^\w\-]+/g, '')
+    .replace(/\-\-+/g, '-')
 }
 
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
@@ -52,11 +54,8 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
   }
 }
 
-// This file is required to use MDX in `app` directory.
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
-    // Allows customizing built-in components, e.g. to add styling.
-    // h1: ({ children }) => <h1 style={{ fontSize: "100px" }}>{children}</h1>,
     ...components,
 
     h2: createHeading(2),
@@ -66,6 +65,50 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h6: createHeading(6),
 
     a(props: any) {
+      // Use the project's Link for internal navigation; external links open in a new tab.
+      const { href } = props || {}
+
+      function isExternal(href?: string) {
+        if (!href || typeof href !== 'string') return false
+        if (href.startsWith('#') || href.startsWith('/')) return false
+        if (href.startsWith('//')) return true
+        try {
+          const url = new URL(href)
+          const host = url.hostname
+          if (host === 'localhost') return false
+          if (host === 'jaspergorchov.com') return false
+          if (host.endsWith('.jaspergorchov.com')) return false
+          return url.protocol === 'http:' || url.protocol === 'https:'
+        } catch {
+          return false
+        }
+      }
+
+      if (isExternal(href)) {
+        const { children, ...rest } = props
+
+        return (
+          <Link
+            {...rest}
+            href={href}
+            className="fill-(--prose-link-icon-bg-color) stroke-(--prose-link-icon-color) pr-4 transition-colors hover:fill-(--prose-link-icon-bg-hover-color) hover:stroke-(--prose-link-icon-hover-color)"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <span>{children}</span>
+            <svg viewBox="0 0 12 12" aria-hidden="true" className="absolute ml-1 inline-block size-3 -translate-y-3.5">
+              <rect width="12" height="12" strokeWidth="0" rx="3" />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="1.5"
+                d="m3.75 8.25 4.5-4.5m0 0h-3.5m3.5 0v3.5"
+              />
+            </svg>
+          </Link>
+        )
+      }
+
       return <Link {...props} />
     },
 
@@ -95,15 +138,18 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     },
 
     pre(props) {
-      let child = React.Children.only(props.children) as React.ReactElement
+      let child = React.Children.only(props.children) as React.ReactElement<{
+        className?: string
+        children?: string
+      }>
       if (!child) return null
 
-      // @ts-ignore
-      let { className, children: code } = child.props
+      let { className, children: code } = child.props as { className?: string; children?: string }
+      if (typeof code !== 'string') code = String(code ?? '')
       let lang = className ? className.replace('language-', '') : ''
       let filename = undefined
 
-      // Extract `[!code filename:…]` directives from the first line of code
+      // Extract optional filename directives from the first line of a code block
       let lines = code.split('\n')
       let filenameRegex = /\[\!code filename\:(.+)\]/
       let match = lines[0].match(filenameRegex)

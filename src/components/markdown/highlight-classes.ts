@@ -4,8 +4,9 @@ import { segment } from './segment'
 
 export interface HighlightClassesOptions {
   highlightedClassName: string
-  lightHighlightedClassName?: string // Keep for backward compatibility
-  darkHighlightedClassName?: string // Keep for backward compatibility
+  // Legacy fields kept for backward compatibility; prefer `highlightedClassName`.
+  lightHighlightedClassName?: string
+  darkHighlightedClassName?: string
 }
 
 const enum ClassState {
@@ -66,7 +67,9 @@ export function highlightClasses(opts: HighlightClassesOptions): ShikiTransforme
             } else if (text.startsWith('`') && text.endsWith('`')) {
               classState = ClassState.InsideSingle
             } else {
-              // TODO: Handle multi-line class attributes
+              // Multi-line attribute value (e.g. broken across HAST nodes) is
+              // not currently supported by the tiny state machine. Ignore and
+              // skip; this may miss highlights in rare edge cases.
               classState = ClassState.None
               console.warn('Found a potential multi-line class attribute')
               console.warn({ text })

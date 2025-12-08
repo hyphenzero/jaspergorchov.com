@@ -168,7 +168,7 @@ export function Testimonials() {
         <div className="w-[42rem] shrink-0 sm:w-[54rem]" />
       </div>
       <div className="mt-16 px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl px-6 lg:max-w-288 lg:px-8">
+        <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">
           <div className="flex justify-between">
             <CallToAction />
             <div className="hidden sm:flex sm:gap-2">

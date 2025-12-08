@@ -6,7 +6,12 @@
   --prose-code-color: var(--color-zinc-950);
   --prose-marker-color: color-mix(in oklab, var(--color-zinc-700) 25%, transparent);
   --prose-link-underline-color: var(--color-zinc-200);
-  --prose-link-underline-hover-color: var(--color-zinc-400);
+  /* --prose-link-underline-hover-color: var(--color-zinc-400); */
+	--prose-link-underline-hover-color: var(--color-sky-500);
+  --prose-link-icon-bg-color: var(--color-zinc-200);
+  --prose-link-icon-color: var(--color-zinc-400);
+  --prose-link-icon-bg-hover-color: var(--color-zinc-300);
+  --prose-link-icon-hover-color: var(--color-zinc-600);
   --prose-th-borders: var(--color-zinc-300);
   --prose-td-borders: var(--color-zinc-200);
   --prose-hr-color: color-mix(in oklab, var(--color-zinc-950) 5%, transparent);
@@ -20,7 +25,12 @@
     --prose-code-color: var(--color-white);
     --prose-marker-color: color-mix(in oklab, var(--color-zinc-300) 35%, transparent);
     --prose-link-underline-color: var(--color-zinc-600);
-    --prose-link-underline-hover-color: var(--color-zinc-400);
+    /* --prose-link-underline-hover-color: var(--color-zinc-400); */
+		--prose-link-underline-hover-color: var(--color-sky-400);
+    --prose-link-icon-bg-color: var(--color-zinc-900);
+    --prose-link-icon-color: var(--color-zinc-500);
+    --prose-link-icon-bg-hover-color: var(--color-zinc-800);
+    --prose-link-icon-hover-color: var(--color-zinc-400);
     --prose-th-borders: var(--color-zinc-600);
     --prose-td-borders: var(--color-zinc-700);
     --prose-hr-color: color-mix(in oklab, var(--color-white) 10%, transparent);
@@ -43,10 +53,19 @@
   }
 
   *:where(:not(.not-prose, .not-prose *)) + *:where(:not(.not-prose, .not-prose *)) {
-    margin-top: calc(var(--spacing) * 6);
+    @apply mt-6;
   }
 
-  @apply **:data-[media]:mt-0 **:data-[media]:py-12 **:[[data-media]+*]:mt-0;
+  /* Don't apply the above top margin when the following element is a timeline list or inside one */
+  *:where(:not(.not-prose, .not-prose *)) + *:where([data-timeline-list]) {
+    @apply mt-0;
+  }
+
+  @apply **:data-[media]:mt-0 **:data-[media]:not-[[data-image-grid]_[data-media],[data-timeline]_[data-media]]:py-12 **:[[data-media]+*]:mt-0;
+
+  &.prose > [data-media]:first-child:where(:not(.not-prose, .not-prose *)) {
+    @apply pt-0 pb-12;
+  }
 
   h2:where(:not(.not-prose, .not-prose *)) {
     font-size: var(--text-lg);
@@ -95,39 +114,61 @@
     }
   }
 
-  ol:where(:not(.not-prose, .not-prose *)) {
+  & [data-timeline] h2,
+  & [data-timeline] h3,
+  & [data-timeline] h4,
+  & [data-timeline] h2 + h3 {
+    margin-top: 0;
+  }
+
+  /* Give media blocks inside timelines smaller vertical padding */
+  & [data-timeline] [data-media] {
+    @apply py-8;
+  }
+
+  /* If a media block is the last item inside a timeline entry, remove bottom padding
+     and keep only top padding so the timeline item doesn't get extra vertical space. */
+  & [data-timeline] [data-media]:last-child {
+    @apply pt-8 pb-0;
+  }
+
+  ol:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
     padding-left: calc(var(--spacing) * 6);
     list-style-type: decimal;
   }
 
-  ol li:where(:not(.not-prose, .not-prose *)) {
+  ol li:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
     padding-left: calc(var(--spacing) * 3);
   }
 
-  ol li + li:where(:not(.not-prose, .not-prose *)) {
+  ol li + li:where(:not(.not-prose, .not-prose *, [data-timeline] *)) {
     margin-top: calc(var(--spacing) * 4);
   }
 
-  ol li:where(:not(.not-prose, .not-prose *))::marker {
+  ol li:where(:not(.not-prose, .not-prose *, [data-timeline-list]))::marker {
     font-weight: 600;
     color: var(--prose-strong-color);
   }
 
-  ul:where(:not(.not-prose, .not-prose *)) {
+  ul:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
     padding-left: calc(var(--spacing) * 6);
     list-style-type: disc;
   }
 
-  ul li:where(:not(.not-prose, .not-prose *)) {
+  ul li:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
     padding-left: calc(var(--spacing) * 3);
   }
 
-  ul li + li:where(:not(.not-prose, .not-prose *)) {
+  ul li + li:where(:not(.not-prose, .not-prose *, [data-timeline] *)) {
     margin-top: calc(var(--spacing) * 4);
   }
 
-  ul li:where(:not(.not-prose, .not-prose *))::marker {
+  ul li:where(:not(.not-prose, .not-prose *, [data-timeline-list]))::marker {
     color: var(--prose-marker-color);
+  }
+
+  [data-timeline-list] > li:where(:not(.not-prose, .not-prose *)) {
+    padding-left: 0;
   }
 
   a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) {
@@ -145,7 +186,7 @@
     text-decoration-color: var(--prose-link-underline-hover-color);
   }
 
-  a:where(:not(.not-prose, .not-prose *)):has(> [data-media]) {
+  a:where(:not(.not-prose, .not-prose *, [data-timeline], [data-timeline] *)):has(> [data-media]) {
     display: block;
   }
 

@@ -68,6 +68,8 @@ export const NavbarItem = forwardRef(function NavbarItem(
           <motion.span
             key="current-indicator"
             layoutId="current-indicator"
+            style={{ originY: '0px' }}
+            // layoutRoot
             // Only play the mount/unmount opacity + scale animation when
             // `animateIndicator` is true. When switching between navbar items
             // we rely on the shared layout animation (layoutId) so we omit
@@ -79,7 +81,7 @@ export const NavbarItem = forwardRef(function NavbarItem(
                   exit: { opacity: 0, scaleX: 0.5 },
                 }
               : {})}
-            className="bg-zinc-400_ dark:bg-zinc-600_ absolute inset-x-2.5 -bottom-[1.40625rem] h-0.5 origin-center rounded-full bg-sky-500 shadow-2xl shadow-sky-400 dark:bg-sky-400"
+            className="bg-zinc-400_ dark:bg-zinc-600_ absolute inset-x-2.5 -bottom-[1.40625rem] h-0.5 origin-center translate-y-0! rounded-full bg-sky-500 shadow-2xl shadow-sky-400 dark:bg-sky-400"
           />
         )}
       </AnimatePresence>

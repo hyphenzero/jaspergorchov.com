@@ -1,5 +1,9 @@
-import { TagButton } from '@/components/tag'
+import { Button } from '@/components/button'
+import { Container } from '@/components/container'
 import { formatDate, getProjectBySlug, getProjectSlugs } from '@/lib/api'
+import type { Project } from '@/types/post'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next/types'
 
@@ -58,59 +62,50 @@ export default async function ArticlePage(props: Props) {
     return notFound()
   }
 
-  const now = new Date()
-  function isInCurrentMonth(dateStr?: string) {
-    if (!dateStr) return false
-    const d = new Date(dateStr)
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
-  }
-
-  const m: any = post.meta
-  const releaseDate = m.releaseDate ?? m.date
-  const updatedDate = m.updatedDate ?? m.updated
+  const meta: Project['meta'] = post.meta as Project['meta']
+  const releaseDate = meta.releaseDate ?? meta.date
+  const updatedDate = meta.updatedDate ?? meta.updated
 
   return (
     <>
-      {/* Add a placeholder div so the Next.js router can find the scrollable element. */}
+      <Container className="mt-28">
+        <Button href="/projects" plain className="-translate-x-3.75 px-2! py-0.5! font-medium!">
+          <ChevronLeftIcon /> Back to Projects
+        </Button>
+      </Container>
       <div hidden />
-      <div className="mx-auto mt-16 flex w-full max-w-3xl flex-col">
-        <time
-          className="font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400"
-          dateTime={releaseDate}
-        >
-          {formatDate(releaseDate)}
-        </time>
+      <div className="w-full px-6">
+        <div className="mx-auto mt-16 flex w-full max-w-3xl flex-col">
+          <span className="flex items-center font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400">
+            <time dateTime={releaseDate}>{formatDate(releaseDate)}</time>
 
-        {updatedDate && updatedDate !== releaseDate ? (
-          <div className="mt-2 font-mono text-xs text-zinc-500 dark:text-zinc-400">
-            Updated {formatDate(updatedDate)}
+            {updatedDate && updatedDate !== releaseDate ? (
+              <>
+                <div className="mx-4 size-1 rounded-full bg-current" />
+                <span>Updated&nbsp;</span>
+                <time>{formatDate(updatedDate)}</time>
+              </>
+            ) : null}
+          </span>
+
+          <h1 className="mt-5 inline-block max-w-3xl text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
+            {post.meta.title}
+          </h1>
+
+          <div className="mt-10 flex items-center gap-x-3">
+            {post.meta.tags.map((tag) => (
+              <Link
+                className="rounded-full bg-zinc-200 px-2.5 py-1 text-sm font-medium text-zinc-950 dark:border-t dark:border-white/10 dark:bg-zinc-700 dark:text-white"
+                key={tag}
+                href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
+              >
+                {tag}
+              </Link>
+            ))}
           </div>
-        ) : null}
-
-        <h1 className="mt-2 inline-block max-w-3xl text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
-          {post.meta.title}
-        </h1>
-
-        <div className="mt-6 flex items-center gap-x-3">
-          {post.meta.tags.map((tag) => (
-            <TagButton key={tag} href={`/projects?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}>
-              {tag}
-            </TagButton>
-          ))}
-
-          {/* Badge: Updated takes precedence over New */}
-          {isInCurrentMonth(updatedDate) ? (
-            <div className="ml-2 inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-zinc-800 dark:text-sky-300">
-              Updated
-            </div>
-          ) : isInCurrentMonth(releaseDate) ? (
-            <div className="ml-2 inline-flex items-center rounded-full bg-sky-100 px-2 py-0.5 text-xs font-medium text-sky-800 dark:bg-zinc-800 dark:text-sky-300">
-              New
-            </div>
-          ) : null}
         </div>
       </div>
-      <article className="prose prose-blog mx-auto mt-6 max-w-288 px-6 *:mx-auto md:mt-12 lg:px-8">
+      <article className="prose prose-blog mx-auto mt-20 max-w-7xl px-6 *:mx-auto lg:px-8">
         <post.Component />
       </article>
     </>

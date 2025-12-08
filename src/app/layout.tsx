@@ -1,6 +1,5 @@
+import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
-import { getAllBlogPosts, getAllProjects } from '@/lib/api'
-import { getLatestContent, serializeForHeader } from '@/lib/api-utils'
 import type { Metadata } from 'next'
 import type React from 'react'
 import './globals.css'
@@ -18,34 +17,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  // Fetch blog posts and projects
-  const blogPosts = await getAllBlogPosts()
-  const projects = await getAllProjects()
-
-  // Filter out private posts
-  const publicBlogPosts = blogPosts.filter((post) => !post.meta.private)
-  const publicProjects = projects.filter((project) => !project.meta.private)
-
-  // Serialize posts for client components - only passing what's needed
-  const headerBlogPosts = serializeForHeader(publicBlogPosts)
-  const headerProjects = serializeForHeader(publicProjects)
-
-  // Pre-calculate latest content for the banner
-  const latestContent = getLatestContent(headerBlogPosts, headerProjects)
-
-  // Default values in case there's no content
-  const latestTitle = latestContent?.latestTitle || 'Welcome'
-  const latestUrl = latestContent?.latestUrl || '/'
-
   return (
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+          rel="stylesheet"
+        />
       </head>
       <body className="min-h-dvh bg-white antialiased dark:bg-zinc-950">
-        <Header latestTitle={latestTitle} latestUrl={latestUrl} />
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   )

@@ -1,5 +1,6 @@
 import { Container } from '@/components/container'
 import { formatDate, getAllProjects } from '@/lib/api'
+import type { Project } from '@/types/post'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -32,48 +33,92 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
 
   const category = searchParams?.category?.toLowerCase() ?? 'all'
 
-  const posts =
+  const posts: Project[] =
     category === 'all'
-      ? publicPosts
-      : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
+      ? (publicPosts as Project[])
+      : (publicPosts as Project[]).filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   const now = new Date()
-  function isInCurrentMonth(dateStr?: string) {
+  function isRecent(dateStr?: string) {
     if (!dateStr) return false
     const d = new Date(dateStr)
-    return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth()
+    const diffMs = now.getTime() - d.getTime()
+    const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
+    return diffMs >= 0 && diffMs <= THIRTY_DAYS_MS
   }
 
   return (
-    <Container className="relative mt-12 lg:mt-20">
+    <Container className="relative mt-48">
       <h1 className="text-5xl font-medium tracking-tight text-balance text-zinc-950 lg:text-6xl dark:text-white">
         Projects
       </h1>
-      <p className="mt-6 max-w-2xl text-lg/7 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+      <p className="mt-8 max-w-2xl text-lg/9 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
         Browse my programming, design, and 3D art projects.
       </p>
       <CategorySelector tags={tags} category={category} />
-      <div className="mt-6 grid grid-cols-1 gap-12 md:grid-cols-2">
+      <div className="mt-12 grid grid-cols-1 gap-x-12 gap-y-18 md:grid-cols-2">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
         ) : (
           posts.map(({ meta, slug }) => {
-            const m: any = meta
-            const releaseDate = m.releaseDate ?? m.date
-            const updatedDate = m.updatedDate ?? m.updated
+            const hasExplicitReleaseDate = meta.releaseDate !== undefined && meta.releaseDate !== null
+            const hasDate = meta.date !== undefined && meta.date !== null
+            const releaseOrDate = hasExplicitReleaseDate ? meta.releaseDate : hasDate ? meta.date : undefined
+            const updatedDate = meta.updatedDate ?? meta.updated
+
+            // Skip entries that do not expose any date field; downstream UI
+            // expects a canonical `meta.date`/releaseDate to render badges and times.
+            if (!releaseOrDate) return null
 
             return (
               <article
                 key={slug}
-                className="group relative rounded-2xl bg-zinc-950/4 p-1 transition-colors hover:bg-zinc-950/7 dark:bg-zinc-900/70 dark:hover:bg-zinc-900"
+                className="group bg-zinc-950/4_ hover:bg-zinc-950/7_ dark:bg-zinc-900/70_ dark:hover:bg-zinc-900_ relative rounded-2xl p-1 transition-colors"
               >
-                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5">
+                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 group-hover:scale-105 transition-transform duration-400 ease-out">
                   <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-transparent ring-inset max-lg:hidden dark:ring-white/10" />
                   {meta.image?.src ? (
-                    <Image priority unoptimized fill src={meta.image.src} alt="" className="size-full object-cover" />
+                    <Image
+                      priority
+                      unoptimized
+                      fill
+                      src={meta.image.src}
+                      alt={meta.title ?? ''}
+                      className="size-full object-cover"
+                    />
                   ) : null}
                 </div>
-                <div className="flex flex-col p-4 pt-6">
+                <div className="p-4_ transition-colors_ group-hover:bg-zinc-950/7_ dark:group-hover:bg-zinc-900_ relative mt-10 flex flex-col rounded-xl">
+                  <div className="absolute -inset-4 -z-10 bg-zinc-950/7 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl dark:bg-zinc-900 duration-200" />
+                  <div className="flex items-center">
+                    <div className="flex items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
+                      {updatedDate ? (
+                        <div className="flex items-center">
+                          <span>Updated&nbsp;</span>
+                          <time dateTime={updatedDate}>{formatDate(updatedDate)}</time>
+                        </div>
+                      ) : hasExplicitReleaseDate ? (
+                        <div className="flex items-center">
+                          <span>Released&nbsp;</span>
+                          <time dateTime={releaseOrDate}>{formatDate(releaseOrDate as string)}</time>
+                        </div>
+                      ) : releaseOrDate ? (
+                        <div className="flex items-center">
+                          <time dateTime={releaseOrDate}>{formatDate(releaseOrDate as string)}</time>
+                        </div>
+                      ) : null}
+                    </div>
+
+                    <ul className="m-0 flex list-none items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
+                      {meta.tags.map((tag, i) => (
+                        <li key={i} className="inline-flex items-center">
+                          <span className="mx-4 inline-block size-0.75 rounded-full bg-current" />
+                          <span className="leading-none">{tag}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
                   <div className="mt-3 flex items-center gap-4">
                     <h2 className="text-xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-white">
                       <Link href={`/projects/${slug}`}>
@@ -83,7 +128,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                     </h2>
 
                     {(() => {
-                      if (isInCurrentMonth(updatedDate)) {
+                      if (isRecent(updatedDate)) {
                         return (
                           <div className="group relative w-fit px-1.5 text-xs/5 text-sky-800 dark:text-sky-300">
                             <span className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 dark:border-sky-300/30 dark:bg-sky-400/15" />
@@ -92,7 +137,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute top-[-2px] left-[-2px] fill-sky-300 dark:fill-sky-300/50"
+                              className="absolute -top-0.5 -left-0.5 fill-sky-300 dark:fill-sky-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -100,7 +145,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute top-[-2px] right-[-2px] fill-sky-300 dark:fill-sky-300/50"
+                              className="absolute -top-0.5 -right-0.5 fill-sky-300 dark:fill-sky-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -108,7 +153,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute bottom-[-2px] left-[-2px] fill-sky-300 dark:fill-sky-300/50"
+                              className="absolute -bottom-0.5 -left-0.5 fill-sky-300 dark:fill-sky-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -116,7 +161,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute right-[-2px] bottom-[-2px] fill-sky-300 dark:fill-sky-300/50"
+                              className="absolute -right-0.5 -bottom-0.5 fill-sky-300 dark:fill-sky-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -124,7 +169,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                         )
                       }
 
-                      if (isInCurrentMonth(releaseDate)) {
+                      if (isRecent(releaseOrDate)) {
                         return (
                           <div className="group relative w-fit px-1.5 text-xs/5 text-emerald-800 dark:text-emerald-300">
                             <span className="absolute inset-0 border border-dashed border-emerald-300 bg-emerald-400/12 dark:border-emerald-300/30 dark:bg-emerald-400/15" />
@@ -133,7 +178,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute top-[-2px] left-[-2px] fill-emerald-400 dark:fill-emerald-300/50"
+                              className="absolute -top-0.5 -left-0.5 fill-emerald-400 dark:fill-emerald-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -141,7 +186,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute top-[-2px] right-[-2px] fill-emerald-400 dark:fill-emerald-300/50"
+                              className="absolute -top-0.5 -right-0.5 fill-emerald-400 dark:fill-emerald-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -149,7 +194,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute bottom-[-2px] left-[-2px] fill-emerald-400 dark:fill-emerald-300/50"
+                              className="absolute -bottom-0.5 -left-0.5 fill-emerald-400 dark:fill-emerald-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -157,7 +202,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                               width="5"
                               height="5"
                               viewBox="0 0 5 5"
-                              className="absolute right-[-2px] bottom-[-2px] fill-emerald-400 dark:fill-emerald-300/50"
+                              className="absolute -right-0.5 -bottom-0.5 fill-emerald-400 dark:fill-emerald-300/50"
                             >
                               <path d="M2 0h1v2h2v1h-2v2h-1v-2h-2v-1h2z" />
                             </svg>
@@ -168,10 +213,10 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                       return null
                     })()}
 
-                    <svg
+                    {/* <svg
                       viewBox="0 0 10 10"
                       aria-hidden="true"
-                      className="transtion-opacity h-2.5 w-2.5 flex-none text-zinc-400 opacity-0 transition duration-500 ease-[linear(0,0.009_1.2%,0.033_2.4%,0.074_3.7%,0.133_5.1%,0.26_7.6%,0.682_15%,0.796_17.3%,0.889_19.5%,0.965_21.7%,1.026_23.9%,1.071_26.2%,1.102_28.5%,1.122_32%,1.119_35.9%,1.018_52%,0.988_61.4%,0.985_68.8%,1)] not-group-hover:-translate-x-3 group-hover:opacity-100"
+                      className="transtion-opacity mt-0.5 size-2.5 flex-none text-zinc-400 opacity-0 transition duration-150 ease-out not-group-hover:-translate-x-3 group-hover:opacity-100 group-hover:duration-600 group-hover:ease-[linear(0,0.009_0.9%,0.037_1.9%,0.154_4.1%,0.304_6.1%,0.774_11.7%,0.995_15%,1.075_16.6%,1.136_18.2%,1.178_19.8%,1.203_21.5%,1.212_23.7%,1.196_26.1%,1.162_28.6%,1.057_34.5%,1.01_37.6%,0.975_41%,0.958_44.5%,0.958_49.4%,0.997_60.7%,1.009_67.2%,1)]"
                     >
                       <path
                         fill="currentColor"
@@ -181,28 +226,9 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                         strokeWidth="1.5"
                         d="m7.25 5-3.5-2.25v4.5L7.25 5Z"
                       />
-                    </svg>
+                    </svg> */}
                   </div>
                   <p className="mt-3 line-clamp-2 text-sm/7 text-zinc-600 dark:text-zinc-400">{meta.description}</p>
-                  <div className="order-first">
-                    <dl className="mt-1 font-mono text-xs tracking-wider text-zinc-500 uppercase dark:text-zinc-400_">
-                      {updatedDate ? (
-                        <>
-                          <dt className="inline">Updated </dt>
-                          <dd className="inline">
-                            <time dateTime={updatedDate}>{formatDate(updatedDate)}</time>
-                          </dd>
-                        </>
-                      ) : releaseDate ? (
-                        <>
-                          <dt className="inline">Released </dt>
-                          <dd className="inline">
-                            <time dateTime={releaseDate}>{formatDate(releaseDate)}</time>
-                          </dd>
-                        </>
-                      ) : null}
-                    </dl>
-                  </div>
                 </div>
               </article>
             )

@@ -1,48 +1,55 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import { fileURLToPath } from 'node:url'
-import type React from 'react'
+import type { BlogPost, Project } from '../types/post'
+import { formatDate as _formatDate } from './api-utils'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+export const formatDate = _formatDate
+
+/** Allow only simple, filesystem-safe slugs used in dynamic imports. */
+function isValidSlug(slug: string) {
+  return /^[a-zA-Z0-9_-]+$/.test(slug)
+}
+
+/**
+ * Normalize various frontmatter image shapes into { src: string }.
+ * Accepts string paths, imported image objects, or already-normalized shapes.
+ */
+function normalizeImage(img: any): { src: string } | undefined {
+  if (!img) return undefined
+  if (typeof img === 'string') return { src: img }
+  if (typeof img === 'object') return { src: img.src ?? img.default ?? String(img) }
+  return { src: String(img) }
+}
+
+// resolved paths are constructed from process.cwd() when needed
 
 // Blog post functions
-export async function getBlogPostBySlug(slug: string): Promise<{
-  Component: React.FC
-  meta: {
-    title: string
-    date: string
-    excerpt: React.ReactElement
-    tags: string[]
-    description: string
-    image?: {
-      src: string
-    }
-    private?: boolean
-  }
-  slug: string
-} | null> {
+/** Load a blog MDX module by slug and normalize its frontmatter. */
+export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> {
   try {
-    // Check if the file exists using process.cwd() for absolute path
-    if (!(await fs.stat(path.join(process.cwd(), `src/blog/${slug}/index.mdx`)).catch(() => null))) {
-      return null
-    }
+    if (!isValidSlug(slug)) return null
 
-    const module = await import(`../blog/${slug}/index.mdx`)
-    if (!module.default) {
-      return null
+    const absolutePath = path.join(process.cwd(), `src/app/blog/${slug}/index.mdx`)
+    if (!(await fs.stat(absolutePath).catch(() => null))) return null
+
+    const module = await import(`../app/blog/${slug}/index.mdx`)
+    if (!module?.default) return null
+
+    const meta = module.meta || {}
+    const normalized: any = {
+      ...meta,
+      // Prefer an explicit `date`, but allow `releaseDate` on blog pages for robustness.
+      date: meta.date ?? meta.releaseDate,
+      image: normalizeImage(meta.image),
     }
 
     return {
       Component: module.default,
-      meta: {
-        // ensure legacy `date` field exists for consumers by falling back to releaseDate
-        ...(module.meta || {}),
-        date: module.meta?.releaseDate ?? module.meta?.date,
-      },
+      meta: normalized,
       slug,
     }
   } catch (e) {
+    // Keep error handling minimal; callers can treat `null` as not-found.
     console.error(e)
     return null
   }
@@ -50,8 +57,9 @@ export async function getBlogPostBySlug(slug: string): Promise<{
 
 export async function getBlogPostSlugs(): Promise<string[]> {
   try {
-    // Use process.cwd() to get the absolute path to your project root
-    const folders = (await fs.readdir(path.join(process.cwd(), 'src/blog'))).filter((folder) => !folder.startsWith('.'))
+    const folders = (await fs.readdir(path.join(process.cwd(), 'src/app/blog'))).filter(
+      (folder) => !folder.startsWith('.')
+    )
 
     const results = await Promise.all(folders.map((folder) => getBlogPostBySlug(folder)))
 
@@ -73,37 +81,31 @@ export async function getAllBlogPosts() {
 }
 
 // Project functions
-export async function getProjectBySlug(slug: string): Promise<{
-  Component: React.FC
-  meta: {
-    title: string
-    date: string
-    excerpt: React.ReactElement
-    tags: string[]
-    description: string
-    image?: {
-      src: string
-    }
-    private?: boolean
-  }
-  slug: string
-} | null> {
+/** Load a project MDX module and normalize project-specific frontmatter. */
+export async function getProjectBySlug(slug: string): Promise<Project | null> {
   try {
-    // Check if the file exists using process.cwd() for absolute path
-    if (!(await fs.stat(path.join(process.cwd(), `src/projects/${slug}/index.mdx`)).catch(() => null))) {
-      return null
-    }
+    if (!isValidSlug(slug)) return null
 
-    const module = await import(`../projects/${slug}/index.mdx`)
-    if (!module.default) {
-      return null
+    const absolutePath = path.join(process.cwd(), `src/app/projects/${slug}/index.mdx`)
+    if (!(await fs.stat(absolutePath).catch(() => null))) return null
+
+    const module = await import(`../app/projects/${slug}/index.mdx`)
+    if (!module?.default) return null
+
+    const meta = module.meta || {}
+    const normalizedMeta: any = {
+      ...meta,
+      // Normalized canonical date for consumers. Prefer explicit releaseDate.
+      date: meta.releaseDate ?? meta.date,
+      releaseDate: meta.releaseDate,
+      // Support both `updatedDate` and legacy `updated` fields.
+      updatedDate: meta.updatedDate ?? meta.updated,
+      image: normalizeImage(meta.image),
     }
 
     return {
       Component: module.default,
-      meta: {
-        ...module.meta,
-      },
+      meta: normalizedMeta,
       slug,
     }
   } catch (e) {
@@ -114,8 +116,7 @@ export async function getProjectBySlug(slug: string): Promise<{
 
 export async function getProjectSlugs(): Promise<string[]> {
   try {
-    // Use process.cwd() to get the absolute path to your project root
-    const folders = (await fs.readdir(path.join(process.cwd(), 'src/projects'))).filter(
+    const folders = (await fs.readdir(path.join(process.cwd(), 'src/app/projects'))).filter(
       (folder) => !folder.startsWith('.')
     )
 
@@ -139,15 +140,6 @@ export async function getAllProjects() {
 }
 
 // Utility functions
-export function formatDate(timestamp: string) {
-  const date = new Date(timestamp)
-  return date.toLocaleDateString('en-US', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })
-}
-
 export function nonNullable<T>(x: T | null): x is NonNullable<T> {
   return x !== null
 }
