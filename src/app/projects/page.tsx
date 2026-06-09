@@ -1,9 +1,9 @@
-import { Container } from '@/components/container'
-import { formatDate, getAllProjects } from '@/lib/api'
-import type { Project } from '@/types/post'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { Container } from '@/components/container'
+import { formatDate, getAllProjects } from '@/lib/api'
+import type { Project } from '@/types/post'
 import { CategorySelector } from './category-selector'
 
 export const metadata: Metadata = {
@@ -49,10 +49,10 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
 
   return (
     <Container className="relative mt-48">
-      <h1 className="text-5xl font-medium tracking-tight text-balance text-zinc-950 lg:text-6xl dark:text-white">
+      <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
         Projects
       </h1>
-      <p className="mt-8 max-w-2xl text-lg/9 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+      <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
         Browse my programming, design, and 3D art projects.
       </p>
       <CategorySelector tags={tags} category={category} />
@@ -73,9 +73,9 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
             return (
               <article
                 key={slug}
-                className="group bg-zinc-950/4_ hover:bg-zinc-950/7_ dark:bg-zinc-900/70_ dark:hover:bg-zinc-900_ relative rounded-2xl p-1 transition-colors"
+                className="group relative rounded-2xl bg-zinc-950/4_ p-1 transition-colors hover:bg-zinc-950/7_ dark:bg-zinc-900/70_ dark:hover:bg-zinc-900_"
               >
-                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 group-hover:scale-105 transition-transform duration-400 ease-out">
+                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 transition-transform duration-400 ease-out group-hover:scale-105">
                   <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-transparent ring-inset max-lg:hidden dark:ring-white/10" />
                   {meta.image?.src ? (
                     <Image
@@ -88,10 +88,10 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                     />
                   ) : null}
                 </div>
-                <div className="p-4_ transition-colors_ group-hover:bg-zinc-950/7_ dark:group-hover:bg-zinc-900_ relative mt-10 flex flex-col rounded-xl">
-                  <div className="absolute -inset-4 -z-10 bg-zinc-950/7 opacity-0 transition-opacity group-hover:opacity-100 rounded-xl dark:bg-zinc-900 duration-200" />
+                <div className="relative mt-10 flex flex-col rounded-xl p-4_ transition-colors_ group-hover:bg-zinc-950/7_ dark:group-hover:bg-zinc-900_">
+                  <div className="absolute -inset-4 -z-10 rounded-xl bg-zinc-950/7 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-zinc-900" />
                   <div className="flex items-center">
-                    <div className="flex items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
+                    <div className="flex items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
                       {updatedDate ? (
                         <div className="flex items-center">
                           <span>Updated&nbsp;</span>
@@ -109,7 +109,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                       ) : null}
                     </div>
 
-                    <ul className="m-0 flex list-none items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
+                    <ul className="m-0 flex list-none items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
                       {meta.tags.map((tag, i) => (
                         <li key={i} className="inline-flex items-center">
                           <span className="mx-4 inline-block size-0.75 rounded-full bg-current" />
@@ -120,7 +120,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                   </div>
 
                   <div className="mt-3 flex items-center gap-4">
-                    <h2 className="text-xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-white">
+                    <h2 className="text-pretty font-medium text-xl text-zinc-950 tracking-tight dark:text-white">
                       <Link href={`/projects/${slug}`}>
                         <span className="absolute inset-0 z-10 rounded-2xl" />
                         {meta.title}
@@ -130,8 +130,8 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                     {(() => {
                       if (isRecent(updatedDate)) {
                         return (
-                          <div className="group relative w-fit px-1.5 text-xs/5 text-sky-800 dark:text-sky-300">
-                            <span className="absolute inset-0 border border-dashed border-sky-300/60 bg-sky-400/10 dark:border-sky-300/30 dark:bg-sky-400/15" />
+                          <div className="group relative w-fit px-1.5 text-sky-800 text-xs/5 dark:text-sky-300">
+                            <span className="absolute inset-0 border border-sky-300/60 border-dashed bg-sky-400/10 dark:border-sky-300/30 dark:bg-sky-400/15" />
                             Updated
                             <svg
                               width="5"
@@ -171,8 +171,8 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
 
                       if (isRecent(releaseOrDate)) {
                         return (
-                          <div className="group relative w-fit px-1.5 text-xs/5 text-emerald-800 dark:text-emerald-300">
-                            <span className="absolute inset-0 border border-dashed border-emerald-300 bg-emerald-400/12 dark:border-emerald-300/30 dark:bg-emerald-400/15" />
+                          <div className="group relative w-fit px-1.5 text-emerald-800 text-xs/5 dark:text-emerald-300">
+                            <span className="absolute inset-0 border border-emerald-300 border-dashed bg-emerald-400/12 dark:border-emerald-300/30 dark:bg-emerald-400/15" />
                             New
                             <svg
                               width="5"

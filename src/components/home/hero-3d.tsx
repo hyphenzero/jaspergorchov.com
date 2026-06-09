@@ -208,7 +208,7 @@ export function Hero3D() {
         {/* 3D Scene Masked to 1000px */}
         <div className="relative h-[calc(1000px-5.5rem)] w-full overflow-hidden sm:h-[calc(1000px-5.25rem)]">
           <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-            <h1 className="text-6xl font-medium text-white text-shadow-lg"></h1>
+            <h1 className="font-medium text-6xl text-shadow-lg text-white"></h1>
           </div>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import * as Headless from '@headlessui/react'
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { clsx } from 'clsx'
-import { MotionValue, motion, useMotionValueEvent, useScroll, useSpring, type HTMLMotionProps } from 'motion/react'
+import { type HTMLMotionProps, MotionValue, motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import useMeasure, { type RectReadOnly } from 'react-use-measure'
 import { Link } from './link'
@@ -102,7 +102,7 @@ function TestimonialCard({
       ref={ref}
       style={{ opacity }}
       {...props}
-      className="relative flex aspect-video w-full shrink-0 snap-start scroll-ml-[var(--scroll-padding)] flex-col justify-end overflow-hidden rounded-3xl"
+      className="relative flex aspect-video w-full shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-3xl"
     >
       <img alt="" src={img} className="absolute inset-x-0 top-0 aspect-square w-full object-cover" />
     </motion.div>
@@ -116,7 +116,7 @@ function CallToAction() {
         Join the best sellers in the business and start using Radiant to hit your targets today.
       </p>
       <div className="mt-2">
-        <Link href="#" className="inline-flex items-center gap-2 text-sm/6 font-medium text-pink-600">
+        <Link href="#" className="inline-flex items-center gap-2 font-medium text-pink-600 text-sm/6">
           Get started
           <ArrowLongRightIcon className="size-5" />
         </Link>
@@ -146,7 +146,7 @@ export function Testimonials() {
       <div
         ref={scrollRef}
         className={clsx([
-          'mt-16 flex gap-8 px-[var(--scroll-padding)]',
+          'mt-16 flex gap-8 px-(--scroll-padding)',
           '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
           'snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth',
           '[--scroll-padding:max(--spacing(6),calc((100vw-96rem)/2+--spacing(6)))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-96rem)/2+--spacing(8)))]',
@@ -165,7 +165,7 @@ export function Testimonials() {
             {quote}
           </TestimonialCard>
         ))}
-        <div className="w-[42rem] shrink-0 sm:w-[54rem]" />
+        <div className="w-2xl shrink-0 sm:w-216" />
       </div>
       <div className="mt-16 px-6 lg:px-8">
         <div className="mx-auto max-w-2xl px-6 lg:max-w-7xl lg:px-8">

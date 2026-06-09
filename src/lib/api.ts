@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import type { BlogPost, Project } from '../types/post'
+import type { BlogPost, Project, ProjectShowreelAnimation } from '../types/post'
 import { formatDate as _formatDate } from './api-utils'
 
 export const formatDate = _formatDate
@@ -19,6 +19,30 @@ function normalizeImage(img: any): { src: string } | undefined {
   if (typeof img === 'string') return { src: img }
   if (typeof img === 'object') return { src: img.src ?? img.default ?? String(img) }
   return { src: String(img) }
+}
+
+function isShowreelAnimation(animation: unknown): animation is ProjectShowreelAnimation {
+  return animation === 'website-mobile-rise' || animation === 'stepped-scale-render'
+}
+
+function normalizeShowreel(value: unknown, fallbackImage: unknown): Project['meta']['showreel'] | undefined {
+  if (!value || typeof value !== 'object') return undefined
+  const input = value as Record<string, unknown>
+  const animation = input.animation
+  if (!isShowreelAnimation(animation)) return undefined
+
+  const backgroundColor = typeof input.backgroundColor === 'string' ? input.backgroundColor : undefined
+
+  if (animation === 'website-mobile-rise') {
+    const desktopImage = normalizeImage(input.desktopImage ?? fallbackImage)
+    const mobileImage = normalizeImage(input.mobileImage ?? input.desktopImage ?? fallbackImage)
+    if (!desktopImage && !mobileImage) return undefined
+    return { animation, backgroundColor, desktopImage, mobileImage }
+  }
+
+  const renderImage = normalizeImage(input.renderImage ?? fallbackImage)
+  if (!renderImage) return undefined
+  return { animation, backgroundColor, renderImage }
 }
 
 // resolved paths are constructed from process.cwd() when needed
@@ -93,6 +117,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     if (!module?.default) return null
 
     const meta = module.meta || {}
+    const normalizedImage = normalizeImage(meta.image)
     const normalizedMeta: any = {
       ...meta,
       // Normalized canonical date for consumers. Prefer explicit releaseDate.
@@ -100,7 +125,8 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       releaseDate: meta.releaseDate,
       // Support both `updatedDate` and legacy `updated` fields.
       updatedDate: meta.updatedDate ?? meta.updated,
-      image: normalizeImage(meta.image),
+      image: normalizedImage,
+      showreel: normalizeShowreel(meta.showreel, normalizedImage),
     }
 
     return {

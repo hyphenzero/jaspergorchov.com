@@ -5,7 +5,7 @@ import { Bars2Icon, XMarkIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import { type MouseEvent, useEffect, useRef, useState } from 'react'
 import { Banner } from './banner'
 import { Logo } from './logo-box'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
@@ -15,6 +15,7 @@ const navigation = [
   { name: 'Blog', href: '/blog' },
   { name: 'Contact', href: '/contact' },
 ]
+const SCROLL_TRIGGER_OFFSET = 28
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -35,8 +36,8 @@ export function Header() {
   }, [pathname])
 
   useEffect(() => {
-    // update `scrolled` when window scroll passes 100px; initialize once.
-    const onScroll = () => setScrolled(window.scrollY > 20)
+    // update `scrolled` once the sticky header has reached the viewport top.
+    const onScroll = () => setScrolled(window.scrollY >= SCROLL_TRIGGER_OFFSET)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -68,18 +69,12 @@ export function Header() {
   return (
     <header
       className={clsx(
-        'absolute fixed inset-x-0 top-0 z-50 transition-[-webkit-backdrop-filter,backdrop-filter] duration-500',
-        scrolled ? 'bg-white/90 backdrop-blur-md dark:bg-zinc-950/90' : 'backdrop-blur-none'
+        'sticky inset-x-0 top-0 z-50 mt-5 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-300',
+        scrolled &&
+          'bg-white/85 shadow-[0_1px_0_0_--alpha(var(--color-zinc-950)/10%)] backdrop-blur-xl dark:bg-zinc-950/85 dark:shadow-[0_1px_0_0_--alpha(var(--color-white)/10%)]'
       )}
     >
-      <Navbar className="relative mx-auto max-w-7xl px-6 pt-5 pb-5.25 lg:px-8">
-        <div
-          className={clsx(
-            'absolute inset-x-0 top-full mx-6 h-px -translate-y-px transition-colors duration-500 lg:mx-8',
-            // scrolled ? 'bg-zinc-950/10 dark:bg-white/7.5' : 'bg-transparent',
-            'bg-zinc-950/10 dark:bg-white/7.5'
-          )}
-        />
+      <Navbar className={clsx('relative mx-auto py-3.25 px-6 lg:px-20')}>
         <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')}>
           <Logo className="size-10 sm:size-8" />
         </Link>
@@ -133,7 +128,7 @@ export function Header() {
                   <a
                     key={item.name}
                     href={item.href}
-                    className="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-zinc-900 hover:bg-zinc-50"
+                    className="-mx-3 block rounded-lg px-3 py-2 font-semibold text-base/7 text-zinc-900 hover:bg-zinc-50"
                   >
                     {item.name}
                   </a>

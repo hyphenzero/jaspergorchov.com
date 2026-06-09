@@ -90,7 +90,7 @@ export function PaginationGap({
     <span
       aria-hidden="true"
       {...props}
-      className={clsx(className, 'w-9 text-center text-sm/6 font-semibold text-zinc-950 select-none dark:text-white')}
+      className={clsx(className, 'w-9 select-none text-center font-semibold text-sm/6 text-zinc-950 dark:text-white')}
     >
       {children}
     </span>

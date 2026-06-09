@@ -1,9 +1,8 @@
 import { createHighlighter } from 'shiki'
-import darkTheme from '../components/syntax-highlighter/dark-theme.json'
-import lightTheme from '../components/syntax-highlighter/light-theme.json'
-
 import atApplyInjection from '../components/syntax-highlighter/at-apply.json'
 import atRulesInjection from '../components/syntax-highlighter/at-rules.json'
+import darkTheme from '../components/syntax-highlighter/dark-theme.json'
+import lightTheme from '../components/syntax-highlighter/light-theme.json'
 import themeFnInjection from '../components/syntax-highlighter/theme-fn.json'
 
 // Lazily initialize and cache a single shiki highlighter instance. The cached

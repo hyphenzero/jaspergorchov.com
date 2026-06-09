@@ -34,7 +34,7 @@ export default function Home() {
     <>
       <TabGroup>
         <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
-          <h1 className="text-2xl font-medium tracking-tight text-balance text-white sm:text-[clamp(2rem,3.75vw,3rem)]/tight">
+          <h1 className="text-balance font-medium text-2xl text-white tracking-tight sm:text-[clamp(2rem,3.75vw,3rem)]/tight">
             I’m Jasper Gorchov, a 14-year-old developer, designer, and 3D artist.
           </h1>
           <TabList className="@container flex flex-1 grow space-y-2 overflow-y-scroll">
@@ -58,7 +58,7 @@ export default function Home() {
                 <div className="text-left text-xs/5 sm:text-sm/7 xl:flex-1">
                   <p
                     className={clsx(
-                      'font-mono font-semibold tracking-widest uppercase transition',
+                      'font-mono font-semibold uppercase tracking-widest transition',
                       tab.color === 'sky' && 'group-data-selected:text-sky-600',
                       tab.color === 'indigo' && 'group-data-selected:text-indigo-600',
                       tab.color === 'fuchsia' && 'group-data-selected:text-fuchsia-600',
@@ -94,10 +94,10 @@ export default function Home() {
           </div>
         </div>
         <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
-          <p className="font-mono text-[0.8125rem]/6 font-semibold tracking-widest text-pretty text-sky-500 uppercase">
+          <p className="text-pretty font-mono font-semibold text-[0.8125rem]/6 text-sky-500 uppercase tracking-widest">
             Projects
           </p>
-          <h2 className="max-w-3xl text-3xl font-medium tracking-tight text-pretty md:text-[2.5rem]/14">
+          <h2 className="max-w-3xl text-pretty font-medium text-3xl tracking-tight md:text-[2.5rem]/14">
             Creating high-quality websites, web apps, and 3D illustrations.
           </h2>
         </div>

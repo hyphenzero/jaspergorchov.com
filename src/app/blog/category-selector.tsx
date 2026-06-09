@@ -1,8 +1,8 @@
 'use client'
 
-import { Link } from '@/components/link'
 import clsx from 'clsx'
 import { motion } from 'motion/react'
+import { Link } from '@/components/link'
 
 export function CategorySelector({
   allTags,
@@ -23,12 +23,12 @@ export function CategorySelector({
         <li key="all">
           <Link
             href={`/blog`}
-            className={clsx('group relative block rounded-full px-2.5 py-1 text-sm font-medium transition')}
+            className={clsx('group relative block rounded-full px-2.5 py-1 font-medium text-sm transition')}
           >
             {category === 'all' && (
               <motion.span
                 layoutId="blog-selected-background"
-                className="absolute inset-0 -z-10 bg-zinc-200 dark:border-t dark:border-white/10 dark:bg-zinc-700"
+                className="absolute inset-0 -z-10 bg-zinc-200 dark:border-white/10 dark:border-t dark:bg-zinc-700"
                 style={{ borderRadius: 9999 }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />
@@ -48,12 +48,12 @@ export function CategorySelector({
           <li key={tag.value}>
             <Link
               href={`?category=${encodeURIComponent(tag.value)}`}
-              className={clsx('group relative block rounded-full px-2.5 py-1 text-sm font-medium transition')}
+              className={clsx('group relative block rounded-full px-2.5 py-1 font-medium text-sm transition')}
             >
               {category === tag.value && (
                 <motion.span
                   layoutId="selected-background"
-                  className="absolute inset-0 -z-10 bg-zinc-200 dark:border-t dark:border-white/10 dark:bg-zinc-700"
+                  className="absolute inset-0 -z-10 bg-zinc-200 dark:border-white/10 dark:border-t dark:bg-zinc-700"
                   style={{ borderRadius: 9999 }}
                   transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                 />
@@ -75,11 +75,11 @@ export function CategorySelector({
           <li>
             <Link
               href={`?category=${encodeURIComponent(category)}`}
-              className={clsx('group relative block rounded-full px-2.5 py-1 text-sm font-medium transition')}
+              className={clsx('group relative block rounded-full px-2.5 py-1 font-medium text-sm transition')}
             >
               <motion.span
                 layoutId="selected-background"
-                className="absolute inset-0 -z-10 bg-zinc-200 dark:border-t dark:border-white/10 dark:bg-zinc-700"
+                className="absolute inset-0 -z-10 bg-zinc-200 dark:border-white/10 dark:border-t dark:bg-zinc-700"
                 style={{ borderRadius: 9999 }}
                 transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
               />

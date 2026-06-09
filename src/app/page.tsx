@@ -1,23 +1,11 @@
+import { ChevronRightIcon } from '@heroicons/react/16/solid'
+import { JSX, SVGProps } from 'react'
 import { Button } from '@/components/button'
-import { Container } from "@/components/container"
-import { Hero } from '@/components/home/hero-new'
+import { Container } from '@/components/container'
+import { Hero } from '@/components/home/hero-figma'
 import { RecentProjects } from '@/components/home/recent-projects'
 import { getAllProjects } from '@/lib/api'
-import { ChevronRightIcon } from "@heroicons/react/16/solid"
-import { JSX, SVGProps } from 'react'
-
-const getAge = (s?: string): number | null => {
-  if (!s) return null
-  const b = new Date(s)
-  if (Number.isNaN(+b)) return null
-  const now = new Date()
-  let age = now.getUTCFullYear() - b.getUTCFullYear()
-  const bThisYear = Date.UTC(now.getUTCFullYear(), b.getUTCMonth(), b.getUTCDate())
-  if (Date.now() < bThisYear) age--
-  return age
-}
-
-const age = getAge(process.env.BIRTHDAY)
+import Link from 'next/link'
 
 const socialMedia = [
   {
@@ -67,39 +55,51 @@ export default async function Home() {
   const serializableProjects = projects.map(({ Component, ...rest }) => rest)
   return (
     <>
-      <div className="absolute inset-0 isolate -z-10 h-[75dvh] min-h-200">
-        <div className="absolute inset-x-0 top-0 z-10 h-1/4 bg-linear-to-b from-white dark:from-zinc-950" />
-        <div className="absolute inset-x-0 bottom-0 z-10 h-1/3 bg-linear-to-t from-white dark:from-zinc-950" />
-        <Hero />
+      <div className="absolute inset-x-0 top-0 isolate -z-10 h-dvh">
+        <Hero projects={serializableProjects} />
       </div>
 
-      <div className="relative mx-auto mt-[clamp(50rem,75vh,75vh)] -translate-y-full flex-col px-6 pb-12 lg:px-8">
-        <h1 className="mx-auto max-w-5xl text-center text-4xl/11 font-medium tracking-tight text-balance text-zinc-950 dark:text-shadow-lg md:text-5xl/15 dark:text-white">
-          {/* {age
-            ? `I’m Jasper Gorchov, a ${age}-year-old web developer, designer, and 3D artist.`
-            : `I’m Jasper Gorchov, a web developer, designer, and 3D artist.`} */}
+      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] -translate-y-full flex items-end justify-between px-6 pb-28 lg:px-20">
+        <h1 className="max-w-5xl text-balance text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/15 dark:text-shadow-md dark:text-white font-medium">
           I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>
 
-        <div className="mt-12 flex justify-center gap-6 max-sm:*:w-full">
-          <Button href="/projects" color="sky">
-            Browse projects <ChevronRightIcon className="-mr-1!" />
-          </Button>
-          <Button outline href="/blog">
-            Read articles <ChevronRightIcon className="-mr-1!" />
-          </Button>
+        <div className="flex flex-col justify-center max-sm:*:w-full">
+          <div className="flex gap-x-6 *:w-32">
+            <Button href="/projects" color="sky">
+              Projects <ChevronRightIcon className="-mr-1.5!" />
+            </Button>
+            <Button outline href="/blog">
+              Blog <ChevronRightIcon className="-mr-1.5!" />
+            </Button>
+          </div>
+
+          <div className="mt-8 mb-3 flex items-center w-full px-6 justify-between">
+            {socialMedia.map((item) => (
+              <Link key={item.name} href={item.href}>
+                <item.icon className="size-5 text-sky-950" />
+                <span className="sr-only">{item.name}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
       <RecentProjects projects={serializableProjects} />
 
       <Container className="mt-56">
-        <p className="font-mono text-sm font-semibold tracking-widest text-sky-500 uppercase max-2xl:mb-4 dark:text-sky-400">
+        <p className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
           Web development
         </p>
-				<h2 className="mt-4 text-[2.5rem]/10 font-medium tracking-tight text-zinc-950 dark:text-white">Crafting the best web experiences I can.</h2>
-				<p className="mt-6 max-w-(--breakpoint-md) text-base/7 text-zinc-600 dark:text-zinc-400">With over 4 years of experience, I use modern web technologies such as Next.js and Tailwind CSS to build websites and web apps that not only are designed with attention to detail, but also include exceptional functionality.</p>
-				<div className="w-full aspect-16/10 bg-zinc-200 dark:bg-zinc-800 rounded-2xl mt-24"></div>
+        <h2 className="mt-4 font-medium text-[2.5rem]/10 text-zinc-950 tracking-tight dark:text-white">
+          Crafting the best web experiences I can.
+        </h2>
+        <p className="mt-6 max-w-(--breakpoint-md) text-base/7 text-zinc-600 dark:text-zinc-400">
+          With over 4 years of experience, I use modern web technologies such as Next.js and Tailwind CSS to build
+          websites and web apps that not only are designed with attention to detail, but also include exceptional
+          functionality.
+        </p>
+        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800"></div>
       </Container>
     </>
   )

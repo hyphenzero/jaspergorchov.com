@@ -24,7 +24,7 @@ function Hint({ children, className }: { children: React.ReactNode; className?: 
             d="M1.5 4.677a14 14 0 0 1 4-1.736m11 1.736a14 14 0 0 0-4-1.736"
           />
         </svg>
-        <p className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{children}</p>
+        <p className="font-medium text-sm text-zinc-700 dark:text-zinc-200">{children}</p>
       </div>
     </div>
   )

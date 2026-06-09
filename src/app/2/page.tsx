@@ -1,7 +1,7 @@
-import { Button } from '@/components/button'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import { clsx } from 'clsx'
+import { Button } from '@/components/button'
 
 const tabs = [
   {
@@ -37,8 +37,8 @@ export default function Home() {
         <div className="mx-auto grid h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] max-w-[128rem] grid-cols-10 gap-12 p-6 pb-8 sm:h-[calc(100vh-5.25rem)] sm:max-h-[calc(100vh-5.25rem)] lg:px-8 [@media(width>=96rem)]:pt-10">
           <div className="col-span-4 flex size-full flex-col justify-between space-y-8 [@media(width>=96rem)]:col-span-3">
             <div className="flex h-full flex-1 grow flex-col space-y-8">
-              <h1 className="text-6xl tracking-tighter text-pretty sm:text-8xl">Jasper Gorchov</h1>
-              <p className="max-w-2xl text-lg/7 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+              <h1 className="text-pretty text-6xl tracking-tighter sm:text-8xl">Jasper Gorchov</h1>
+              <p className="max-w-2xl text-pretty font-medium text-lg/7 text-zinc-600 dark:text-zinc-400">
                 I’m a 14-year-old developer, designer, and 3D artist with immense attention to detail and a love of
                 minimalism.
               </p>
@@ -63,7 +63,7 @@ export default function Home() {
                     <div className="text-left text-xs/5 sm:text-sm/7 xl:flex-1">
                       <p
                         className={clsx(
-                          'font-mono font-semibold tracking-widest uppercase transition',
+                          'font-mono font-semibold uppercase tracking-widest transition',
                           tab.color === 'sky' && 'group-data-selected:text-sky-600',
                           tab.color === 'indigo' && 'group-data-selected:text-indigo-600',
                           tab.color === 'fuchsia' && 'group-data-selected:text-fuchsia-600',

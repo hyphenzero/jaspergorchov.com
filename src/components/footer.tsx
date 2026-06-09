@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from 'next/link'
 
 const navigation = {
   main: [
@@ -45,7 +45,7 @@ export function Footer() {
             <Link
               key={item.name}
               href={item.href}
-              className="transition text-zinc-600 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+              className="text-zinc-600 transition hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
             >
               {item.name}
             </Link>
@@ -56,9 +56,9 @@ export function Footer() {
             <Link
               key={item.name}
               href={item.href}
-							className="transition text-zinc-600 hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
-							target="_blank"
-							rel="noopener noreferrer"
+              className="text-zinc-600 transition hover:text-zinc-800 dark:text-zinc-400 dark:hover:text-white"
+              target="_blank"
+              rel="noopener noreferrer"
             >
               <span className="sr-only">{item.name}</span>
               <item.icon aria-hidden="true" className="size-6" />

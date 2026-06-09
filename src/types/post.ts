@@ -18,6 +18,16 @@ export interface BlogPost {
   slug: string
 }
 
+export type ProjectShowreelAnimation = 'website-mobile-rise' | 'stepped-scale-render'
+
+export interface ProjectShowreel {
+  animation: ProjectShowreelAnimation
+  backgroundColor?: string
+  desktopImage?: { src: string }
+  mobileImage?: { src: string }
+  renderImage?: { src: string }
+}
+
 /**
  * Projects: similar to BlogPost but support both `releaseDate` and `updatedDate`.
  * `date` on Project is normalized server-side to `releaseDate ?? date` so
@@ -37,6 +47,7 @@ export interface Project {
     tags: string[]
     description: string
     image?: { src: string }
+    showreel?: ProjectShowreel
     private?: boolean
   }
   slug: string

@@ -1,9 +1,9 @@
-import { Container } from '@/components/container'
-import { TagButton } from '@/components/tag'
-import { formatDate, getAllBlogPosts } from '@/lib/api'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { Container } from '@/components/container'
+import { TagButton } from '@/components/tag'
+import { formatDate, getAllBlogPosts } from '@/lib/api'
 import { CategorySelector } from './category-selector'
 
 export const metadata: Metadata = {
@@ -37,16 +37,16 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
 
   return (
     <Container className="relative mt-48">
-      <h1 className="text-5xl font-medium tracking-tight text-balance text-zinc-950 lg:text-6xl dark:text-white">
+      <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
         Blog
       </h1>
-      <p className="mt-8 max-w-2xl text-lg/9 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
+      <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
         My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and
         digital creativity.
-			</p>
-			
-			<CategorySelector allTags={allTags} selectedCategory={category} />
-			
+      </p>
+
+      <CategorySelector allTags={allTags} selectedCategory={category} />
+
       <div className="mt-6">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
@@ -58,7 +58,7 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
             >
               <Link href={`/blog/${slug}`} className="absolute inset-0 z-10" />
               <div>
-                <div className="px-2 font-mono text-sm/6 font-medium tracking-widest text-gray-500 uppercase">
+                <div className="px-2 font-medium font-mono text-gray-500 text-sm/6 uppercase tracking-widest">
                   {formatDate(meta.date)}
                 </div>
                 <div className="mt-4.5 flex items-center gap-x-3">
@@ -76,11 +76,11 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
               <div className="relative sm:col-span-2 sm:max-w-2xl">
                 <h2 className="font-semibold text-zinc-950 dark:text-white">{meta.title}</h2>
                 <p className="prose prose-blog mt-4 line-clamp-3 leading-7">{meta.excerpt}</p>
-                <p className="mt-4 flex w-fit items-end gap-1 text-sm font-semibold text-sky-500 dark:text-sky-400">
+                <p className="mt-4 flex w-fit items-end gap-1 font-semibold text-sky-500 text-sm dark:text-sky-400">
                   Read more
                   <ChevronRightIcon className="size-4 -translate-x-2 -translate-y-0.25 text-sky-500/50 opacity-0 transition group-hover:translate-x-0 group-hover:opacity-100 dark:text-sky-400/50" />
                 </p>
-                <div className="scale-95_ absolute -inset-5 -z-10 bg-zinc-100/80 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:rounded-2xl dark:bg-zinc-900/50" />
+                <div className="absolute -inset-5 -z-10 scale-95_ bg-zinc-100/80 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:rounded-2xl dark:bg-zinc-900/50" />
               </div>
             </div>
           ))

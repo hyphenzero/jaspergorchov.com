@@ -7,7 +7,7 @@
   --prose-marker-color: color-mix(in oklab, var(--color-zinc-700) 25%, transparent);
   --prose-link-underline-color: var(--color-zinc-200);
   /* --prose-link-underline-hover-color: var(--color-zinc-400); */
-	--prose-link-underline-hover-color: var(--color-sky-500);
+  --prose-link-underline-hover-color: var(--color-sky-500);
   --prose-link-icon-bg-color: var(--color-zinc-200);
   --prose-link-icon-color: var(--color-zinc-400);
   --prose-link-icon-bg-hover-color: var(--color-zinc-300);
@@ -26,7 +26,7 @@
     --prose-marker-color: color-mix(in oklab, var(--color-zinc-300) 35%, transparent);
     --prose-link-underline-color: var(--color-zinc-600);
     /* --prose-link-underline-hover-color: var(--color-zinc-400); */
-		--prose-link-underline-hover-color: var(--color-sky-400);
+    --prose-link-underline-hover-color: var(--color-sky-400);
     --prose-link-icon-bg-color: var(--color-zinc-900);
     --prose-link-icon-color: var(--color-zinc-500);
     --prose-link-icon-bg-hover-color: var(--color-zinc-800);
@@ -61,7 +61,7 @@
     @apply mt-0;
   }
 
-  @apply **:data-[media]:mt-0 **:data-[media]:not-[[data-image-grid]_[data-media],[data-timeline]_[data-media]]:py-12 **:[[data-media]+*]:mt-0;
+  @apply **:data-media:mt-0 **:data-media:not-[[data-image-grid]_[data-media],[data-timeline]_[data-media]]:py-12 **:[[data-media]+*]:mt-0;
 
   &.prose > [data-media]:first-child:where(:not(.not-prose, .not-prose *)) {
     @apply pt-0 pb-12;
