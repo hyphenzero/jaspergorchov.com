@@ -27,6 +27,7 @@
     "react": "19.2.5",
     "react-dom": "19.2.5",
     "react-use-measure": "^2.1.7",
+    "shaders": "^2.5.129",
     "shiki": "^4.2.0",
     "split-type": "^0.3.4",
     "tailwindcss": "4.3.0",

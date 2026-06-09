@@ -69,12 +69,12 @@ export function Header() {
   return (
     <header
       className={clsx(
-        'sticky inset-x-0 top-0 z-50 mt-5 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-500',
+        'sticky inset-x-0 top-0 z-50 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-500',
         scrolled &&
           'bg-white/85 shadow-[0_1px_0_0_--alpha(var(--color-zinc-950)/10%)] backdrop-blur-xl dark:bg-zinc-950/85 dark:shadow-[0_1px_0_0_--alpha(var(--color-white)/10%)]'
       )}
     >
-      <Navbar className={clsx('relative mx-auto py-3.25 px-6 lg:px-18')}>
+      <Navbar className={clsx('relative mx-auto px-6 py-3.25 lg:px-8')}>
         <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')}>
           <Logo className="size-10 sm:size-8" />
         </Link>
@@ -102,7 +102,7 @@ export function Header() {
 
       <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
         <div className="fixed inset-0 z-10" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-zinc-900/10">
+        <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white p-6 sm:max-w-sm sm:ring-1 sm:ring-zinc-900/10">
           <div className="flex items-center justify-between">
             <a href="#" className="-m-1.5 p-1.5">
               <span className="sr-only">Your Company</span>

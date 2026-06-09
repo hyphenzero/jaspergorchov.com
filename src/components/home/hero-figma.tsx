@@ -4,7 +4,9 @@ import { AnimatePresence, motion } from 'motion/react'
 import Image from 'next/image'
 import type { ComponentType } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { createFallbackPalette, extractPaletteFromImage, type PaletteColors } from '@/lib/image-palette'
 import type { ProjectShowreel, ProjectShowreelAnimation, SerializableProject } from '@/types/post'
+import { HeroShaders } from './hero-shaders'
 
 type Props = {
   projects: SerializableProject[]
@@ -24,72 +26,6 @@ type CursorState = {
   x: number
   y: number
   visible: boolean
-}
-
-type RgbColor = {
-  red: number
-  green: number
-  blue: number
-}
-
-const HEX_COLOR_PATTERN = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i
-const LIGHT_BACKGROUND_BASE: RgbColor = { red: 250, green: 250, blue: 251 }
-const DARK_BACKGROUND_BASE: RgbColor = { red: 24, green: 24, blue: 27 }
-const DEFAULT_LIGHT_BACKGROUND = 'rgb(244 244 245)'
-const DEFAULT_DARK_BACKGROUND = 'rgb(24 24 27)'
-
-function parseHexColor(value: string): RgbColor | null {
-  if (!HEX_COLOR_PATTERN.test(value)) return null
-
-  const hex = value.slice(1)
-  const normalized =
-    hex.length === 3
-      ? hex
-          .split('')
-          .map((part) => `${part}${part}`)
-          .join('')
-      : hex
-
-  return {
-    red: Number.parseInt(normalized.slice(0, 2), 16),
-    green: Number.parseInt(normalized.slice(2, 4), 16),
-    blue: Number.parseInt(normalized.slice(4, 6), 16),
-  }
-}
-
-function mixColor(base: RgbColor, accent: RgbColor, accentWeight: number): RgbColor {
-  const baseWeight = 1 - accentWeight
-  return {
-    red: Math.round(base.red * baseWeight + accent.red * accentWeight),
-    green: Math.round(base.green * baseWeight + accent.green * accentWeight),
-    blue: Math.round(base.blue * baseWeight + accent.blue * accentWeight),
-  }
-}
-
-function toRgbString(color: RgbColor): string {
-  return `rgb(${color.red} ${color.green} ${color.blue})`
-}
-
-function createBackgroundPalette(backgroundColor?: string) {
-  if (!backgroundColor) {
-    return {
-      light: DEFAULT_LIGHT_BACKGROUND,
-      dark: DEFAULT_DARK_BACKGROUND,
-    }
-  }
-
-  const parsedColor = parseHexColor(backgroundColor)
-  if (!parsedColor) {
-    return {
-      light: backgroundColor,
-      dark: backgroundColor,
-    }
-  }
-
-  return {
-    light: toRgbString(mixColor(LIGHT_BACKGROUND_BASE, parsedColor, 0.22)),
-    dark: toRgbString(mixColor(DARK_BACKGROUND_BASE, parsedColor, 0.28)),
-  }
 }
 
 function hasShowreel(project: SerializableProject): project is ShowreelProject {
@@ -124,6 +60,16 @@ function buildQueue(projects: ShowreelProject[], lastSlug?: string) {
   }
 
   return queue
+}
+
+function getShowreelImageSrc(project: ShowreelProject) {
+  const showreel = project.meta.showreel
+
+  if (showreel.animation === 'website-mobile-rise') {
+    return showreel.desktopImage?.src ?? showreel.mobileImage?.src ?? project.meta.image?.src
+  }
+
+  return showreel.renderImage?.src ?? project.meta.image?.src
 }
 
 function WebsiteMobileRiseAnimation({ project }: AnimationProps) {
@@ -222,6 +168,9 @@ export function Hero({ projects = [] }: Props) {
     y: 0,
     visible: false,
   })
+  const [backgroundPalette, setBackgroundPalette] = useState<PaletteColors>(() =>
+    createFallbackPalette(currentProject?.meta.showreel?.backgroundColor)
+  )
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(pointer: fine)')
@@ -264,30 +213,47 @@ export function Hero({ projects = [] }: Props) {
 
   const currentShowreel = currentProject?.meta.showreel
   const ActiveAnimation = currentShowreel ? animationComponents[currentShowreel.animation] : null
-  const backgroundColor = currentShowreel?.backgroundColor
-  const backgroundPalette = useMemo(() => createBackgroundPalette(backgroundColor), [backgroundColor])
 
   const showCursorChip = Boolean(currentProject && canShowCursorChip)
+
+  useEffect(() => {
+    if (!currentProject) {
+      setBackgroundPalette(createFallbackPalette())
+      return
+    }
+
+    let cancelled = false
+    const fallbackPalette = createFallbackPalette(currentShowreel?.backgroundColor)
+    const imageSrc = getShowreelImageSrc(currentProject)
+
+    setBackgroundPalette(fallbackPalette)
+
+    if (!imageSrc) {
+      return
+    }
+
+    extractPaletteFromImage(imageSrc, currentShowreel?.backgroundColor)
+      .then((palette) => {
+        if (!cancelled) {
+          setBackgroundPalette(palette)
+        }
+      })
+      .catch((error) => {
+        if (!cancelled) {
+          console.error('Failed to extract hero palette:', error)
+          setBackgroundPalette(fallbackPalette)
+        }
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [currentProject?.slug, currentShowreel?.backgroundColor])
 
   return (
     <div className="relative isolate -z-10 size-full min-h-full overflow-hidden">
       <div className="absolute inset-2 overflow-hidden rounded-[1.25rem]">
-        <motion.div
-          key={`${currentProject?.slug ?? 'default-showreel-bg'}-light`}
-          className="absolute inset-0 dark:hidden"
-          style={{ backgroundColor: backgroundPalette.light }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.55, ease: 'easeOut' }}
-        />
-        <motion.div
-          key={`${currentProject?.slug ?? 'default-showreel-bg'}-dark`}
-          className="absolute inset-0 hidden dark:block"
-          style={{ backgroundColor: backgroundPalette.dark }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.55, ease: 'easeOut' }}
-        />
+        <HeroShaders backgroundPalette={backgroundPalette} />
         <div
           className={`relative mx-auto h-full max-w-6xl px-6 lg:px-8 ${showCursorChip ? 'cursor-none' : ''}`}
           onMouseEnter={() => {

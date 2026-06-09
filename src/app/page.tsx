@@ -1,11 +1,11 @@
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
+import Link from 'next/link'
 import { JSX, SVGProps } from 'react'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { Hero } from '@/components/home/hero-figma'
 import { RecentProjects } from '@/components/home/recent-projects'
 import { getAllProjects } from '@/lib/api'
-import Link from 'next/link'
 
 const socialMedia = [
   {
@@ -59,8 +59,8 @@ export default async function Home() {
         <Hero projects={serializableProjects} />
       </div>
 
-      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] -translate-y-full flex items-end justify-between px-6 pb-28 lg:px-18">
-        <h1 className="max-w-5xl text-balance text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white font-medium">
+      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-28 lg:px-18">
+        <h1 className="max-w-5xl text-balance font-medium text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white">
           I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>
 
@@ -74,10 +74,10 @@ export default async function Home() {
             </Button>
           </div>
 
-          <div className="mt-9 mb-4 flex items-center w-full px-6 justify-between">
+          <div className="mt-9 mb-4 flex w-full items-center justify-between px-6">
             {socialMedia.map((item) => (
               <Link key={item.name} href={item.href}>
-                <item.icon className="size-5 text-sky-950" />
+                <item.icon className="size-5 text-zinc-950/75 mix-blend-plus-lighter transition-colors duration-200 hover:text-zinc-950 dark:text-white/75 dark:hover:text-white" />
                 <span className="sr-only">{item.name}</span>
               </Link>
             ))}
