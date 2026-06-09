@@ -59,8 +59,8 @@ export default async function Home() {
         <Hero projects={serializableProjects} />
       </div>
 
-      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] -translate-y-full flex items-end justify-between px-6 pb-28 lg:px-20">
-        <h1 className="max-w-5xl text-balance text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/15 dark:text-shadow-md dark:text-white font-medium">
+      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] -translate-y-full flex items-end justify-between px-6 pb-28 lg:px-18">
+        <h1 className="max-w-5xl text-balance text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white font-medium">
           I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>
 
@@ -74,7 +74,7 @@ export default async function Home() {
             </Button>
           </div>
 
-          <div className="mt-8 mb-3 flex items-center w-full px-6 justify-between">
+          <div className="mt-9 mb-4 flex items-center w-full px-6 justify-between">
             {socialMedia.map((item) => (
               <Link key={item.name} href={item.href}>
                 <item.icon className="size-5 text-sky-950" />

@@ -69,12 +69,12 @@ export function Header() {
   return (
     <header
       className={clsx(
-        'sticky inset-x-0 top-0 z-50 mt-5 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-300',
+        'sticky inset-x-0 top-0 z-50 mt-5 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-500',
         scrolled &&
           'bg-white/85 shadow-[0_1px_0_0_--alpha(var(--color-zinc-950)/10%)] backdrop-blur-xl dark:bg-zinc-950/85 dark:shadow-[0_1px_0_0_--alpha(var(--color-white)/10%)]'
       )}
     >
-      <Navbar className={clsx('relative mx-auto py-3.25 px-6 lg:px-20')}>
+      <Navbar className={clsx('relative mx-auto py-3.25 px-6 lg:px-18')}>
         <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')}>
           <Logo className="size-10 sm:size-8" />
         </Link>
