@@ -59,7 +59,7 @@ export default async function Home() {
         <Hero projects={serializableProjects} />
       </div>
 
-      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-28 lg:px-18">
+      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-24 lg:px-18">
         <h1 className="max-w-5xl text-balance font-medium text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white">
           I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>
@@ -91,10 +91,10 @@ export default async function Home() {
         <p className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
           Web development
         </p>
-        <h2 className="mt-4 font-medium text-[2.5rem]/10 text-zinc-950 tracking-tight dark:text-white">
+        <h2 className="mt-5 font-medium text-[2.5rem]/10 text-zinc-950 tracking-tight dark:text-white">
           Crafting the best web experiences I can.
         </h2>
-        <p className="mt-6 max-w-(--breakpoint-md) text-base/7 text-zinc-600 dark:text-zinc-400">
+        <p className="mt-8 max-w-(--breakpoint-md) text-base/8 text-zinc-600 dark:text-zinc-400">
           With over 4 years of experience, I use modern web technologies such as Next.js and Tailwind CSS to build
           websites and web apps that not only are designed with attention to detail, but also include exceptional
           functionality.

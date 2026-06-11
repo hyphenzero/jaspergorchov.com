@@ -48,10 +48,14 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
   }
 
   return (
-    <Container className="relative mt-48">
+    <Container className="relative mt-28">
+      <span className="absolute -z-10 -mt-6 -ml-4 text-balance font-bold text-5xl text-zinc-300 lg:text-8xl dark:text-zinc-800">
+        /
+      </span>
       <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
         Projects
       </h1>
+
       <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
         Browse my programming, design, and 3D art projects.
       </p>
@@ -71,11 +75,8 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
             if (!releaseOrDate) return null
 
             return (
-              <article
-                key={slug}
-                className="group relative rounded-2xl bg-zinc-950/4_ p-1 transition-colors hover:bg-zinc-950/7_ dark:bg-zinc-900/70_ dark:hover:bg-zinc-900_"
-              >
-                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 transition-transform duration-400 ease-out group-hover:scale-105">
+              <article key={slug} className="group relative cursor-pointer rounded-2xl transition-colors">
+                <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 transition-transform duration-400 ease-out group-hover:scale-105_">
                   <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-transparent ring-inset max-lg:hidden dark:ring-white/10" />
                   {meta.image?.src ? (
                     <Image
@@ -88,8 +89,8 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                     />
                   ) : null}
                 </div>
-                <div className="relative mt-10 flex flex-col rounded-xl p-4_ transition-colors_ group-hover:bg-zinc-950/7_ dark:group-hover:bg-zinc-900_">
-                  <div className="absolute -inset-4 -z-10 rounded-xl bg-zinc-950/7 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-zinc-900" />
+                <div className="mt-10 flex flex-col rounded-xl p-4_ transition-colors_ group-hover:bg-zinc-950/7_ dark:group-hover:bg-zinc-900_">
+                  {/*<div className="absolute -inset-4 -z-10 rounded-xl bg-zinc-950/7 opacity-0 transition-opacity duration-200 group-hover:opacity-100 dark:bg-zinc-900" />*/}
                   <div className="flex items-center">
                     <div className="flex items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
                       {updatedDate ? (
@@ -120,10 +121,24 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                   </div>
 
                   <div className="mt-3 flex items-center gap-4">
-                    <h2 className="text-pretty font-medium text-xl text-zinc-950 tracking-tight dark:text-white">
-                      <Link href={`/projects/${slug}`}>
+                    <h2 className="text-pretty font-medium text-xl text-zinc-950 tracking-tight transition-colors duration-150 hover:text-sky-500 dark:text-white dark:hover:text-sky-400">
+                      <Link href={`/projects/${slug}`} className="flex items-center">
                         <span className="absolute inset-0 z-10 rounded-2xl" />
                         {meta.title}
+                        <svg
+                          viewBox="0 0 10 10"
+                          aria-hidden="true"
+                          className="ml-2 size-2.5 flex-none not-group-hover:-translate-x-6 not-group-hover:opacity-0 opacity-60 transition duration-1000 ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)] before:transition-opacity before:ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)] dark:text-sky-400!"
+                        >
+                          <path
+                            fill="currentColor"
+                            stroke="currentColor"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="1.5"
+                            d="m7.25 5-3.5-2.25v4.5L7.25 5Z"
+                          />
+                        </svg>
                       </Link>
                     </h2>
 

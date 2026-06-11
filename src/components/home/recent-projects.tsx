@@ -67,7 +67,7 @@ function ProjectCard({
       ref={ref}
       style={{ opacity }}
       {...props}
-      className=      "group relative isolate flex aspect-16/10 h-auto w-[calc(100vw-1.5rem)] max-w-[calc((var(--container-7xl)-2rem)/1.25)] shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-xl lg:w-[calc(100vw-2rem)]"
+      className="group relative isolate flex aspect-16/10 h-auto w-[calc(100vw-1.5rem)] max-w-[calc((var(--container-7xl)-2rem)/1.25)] shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-xl lg:w-[calc(100vw-2rem)]"
     >
       {img ? (
         <div className="relative aspect-16/10 h-auto overflow-hidden rounded-xl">

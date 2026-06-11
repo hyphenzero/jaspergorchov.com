@@ -8,7 +8,7 @@ export function Banner() {
         href="/blog/my-personal-website-reimagined"
         className="group relative flex @max-[22rem]:hidden flex-nowrap items-center gap-2 overflow-hidden whitespace-nowrap rounded-full px-3.25 py-2.25 text-xs/4 ring ring-zinc-950/10 ring-inset transition hover:bg-zinc-950/2 hover:ring-zinc-950/17 dark:ring-white/7.5 dark:hover:bg-white/2 dark:hover:ring-white/10"
       >
-        <div className="absolute left-0 aspect-square h-full bg-sky-500/60 blur-2xl dark:bg-sky-400/40"></div>
+        <div className="absolute left-0 h-full w-1/2 rounded-l-full bg-linear-to-r from-sky-500/10 dark:from-sky-400/10" />
         <MegaphoneIcon className="size-4 fill-sky-500 dark:fill-sky-400" />
         <span className="font-medium text-zinc-950 dark:text-white">My personal website, reimagined</span>
         <ChevronRightIcon className="-mx-1 size-4 fill-zinc-950/30 transition group-hover:translate-x-0.5 group-hover:fill-zinc-950/50 dark:fill-white/30 dark:group-hover:fill-white/50" />

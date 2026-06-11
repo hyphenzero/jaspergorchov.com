@@ -157,7 +157,10 @@ function buildPaletteFromDominantColors(colors: RgbColor[]): PaletteColors {
   return {
     light: toRgbString(mixColor(LIGHT_BACKGROUND_BASE, representative, 0.26)),
     dark: toRgbString(mixColor(DARK_BACKGROUND_BASE, representative, 0.34)),
-    dominantColors: colors.map((c) => `#${c.red.toString(16).padStart(2, '0')}${c.green.toString(16).padStart(2, '0')}${c.blue.toString(16).padStart(2, '0')}`),
+    dominantColors: colors.map(
+      (c) =>
+        `#${c.red.toString(16).padStart(2, '0')}${c.green.toString(16).padStart(2, '0')}${c.blue.toString(16).padStart(2, '0')}`
+    ),
   }
 }
 

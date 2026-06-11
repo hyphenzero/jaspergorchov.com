@@ -23,9 +23,9 @@ function ensureHexColor(color: string): string {
 }
 
 function getGradientColors(palette: PaletteColors): { colorA: string; colorB: string; colorC: string; colorD: string } {
-  const dominantColors = palette.dominantColors?.length ? palette.dominantColors : [
-    '#4776E6', '#C44DFF', '#1ABC9C', '#F8BBD9', '#FF8C42'
-  ]
+  const dominantColors = palette.dominantColors?.length
+    ? palette.dominantColors
+    : ['#4776E6', '#C44DFF', '#1ABC9C', '#F8BBD9', '#FF8C42']
 
   const colors = dominantColors.map(ensureHexColor)
 

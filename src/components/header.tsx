@@ -13,7 +13,7 @@ import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
 const navigation = [
   { name: 'Projects', href: '/projects' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Uses', href: '/uses' },
 ]
 const SCROLL_TRIGGER_OFFSET = 28
 

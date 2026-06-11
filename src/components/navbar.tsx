@@ -44,7 +44,7 @@ export const NavbarItem = forwardRef(function NavbarItem(
 ) {
   let classes = clsx(
     // Base
-    'relative flex min-w-0 items-center gap-3 rounded-[1rem] px-2.5 py-1.5 text-left font-medium text-base/6 text-zinc-950 transition sm:text-sm/5',
+    'relative flex min-w-0 items-center gap-3 rounded-[1rem] px-3 py-1.5 text-left font-medium text-base/6 text-zinc-950 transition sm:text-sm/5',
     // Leading icon/icon-only
     '*:data-[slot=icon]:size-6 *:data-[slot=icon]:shrink-0 *:data-[slot=icon]:fill-zinc-500 sm:*:data-[slot=icon]:size-5',
     // Trailing icon (down chevron or similar)
@@ -81,7 +81,7 @@ export const NavbarItem = forwardRef(function NavbarItem(
                   exit: { opacity: 0, scaleX: 0.5 },
                 }
               : {})}
-            className="absolute inset-x-2.5 -bottom-[1.40625rem] h-0.5 origin-center translate-y-0! rounded-full bg-sky-500 bg-zinc-400_ shadow-2xl shadow-sky-400 dark:bg-sky-400 dark:bg-zinc-600_"
+            className="absolute inset-x-2.5 bottom-[-0.96875rem] h-0.5 origin-center translate-y-0! rounded-full bg-sky-500 bg-zinc-400_ shadow-2xl shadow-sky-400 dark:bg-sky-400 dark:bg-zinc-600_"
           />
         )}
       </AnimatePresence>

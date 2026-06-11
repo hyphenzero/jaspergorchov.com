@@ -36,7 +36,10 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
       : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
 
   return (
-    <Container className="relative mt-48">
+    <Container className="relative mt-28">
+      <span className="absolute -z-10 -mt-6 -ml-4 text-balance font-bold text-5xl text-zinc-300 lg:text-8xl dark:text-zinc-800">
+        /
+      </span>
       <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
         Blog
       </h1>
