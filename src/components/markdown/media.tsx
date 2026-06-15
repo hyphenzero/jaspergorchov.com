@@ -1,5 +1,6 @@
 import { clsx } from 'clsx'
 import NextImage from 'next/image'
+import { ThemeImage } from '@/components/theme-image'
 
 export function Video({ className, ...props }: React.VideoHTMLAttributes<HTMLVideoElement>) {
   return (
@@ -45,12 +46,25 @@ export function Iframe({ height = 500, children, className, ...props }: React.If
   )
 }
 
-export function Image({ src, className, ...props }: React.ComponentProps<typeof NextImage>) {
+export function Image({
+  src,
+  darkSrc,
+  className,
+  ...props
+}: React.ComponentProps<typeof NextImage> & { darkSrc?: string }) {
   return (
     <div data-media className={className}>
       <div className="not-prose relative h-auto overflow-hidden rounded-xl">
         <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
-        <NextImage priority unoptimized width={1024} src={src} className="aspect-auto h-auto w-full" {...props} />
+        <ThemeImage
+          priority
+          unoptimized
+          width={1024}
+          src={src}
+          darkSrc={darkSrc}
+          className="aspect-auto h-auto w-full"
+          {...props}
+        />
       </div>
     </div>
   )

@@ -1,0 +1,26 @@
+export const meta = {
+  title: 'Computer Science Club Website',
+  lead: `The online home for the LOHS Computer Science Club — event announcements, workshop materials, project showcases, and a hub for members to share what they're building.`,
+  releaseDate: '2024-09-01T17:00:00.000Z',
+  tags: ['Web Development'],
+}
+
+The Computer Science Club at Lake Oswego High School is one of those rare school organizations that actually does things — hackathons, workshop series, guest speakers from local tech companies, and collaborative projects that span multiple meetings. They needed a website that could keep up.
+
+## The brief
+
+The club wanted a site that could serve a few distinct purposes without becoming cluttered. First, a clear announcement system for upcoming meetings and events — no more lost Slack messages or buried Google Classroom posts. Second, a library of workshop materials so members who missed a meeting could catch up on their own time. Third, a project gallery where members could showcase what they were building, from first Python scripts to full-stack web apps.
+
+## What I built
+
+The site uses Next.js with a markdown-driven content layer, similar to this very website. Workshop materials live as MDX files organized by topic and date, making them easy to write and easy to find. The event calendar pulls from an iCal feed so it stays in sync with the club's Google Calendar without any manual updates.
+
+The project gallery is my favorite part. Members submit a link and a short description through a simple form, and the site renders a grid of project cards sorted by newest first. It's deliberately low-friction — no accounts, no moderation queue, just a webhook that posts new submissions to the club's Discord for a quick sanity check.
+
+## Design approach
+
+I wanted the site to feel modern without trying too hard — the kind of design that signals "we know what we're doing" without being visually noisy. Dark mode was non-negotiable (these are CS kids, after all), and the code snippets in the workshop materials use the same shiki-based syntax highlighting I ended up using on my own site.
+
+## Impact
+
+The site became the central hub for the club's activities within a few weeks of launch. Meeting attendance went up — partly because the site made it easier to find when and where meetings were, and partly because the project gallery created a sense of momentum that got more people building things.

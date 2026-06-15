@@ -1,9 +1,13 @@
-export function formatDate(timestamp: string) {
+export function formatDate(timestamp: string | Date, month: 'short' | 'long' = 'short') {
   const date = new Date(timestamp)
+  // Always format in UTC so date-only frontmatter values like `2026-06-14`
+  // (which YAML parses as midnight UTC) show the exact same date the author
+  // typed, regardless of the reader's local timezone.
   return date.toLocaleDateString('en-US', {
-    month: 'long',
+    month,
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC',
   })
 }
 

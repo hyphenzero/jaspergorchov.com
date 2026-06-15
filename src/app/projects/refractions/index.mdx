@@ -1,14 +1,11 @@
-import { Example } from '@/components/markdown/example.tsx'
-import { Figure } from '@/components/markdown/figure.tsx'
-import { Iframe } from '@/components/markdown/iframe.tsx'
 import thumbnail from './thumbnail.png'
-import { Image } from '@/components/markdown/media'
-import { CodeExampleStack } from '@/components/markdown/code-example'
-import Link from 'next/link'
+import closeup1 from './closeup-1.png'
+import closeup2 from './closeup-2.png'
+import { Image, ImageGrid } from '@/components/markdown/media'
 
 export const meta = {
   title: 'Refractions',
-  description: `This is the second project we're working on together. It will be a lot of fun! It's a great opportunity to learn and grow as a team.`,
+  lead: `A Blender experiment exploring light, glass, and geometric distortion. What started as a test of refractive materials became a study in how color and form interact through translucent surfaces.`,
   date: '2023-09-01T17:00:00.000Z',
   image: thumbnail,
   showreel: {
@@ -21,4 +18,25 @@ export const meta = {
 
 <Image src={thumbnail} alt="" />
 
-I created a small scene in Blender to test out abstract composition techniques.
+I've always been fascinated by the way light bends as it passes through glass — the way it splits, warps, and recombines into something unexpected. *Refractions* was born from that curiosity, a weekend spent in Blender pushing glass shaders and geometry nodes to see what kinds of forms I could conjure.
+
+## The concept
+
+The scene is built around a cluster of abstract geometric forms, each one faceted and transparent in a slightly different way. Light enters from multiple angles — some sources are visible in the frame, others implied — and the result is a tangle of caustic highlights, colored shadows, and internal reflections that feel almost organic.
+
+I wanted the final render to sit somewhere between architectural and organic — like a model of a crystalline structure you might find in a natural history museum, if nature had access to Cycles and a GPU.
+
+## Technical approach
+
+The glass materials use a mix of principled BSDF shaders with controlled roughness and transmission values, layered over a subtle emissive base to give the forms an inner glow. The environment lighting is a combination of an HDRI for global illumination and a few carefully placed area lights to create the distinct refraction lines you see cutting across the forms.
+
+Rendering was done in Cycles at 4K with caustics enabled. Each frame took around 45 minutes to converge, but the final result was worth the wait.
+
+## What I learned
+
+This project taught me more about light transport than any tutorial ever could. Small tweaks to the index of refraction or the roughness of a surface completely change the character of the piece. It's the kind of hands-on learning that sticks with you.
+
+<ImageGrid>
+  <Image src={closeup1} alt="Close-up detail of the refractions showing caustic light patterns" />
+  <Image src={closeup2} alt="Alternate angle showing the full geometric cluster" />
+</ImageGrid>

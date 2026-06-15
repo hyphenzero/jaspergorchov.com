@@ -72,10 +72,10 @@ const categories = [
 export default function UsesPage() {
   return (
     <Container className="relative mt-28">
-      <span className="absolute -z-10 -mt-6 -ml-4 text-balance font-bold text-5xl text-zinc-300 lg:text-8xl dark:text-zinc-800">
+      <span className="absolute -z-10 -mt-3 -ml-3 text-balance font-semibold text-7xl text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
         /
       </span>
-      <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
+      <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
         Uses
       </h1>
       <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">

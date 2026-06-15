@@ -1,0 +1,29 @@
+import cubeClubWebsite from './cube-club-website.png'
+
+export const meta = {
+  title: 'Rubik’s Cube Club Website',
+  image: cubeClubWebsite,
+  lead: `A clean, community-focused website for the Lake Oswego High School Rubik's Cube Club — featuring meeting schedules, competitor profiles, resources for new cubers, and a live leaderboard.`,
+  releaseDate: '2024-10-15T17:00:00.000Z',
+  tags: ['Web Development'],
+}
+
+Building a website for a school club is a different kind of challenge than building for a client. The audience knows each other, the content changes every week, and the whole thing needs to be maintainable by students who might not have touched HTML before.
+
+The Rubik's Cube Club at Lake Oswego High School needed exactly that — a home on the web where members could find meeting times, track their personal bests, and point new recruits who wanted to learn.
+
+## What the site does
+
+The site serves three main roles. First, it's an information hub: meeting times, room locations, and a calendar of upcoming competitions are always a click away. Second, it's a showcase: member profiles with their personal records, favorite puzzles, and a bit about how they got started. Third, it's a resource library: beginner tutorials, algorithm sheets, and links to the timers and tools the club uses during practice.
+
+The leaderboard is the centerpiece. It pulls from a shared spreadsheet that the club officers update after each meeting, displaying best times by event — 2x2, 3x3, 4x4, and the ever-controversial pyraminx. The table sorts by event and highlights the current school record holders.
+
+## Design and build
+
+I kept the design playful but not childish — a saturated color palette that nods to the six faces of a Rubik's Cube, with plenty of white space so the content breathes. The layout is responsive by necessity: most of the club's traffic comes from students checking meeting times on their phones between classes.
+
+The site is built as a static Next.js site deployed on Vercel, with the spreadsheet data fetched at build time via a serverless function. That means the leaderboard is always up to date without needing a database or a CMS, and the site loads instantly because it's all pre-rendered HTML.
+
+## What I learned
+
+This project taught me how to design for a very specific kind of maintainability. Every decision — from the spreadsheet-driven data layer to the deliberately simple component structure — was made with the next person in mind. The goal wasn't to build something impressive; it was to build something that would still be running smoothly long after I graduated.

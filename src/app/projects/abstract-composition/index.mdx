@@ -1,15 +1,12 @@
-import { Example } from '@/components/markdown/example.tsx'
-import { Figure } from '@/components/markdown/figure.tsx'
-import { Iframe } from '@/components/markdown/iframe.tsx'
 import thumbnail from './thumbnail.png'
-import { Image } from '@/components/markdown/media'
-import { CodeExampleStack } from '@/components/markdown/code-example'
-import Link from 'next/link'
+import closeup1 from './closeup-1.png'
+import closeup2 from './closeup-2.png'
+import { Image, ImageGrid } from '@/components/markdown/media'
 
 export const meta = {
   title: 'Abstract Composition',
-  description: `This is the second project we're working on together. It will be a lot of fun! It's a great opportunity to learn and grow as a team.`,
-  date: '2023-09-01T17:00:00.000Z',
+  lead: `A Blender study in form, color, and negative space. Abstract shapes arranged in a balanced composition, exploring how simple geometry can evoke depth and emotion.`,
+  date: '2023-08-15T17:00:00.000Z',
   image: thumbnail,
   showreel: {
     animation: 'stepped-scale-render',
@@ -21,4 +18,25 @@ export const meta = {
 
 <Image src={thumbnail} alt="" />
 
-I created a small scene in Blender to test out abstract composition techniques.
+Sometimes the best way to learn a tool is to give yourself a constraint and see what comes out. For this piece, I set myself a simple rule: use only primitive shapes — spheres, cubes, toruses, and cones — and arrange them into a composition that felt intentional, balanced, and evocative.
+
+## The process
+
+I started with a mood board of abstract sculptures and mid-century mobiles, looking for inspiration in how physical objects occupy space. The challenge was translating that sensibility into a digital scene where gravity is optional and materials can be anything.
+
+The final composition centers on a suspended cluster of forms at slightly different scales, each one rotated to catch the light from a three-point setup. The color palette is restrained — soft blues, warm ambers, and neutral greys — letting the shapes and their shadows do most of the work.
+
+## Materials and lighting
+
+The surfaces are a mix of matte and glossy materials, with a few translucent elements to add visual interest. The key light is a large area light positioned to create long, soft shadows that anchor the forms in space. A warm rim light separates the cluster from the background, and a subtle fill light opens up the shadows just enough to reveal the geometry.
+
+I used Freestyle for the line art overlay on the alternate renders, which gives the composition a slightly illustrative quality that contrasts nicely with the photorealistic main render.
+
+## Why abstract?
+
+Abstract 3D work is a sandbox for me — a place to experiment without the pressure of realism or client expectations. Every piece teaches me something about composition, lighting, or material behavior that I carry into more structured projects.
+
+<ImageGrid>
+  <Image src={closeup1} alt="Close-up detail of the abstract composition" />
+  <Image src={closeup2} alt="Alternate angle showing the form cluster" />
+</ImageGrid>

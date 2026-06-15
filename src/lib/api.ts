@@ -11,13 +11,21 @@ function isValidSlug(slug: string) {
 }
 
 /**
- * Normalize various frontmatter image shapes into { src: string }.
+ * Normalize various frontmatter image shapes into { src, width, height }.
  * Accepts string paths, imported image objects, or already-normalized shapes.
+ * Preserves width/height from static imports so downstream consumers can
+ * pass the full object to Next.js Image or derive the correct aspect ratio.
  */
-function normalizeImage(img: any): { src: string } | undefined {
+function normalizeImage(img: any): { src: string; width?: number; height?: number } | undefined {
   if (!img) return undefined
   if (typeof img === 'string') return { src: img }
-  if (typeof img === 'object') return { src: img.src ?? img.default ?? String(img) }
+  if (typeof img === 'object') {
+    return {
+      src: img.src ?? img.default ?? String(img),
+      width: typeof img.width === 'number' ? img.width : undefined,
+      height: typeof img.height === 'number' ? img.height : undefined,
+    }
+  }
   return { src: String(img) }
 }
 
@@ -64,7 +72,10 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
       ...meta,
       // Prefer an explicit `date`, but allow `releaseDate` on blog pages for robustness.
       date: meta.date ?? meta.releaseDate,
+      // Normalize to `lead` from either `lead`, `excerpt`, or `description` frontmatter.
+      lead: meta.lead ?? meta.excerpt ?? meta.description,
       image: normalizeImage(meta.image),
+      imageDark: normalizeImage(meta.imageDark),
     }
 
     return {
@@ -125,7 +136,10 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       releaseDate: meta.releaseDate,
       // Support both `updatedDate` and legacy `updated` fields.
       updatedDate: meta.updatedDate ?? meta.updated,
+      // Normalize to `lead` from either `lead`, `excerpt`, or `description` frontmatter.
+      lead: meta.lead ?? meta.excerpt ?? meta.description,
       image: normalizedImage,
+      imageDark: normalizeImage(meta.imageDark),
       showreel: normalizeShowreel(meta.showreel, normalizedImage),
     }
 

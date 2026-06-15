@@ -13,6 +13,7 @@ export function CategorySelector({ tags, category }: { tags: { label: string; va
           <li key={tag.value}>
             <Link
               href={`?category=${encodeURIComponent(tag.value)}`}
+              scroll={false}
               className={clsx('group relative block rounded-full px-2.5 py-1 font-medium text-sm transition')}
             >
               {category === tag.value && (

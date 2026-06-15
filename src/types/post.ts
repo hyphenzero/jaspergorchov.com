@@ -2,23 +2,23 @@ import type React from 'react'
 
 /**
  * Blog posts: simple MDX pages that always expose a `date` field.
- * `excerpt` is a React element to allow rich summaries (rich text / JSX).
+ * `lead` is a short summary string shown in listings and on the page.
  */
 export interface BlogPost {
   Component: React.FC
   meta: {
     title: string
     date: string
-    excerpt: React.ReactElement
+    lead: string
     tags: string[]
-    description: string
-    image?: { src: string }
+    image?: { src: string; width?: number; height?: number }
+    imageDark?: { src: string; width?: number; height?: number }
     private?: boolean
   }
   slug: string
 }
 
-export type ProjectShowreelAnimation = 'website-mobile-rise' | 'stepped-scale-render'
+export type ProjectShowreelAnimation = 'website-mobile-rise' | 'stepped-scale-render' | 'diagonal-wipe'
 
 export interface ProjectShowreel {
   animation: ProjectShowreelAnimation
@@ -43,10 +43,10 @@ export interface Project {
     releaseDate?: string
     updatedDate?: string
     updated?: string
-    excerpt: React.ReactElement
+    lead: string
     tags: string[]
-    description: string
-    image?: { src: string }
+    image?: { src: string; width?: number; height?: number }
+    imageDark?: { src: string; width?: number; height?: number }
     showreel?: ProjectShowreel
     private?: boolean
   }

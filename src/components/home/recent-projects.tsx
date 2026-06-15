@@ -3,10 +3,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import { clsx } from 'clsx'
 import { type HTMLMotionProps, MotionValue, motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import useMeasure, { type RectReadOnly } from 'react-use-measure'
+import { ThemeImage } from '@/components/theme-image'
 import { SerializableProject } from '@/types/post'
 import { Button } from '../button'
 
@@ -14,6 +14,7 @@ function ProjectCard({
   name,
   title,
   img,
+  imgDark,
   children,
   bounds,
   scrollX,
@@ -21,6 +22,7 @@ function ProjectCard({
   ...props
 }: {
   img?: string
+  imgDark?: string
   name?: string
   title?: string
   href?: string
@@ -72,11 +74,12 @@ function ProjectCard({
       {img ? (
         <div className="relative aspect-16/10 h-auto overflow-hidden rounded-xl">
           <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
-          <Image
+          <ThemeImage
             priority
             unoptimized
             fill
             src={img}
+            darkSrc={imgDark}
             alt={title ?? name ?? ''}
             className="inset-0 aspect-16/10 object-cover"
           />
@@ -139,11 +142,12 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
             name={project.meta.title}
             title={project.meta.title}
             img={project.meta.image?.src}
+            imgDark={project.meta.imageDark?.src}
             bounds={bounds}
             scrollX={scrollX}
             href={`/projects/${project.slug}`}
           >
-            {project.meta.description}
+            {project.meta.lead}
           </ProjectCard>
         ))}
         <div className="w-2xl shrink-0 sm:w-216" />

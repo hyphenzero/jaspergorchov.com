@@ -1,12 +1,11 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
+import { animate, motion } from 'motion/react'
 import Image from 'next/image'
-import type { ComponentType } from 'react'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { createFallbackPalette, extractPaletteFromImage, type PaletteColors } from '@/lib/image-palette'
-import type { ProjectShowreel, ProjectShowreelAnimation, SerializableProject } from '@/types/post'
-import { HeroShaders } from './hero-shaders'
+import type { SerializableProject } from '@/types/post'
+
+type AnimationType = 'cross-scale' | 'diagonal-wipe'
 
 type Props = {
   projects: SerializableProject[]
@@ -14,33 +13,27 @@ type Props = {
 
 type ShowreelProject = SerializableProject & {
   meta: SerializableProject['meta'] & {
-    showreel: ProjectShowreel
+    showreel: NonNullable<SerializableProject['meta']['showreel']>
   }
-}
-
-type AnimationProps = {
-  project: ShowreelProject
-}
-
-type CursorState = {
-  x: number
-  y: number
-  visible: boolean
 }
 
 function hasShowreel(project: SerializableProject): project is ShowreelProject {
   const showreel = project.meta.showreel
   if (!showreel) return false
+  return Boolean(
+    showreel.desktopImage?.src || showreel.mobileImage?.src || showreel.renderImage?.src || project.meta.image?.src
+  )
+}
 
-  if (showreel.animation === 'website-mobile-rise') {
-    return Boolean(showreel.desktopImage?.src || showreel.mobileImage?.src || project.meta.image?.src)
-  }
-
-  if (showreel.animation === 'stepped-scale-render') {
-    return Boolean(showreel.renderImage?.src || project.meta.image?.src)
-  }
-
-  return false
+function getImageSrc(project: ShowreelProject): string {
+  const showreel = project.meta.showreel
+  return (
+    showreel.renderImage?.src ??
+    showreel.desktopImage?.src ??
+    showreel.mobileImage?.src ??
+    project.meta.image?.src ??
+    ''
+  )
 }
 
 function shuffleProjects(projects: ShowreelProject[]) {
@@ -62,123 +55,131 @@ function buildQueue(projects: ShowreelProject[], lastSlug?: string) {
   return queue
 }
 
-function getShowreelImageSrc(project: ShowreelProject) {
-  const showreel = project.meta.showreel
+function CrossScaleImage({
+  project,
+  previousProject,
+}: {
+  project: ShowreelProject
+  previousProject: ShowreelProject | null
+}) {
+  const src = getImageSrc(project)
+  const prevSrc = previousProject ? getImageSrc(previousProject) : null
+  const [scale, setScale] = useState(1)
+  const [showOld, setShowOld] = useState(false)
+  const cutRef = useRef(false)
+  const scaleRef = useRef(1)
+  const prevSlugRef = useRef(project.slug)
+  const cleanupRef = useRef<() => void>(() => {})
 
-  if (showreel.animation === 'website-mobile-rise') {
-    return showreel.desktopImage?.src ?? showreel.mobileImage?.src ?? project.meta.image?.src
-  }
+  useEffect(() => {
+    if (!prevSrc) {
+      prevSlugRef.current = project.slug
+      return
+    }
 
-  return showreel.renderImage?.src ?? project.meta.image?.src
-}
+    if (project.slug === prevSlugRef.current) return
+    prevSlugRef.current = project.slug
 
-function WebsiteMobileRiseAnimation({ project }: AnimationProps) {
-  const desktopSrc = project.meta.showreel.desktopImage?.src ?? project.meta.image?.src
-  const mobileSrc = project.meta.showreel.mobileImage?.src ?? desktopSrc
+    cutRef.current = false
+    setShowOld(true)
 
-  if (!desktopSrc) return null
+    const from = scaleRef.current
+
+    // Phase 1: fast zoom to 1 (imperceptible reset)
+    const controls1 = animate(from, 1, {
+      duration: 0.04,
+      ease: 'easeOut',
+      onComplete: () => {
+        // Phase 2: match cut zoom from 1 to 1.15
+        const controls2 = animate(1, 1.15, {
+          duration: 0.5,
+          ease: [0.22, 1, 0.36, 1],
+          onUpdate: (latest) => {
+            setScale(latest)
+            scaleRef.current = latest
+            const progress = (latest - 1) / 0.15
+            if (progress >= 0.55 && !cutRef.current) {
+              cutRef.current = true
+              setShowOld(false)
+            }
+          },
+        })
+        cleanupRef.current = () => controls2.stop()
+      },
+    })
+    cleanupRef.current = () => controls1.stop()
+
+    return () => {
+      cleanupRef.current()
+    }
+  }, [project.slug, prevSrc])
 
   return (
-    <div className="relative h-full w-full">
-      <motion.div
-        className="absolute inset-x-[6%] top-[6%] bottom-[10%] rounded-[1.75rem] bg-white/85 p-3 shadow-2xl outline-1 outline-black/10 -outline-offset-1 backdrop-blur-sm"
-        initial={{ opacity: 0, y: 80, rotateX: 10, scale: 0.96 }}
-        animate={{ opacity: 1, y: 0, rotateX: 0, scale: 1 }}
-        transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="relative h-full overflow-hidden rounded-[1.2rem] bg-zinc-900/5">
-          <Image
-            src={desktopSrc}
-            alt={project.meta.title}
-            fill
-            priority
-            className="object-cover object-top"
-            sizes="85vw"
-          />
+    <div className="absolute inset-0 bg-zinc-950 dark:bg-zinc-950">
+      <div className="absolute inset-0" style={{ transform: `scale(${scale})` }}>
+        <Image src={src} alt={project.meta.title} fill priority unoptimized className="object-cover" sizes="100vw" />
+      </div>
+      {showOld && prevSrc && (
+        <div className="absolute inset-0" style={{ transform: `scale(${scale})` }}>
+          <Image src={prevSrc} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
         </div>
-      </motion.div>
-
-      {mobileSrc && (
-        <motion.div
-          className="absolute right-[6%] bottom-[6%] h-[56%] w-[26%] max-w-64 rounded-[1.8rem] bg-white/95 p-2 shadow-2xl outline-1 outline-black/10 -outline-offset-1 backdrop-blur-sm"
-          initial={{ opacity: 0, y: 120, x: 25, rotateZ: 4, scale: 0.88 }}
-          animate={{ opacity: 1, y: 0, x: 0, rotateZ: 0, scale: 1 }}
-          transition={{ duration: 0.8, delay: 0.25, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="relative h-full overflow-hidden rounded-[1.3rem] bg-zinc-900/5">
-            <Image
-              src={mobileSrc}
-              alt={`${project.meta.title} mobile view`}
-              fill
-              className="object-cover object-top"
-              sizes="30vw"
-            />
-          </div>
-        </motion.div>
       )}
     </div>
   )
 }
 
-function SteppedScaleRenderAnimation({ project }: AnimationProps) {
-  const renderSrc = project.meta.showreel.renderImage?.src ?? project.meta.image?.src
-  if (!renderSrc) return null
-
-  const scaleSteps = [0.3, 0.6, 1] as const
-  const [stepIndex, setStepIndex] = useState(0)
+function DiagonalWipe({
+  project,
+  previousProject,
+}: {
+  project: ShowreelProject
+  previousProject: ShowreelProject | null
+}) {
+  const src = getImageSrc(project)
+  const prevSrc = previousProject ? getImageSrc(previousProject) : null
+  const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    setStepIndex(0)
-    const timerOne = window.setTimeout(() => setStepIndex(1), 260)
-    const timerTwo = window.setTimeout(() => setStepIndex(2), 520)
+    const el = overlayRef.current
+    if (!el) return
 
-    return () => {
-      window.clearTimeout(timerOne)
-      window.clearTimeout(timerTwo)
-    }
+    const controls = animate(0, 1, {
+      duration: 1,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (latest) => {
+        const offset = 25
+        const topPct = 100 - latest * (100 + offset)
+        const bottomPct = 100 + offset - latest * (100 + offset)
+        el.style.clipPath = `polygon(${topPct}% 0%, 100% 0%, 100% 100%, ${bottomPct}% 100%)`
+      },
+    })
+    return () => controls.stop()
   }, [project.slug])
 
   return (
-    <div className="relative h-full w-full">
-      <div className="absolute inset-x-[20%] top-[8%] bottom-[18%] flex items-center justify-center">
-        <div
-          className="relative h-full w-full overflow-hidden rounded-[1.75rem] shadow-2xl outline-1 outline-white/35 -outline-offset-1 transition-none"
-          style={{ transform: `scale(${scaleSteps[stepIndex]})` }}
-        >
-          <Image src={renderSrc} alt={project.meta.title} fill priority className="object-cover" sizes="72vw" />
-        </div>
+    <div className="absolute inset-0 bg-zinc-950 dark:bg-zinc-950">
+      {prevSrc && <Image src={prevSrc} alt="" fill priority className="object-cover" sizes="100vw" />}
+      <div
+        ref={overlayRef}
+        className="absolute inset-0"
+        style={{ clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 125% 100%)' }}
+      >
+        <Image src={src} alt={project.meta.title} fill priority className="object-cover" sizes="100vw" />
       </div>
     </div>
   )
 }
 
-const animationComponents: Record<ProjectShowreelAnimation, ComponentType<AnimationProps>> = {
-  'website-mobile-rise': WebsiteMobileRiseAnimation,
-  'stepped-scale-render': SteppedScaleRenderAnimation,
-}
-
 export function Hero({ projects = [] }: Props) {
   const showreelProjects = useMemo(() => projects.filter(hasShowreel), [projects])
   const [currentProject, setCurrentProject] = useState<ShowreelProject | null>(showreelProjects[0] ?? null)
+  const [previousProject, setPreviousProject] = useState<ShowreelProject | null>(null)
+  const [animationType, setAnimationType] = useState<AnimationType>('cross-scale')
   const queueRef = useRef<ShowreelProject[]>([])
   const indexRef = useRef(0)
-  const [canShowCursorChip, setCanShowCursorChip] = useState(false)
-  const [cursor, setCursor] = useState<CursorState>({
-    x: 0,
-    y: 0,
-    visible: false,
-  })
-  const [backgroundPalette, setBackgroundPalette] = useState<PaletteColors>(() =>
-    createFallbackPalette(currentProject?.meta.showreel?.backgroundColor)
-  )
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia('(pointer: fine)')
-    const update = () => setCanShowCursorChip(mediaQuery.matches)
-    update()
-    mediaQuery.addEventListener('change', update)
-    return () => mediaQuery.removeEventListener('change', update)
-  }, [])
+  const [scrollY, setScrollY] = useState(0)
+  const currentRef = useRef<ShowreelProject | null>(null)
+  currentRef.current = currentProject
 
   useEffect(() => {
     if (showreelProjects.length === 0) {
@@ -205,114 +206,71 @@ export function Hero({ projects = [] }: Props) {
         indexRef.current = nextIndex
       }
 
-      setCurrentProject(queueRef.current[indexRef.current] ?? null)
+      const nextProject = queueRef.current[indexRef.current] ?? null
+      const prev = currentRef.current
+      const type: AnimationType = Math.random() > 0.5 ? 'diagonal-wipe' : 'cross-scale'
+
+      setAnimationType(type)
+      setCurrentProject(nextProject)
+      setPreviousProject(prev)
     }, 5200)
 
     return () => window.clearInterval(intervalId)
   }, [showreelProjects])
 
-  const currentShowreel = currentProject?.meta.showreel
-  const ActiveAnimation = currentShowreel ? animationComponents[currentShowreel.animation] : null
-
-  const showCursorChip = Boolean(currentProject && canShowCursorChip)
-
   useEffect(() => {
-    if (!currentProject) {
-      setBackgroundPalette(createFallbackPalette())
-      return
-    }
+    const handleScroll = () => setScrollY(window.scrollY)
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    handleScroll()
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
-    let cancelled = false
-    const fallbackPalette = createFallbackPalette(currentShowreel?.backgroundColor)
-    const imageSrc = getShowreelImageSrc(currentProject)
+  const progress = Math.min(scrollY / 500, 1)
 
-    setBackgroundPalette(fallbackPalette)
-
-    if (!imageSrc) {
-      return
-    }
-
-    extractPaletteFromImage(imageSrc, currentShowreel?.backgroundColor)
-      .then((palette) => {
-        if (!cancelled) {
-          setBackgroundPalette(palette)
-        }
-      })
-      .catch((error) => {
-        if (!cancelled) {
-          console.error('Failed to extract hero palette:', error)
-          setBackgroundPalette(fallbackPalette)
-        }
-      })
-
-    return () => {
-      cancelled = true
-    }
-  }, [currentProject?.slug, currentShowreel?.backgroundColor])
+  if (!currentProject) return null
 
   return (
     <div className="relative isolate -z-10 size-full min-h-full overflow-hidden">
-      <div className="absolute inset-2 overflow-hidden rounded-[1.25rem]">
-        <HeroShaders backgroundPalette={backgroundPalette} />
-        <div
-          className={`relative mx-auto h-full max-w-6xl px-6 lg:px-8 ${showCursorChip ? 'cursor-none' : ''}`}
-          onMouseEnter={() => {
-            if (showCursorChip) {
-              setCursor((previous) => ({ ...previous, visible: true }))
-            }
-          }}
-          onMouseMove={(event) => {
-            if (showCursorChip) {
-              setCursor({
-                x: event.clientX,
-                y: event.clientY,
-                visible: true,
-              })
-            }
-          }}
-          onMouseLeave={() => {
-            setCursor((previous) => ({ ...previous, visible: false }))
-          }}
-        >
-          <div className="relative h-full">
-            <AnimatePresence mode="wait">
-              {currentProject && ActiveAnimation && (
-                <motion.div
-                  key={currentProject.slug}
-                  className="absolute inset-x-0 top-24 bottom-44 sm:top-28 sm:bottom-52 lg:bottom-56"
-                  initial={{ opacity: 0, scale: 0.985 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 1.02 }}
-                  transition={{ duration: 0.55, ease: 'easeOut' }}
-                >
-                  <ActiveAnimation project={currentProject} />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+      <motion.div
+        className="absolute inset-0 overflow-hidden"
+        animate={{
+          top: progress * 8,
+          left: progress * 8,
+          right: progress * 8,
+          bottom: progress * 8,
+          borderRadius: progress * 30,
+        }}
+      >
+        <div style={{ display: animationType === 'diagonal-wipe' ? 'none' : '' }}>
+          <CrossScaleImage project={currentProject} previousProject={previousProject} />
         </div>
-        <div className="pointer-events-none absolute inset-0 z-10 rounded-[1.25rem] ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
-      </div>
+        <div style={{ display: animationType === 'diagonal-wipe' ? '' : 'none' }}>
+          <DiagonalWipe key={currentProject.slug} project={currentProject} previousProject={previousProject} />
+        </div>
+      </motion.div>
 
-      {showCursorChip && currentProject && (
-        <motion.div
-          className="pointer-events-none fixed top-0 left-0 z-40"
-          initial={false}
-          animate={{
-            x: cursor.x + 18,
-            y: cursor.y + 18,
-            opacity: cursor.visible ? 1 : 0,
-            scale: cursor.visible ? 1 : 0.95,
-          }}
-          transition={{ duration: 0.2, ease: 'easeOut' }}
-        >
-          <div className="rounded-full bg-white/90 px-3 py-2 shadow-lg outline-1 outline-black/10 -outline-offset-1 backdrop-blur-sm dark:bg-zinc-900/85 dark:outline-white/15">
-            <p className="whitespace-nowrap font-medium text-xs text-zinc-950 dark:text-white">
-              {currentProject.meta.title} <span aria-hidden>↗</span>
-            </p>
-          </div>
-        </motion.div>
-      )}
+      <motion.div
+        className="pointer-events-none absolute z-10 bg-linear-to-b from-zinc-950/50 via-transparent to-zinc-950/50"
+        animate={{
+          top: progress * 8,
+          left: progress * 8,
+          right: progress * 8,
+          bottom: progress * 8,
+          borderRadius: progress * 30,
+        }}
+      />
+
+      <motion.div
+        className="pointer-events-none absolute z-20 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"
+        animate={{
+          opacity: progress,
+          top: progress * 8,
+          left: progress * 8,
+          right: progress * 8,
+          bottom: progress * 8,
+          borderRadius: progress * 30,
+        }}
+      />
     </div>
   )
 }

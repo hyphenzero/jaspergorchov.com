@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { Container } from '@/components/container'
+import { ThemeImage } from '@/components/theme-image'
 import { formatDate, getAllProjects } from '@/lib/api'
 import type { Project } from '@/types/post'
 import { CategorySelector } from './category-selector'
@@ -49,10 +49,10 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
 
   return (
     <Container className="relative mt-28">
-      <span className="absolute -z-10 -mt-6 -ml-4 text-balance font-bold text-5xl text-zinc-300 lg:text-8xl dark:text-zinc-800">
+      <span className="absolute -z-10 -mt-3 -ml-3 text-balance font-semibold text-7xl text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
         /
       </span>
-      <h1 className="text-balance font-medium text-5xl text-zinc-950 tracking-tight lg:text-6xl dark:text-white">
+      <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
         Projects
       </h1>
 
@@ -79,11 +79,12 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                 <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/5 transition-transform duration-400 ease-out group-hover:scale-105_">
                   <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-transparent ring-inset max-lg:hidden dark:ring-white/10" />
                   {meta.image?.src ? (
-                    <Image
+                    <ThemeImage
                       priority
                       unoptimized
                       fill
                       src={meta.image.src}
+                      darkSrc={meta.imageDark?.src}
                       alt={meta.title ?? ''}
                       className="size-full object-cover"
                     />
@@ -94,19 +95,12 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                   <div className="flex items-center">
                     <div className="flex items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
                       {updatedDate ? (
-                        <div className="flex items-center">
+                        <span className="flex items-center">
                           <span>Updated&nbsp;</span>
                           <time dateTime={updatedDate}>{formatDate(updatedDate)}</time>
-                        </div>
-                      ) : hasExplicitReleaseDate ? (
-                        <div className="flex items-center">
-                          <span>Released&nbsp;</span>
-                          <time dateTime={releaseOrDate}>{formatDate(releaseOrDate as string)}</time>
-                        </div>
+                        </span>
                       ) : releaseOrDate ? (
-                        <div className="flex items-center">
-                          <time dateTime={releaseOrDate}>{formatDate(releaseOrDate as string)}</time>
-                        </div>
+                        <time dateTime={releaseOrDate as string}>{formatDate(releaseOrDate as string)}</time>
                       ) : null}
                     </div>
 
@@ -128,11 +122,11 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                         <svg
                           viewBox="0 0 10 10"
                           aria-hidden="true"
-                          className="ml-2 size-2.5 flex-none not-group-hover:-translate-x-6 not-group-hover:opacity-0 opacity-60 transition duration-1000 ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)] before:transition-opacity before:ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)] dark:text-sky-400!"
+                          className="ml-2 size-2.5 flex-none not-group-hover:-translate-x-6 not-group-hover:opacity-0 opacity-60 transition duration-1000 ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)] before:transition-opacity before:ease-[linear(0,0.002_0.3%,0.007_0.6%,0.029_1.3%,0.065_2%,0.119_2.8%,0.237_4.2%,0.659_8.7%,0.778_10.2%,0.871_11.6%,0.95_13.1%,1.009_14.6%,1.033_15.4%,1.052_16.2%,1.066_17%,1.078_17.9%,1.085_18.8%,1.088_19.7%,1.088_20.7%,1.085_21.7%,1.074_23.6%,1.032_28.7%,1.014_31.4%,1.006_33%,1_34.6%,0.993_38%,0.992_41.9%,0.999_51.4%,1.001_57.6%,1)]"
                         >
                           <path
-                            fill="currentColor"
-                            stroke="currentColor"
+                            fill="oklch(74.6% 0.16 232.661)"
+                            stroke="oklch(74.6% 0.16 232.661)"
                             strokeLinecap="round"
                             strokeLinejoin="round"
                             strokeWidth="1.5"
@@ -243,7 +237,7 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
                       />
                     </svg> */}
                   </div>
-                  <p className="mt-3 line-clamp-2 text-sm/7 text-zinc-600 dark:text-zinc-400">{meta.description}</p>
+                  <p className="mt-3 line-clamp-2 text-sm/7 text-zinc-600 dark:text-zinc-400">{meta.lead}</p>
                 </div>
               </article>
             )
