@@ -18,16 +18,6 @@ export interface BlogPost {
   slug: string
 }
 
-export type ProjectShowreelAnimation = 'website-mobile-rise' | 'stepped-scale-render' | 'diagonal-wipe'
-
-export interface ProjectShowreel {
-  animation: ProjectShowreelAnimation
-  backgroundColor?: string
-  desktopImage?: { src: string }
-  mobileImage?: { src: string }
-  renderImage?: { src: string }
-}
-
 /**
  * Projects: similar to BlogPost but support both `releaseDate` and `updatedDate`.
  * `date` on Project is normalized server-side to `releaseDate ?? date` so
@@ -47,14 +37,28 @@ export interface Project {
     tags: string[]
     image?: { src: string; width?: number; height?: number }
     imageDark?: { src: string; width?: number; height?: number }
-    showreel?: ProjectShowreel
     private?: boolean
   }
   slug: string
 }
 
+/**
+ * Notes: short-form content (like a quick social post) that lives only
+ * on the /blog listing. No individual page, no tags, no "Read more".
+ * `date` must include time in Pacific timezone (e.g. `2026-06-14T15:30:00-07:00`).
+ * The MDX default export is rendered inline as the post content.
+ */
+export interface Note {
+  Component: React.FC
+  meta: {
+    date: string
+    image?: { src: string; width?: number; height?: number }
+  }
+  slug: string
+}
+
 /** Convenience union for callers that accept either type. */
-export type Post = BlogPost | Project
+export type Post = BlogPost | Project | Note
 
 /** A serializable Project without the React Component (safe to send to client). */
 export type SerializableProject = Omit<Project, 'Component'>

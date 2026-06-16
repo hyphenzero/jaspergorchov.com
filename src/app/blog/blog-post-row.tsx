@@ -28,7 +28,7 @@ export function BlogPostRow({
     >
       <Link href={`/blog/${slug}`} className="absolute inset-0 z-10" />
       <div className="flex h-fit">
-        <p className="font-medium font-mono text-gray-500 text-sm/6 uppercase tracking-widest">
+        <p className="font-medium font-mono text-sm/6 text-zinc-500 uppercase tracking-widest">
           {formatDate(meta.date, 'long')}
         </p>
         <ul className="m-0 flex list-none items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">

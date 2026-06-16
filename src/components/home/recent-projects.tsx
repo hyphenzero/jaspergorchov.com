@@ -87,14 +87,14 @@ function ProjectCard({
       ) : null}
       <div
         aria-hidden="true"
-        className="absolute inset-0 bg-linear-to-t from-zinc-950/75 to-50% opacity-0 transition-500 transition-opacity group-hover:opacity-100"
+        className="absolute inset-0 bg-linear-to-t from-zinc-950/50 to-30% opacity-0 transition-500 transition-opacity group-hover:opacity-100 dark:from-zinc-950/75"
       />
       {href ? (
         <Link href={href}>
           <span className="absolute inset-0 z-20" aria-hidden="true" />
         </Link>
       ) : null}
-      <p className="absolute bottom-4 left-4 z-10 flex items-center gap-2 font-medium text-shadow-lg text-white opacity-0 transition-500 transition-opacity group-hover:opacity-100">
+      <p className="absolute bottom-4 left-5 z-10 flex items-center gap-2 font-medium text-shadow-md text-white opacity-0 transition-500 transition-opacity group-hover:opacity-100">
         {title ?? name}
         <ChevronRightIcon className="size-4" />
       </p>

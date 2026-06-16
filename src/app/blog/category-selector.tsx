@@ -6,7 +6,7 @@ import { Link } from '@/components/link'
 
 export function CategorySelector({ tags, category }: { tags: { label: string; value: string }[]; category: string }) {
   return (
-    <nav className="relative mt-28">
+    <nav className="relative">
       <div className="pointer-events-none absolute inset-0 z-10 brightness-200" />
       <ul className="flex gap-4">
         {tags.map((tag) => (

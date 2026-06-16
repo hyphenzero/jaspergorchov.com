@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { JSX, SVGProps } from 'react'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
-import { Hero } from '@/components/home/hero-figma'
+import { Hero } from '@/components/home/hero'
 import { RecentProjects } from '@/components/home/recent-projects'
 import { getAllProjects } from '@/lib/api'
 
@@ -59,7 +59,7 @@ export default async function Home() {
         <Hero projects={serializableProjects} />
       </div>
 
-      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-24 lg:px-18">
+      <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-20 lg:px-14">
         <h1 className="max-w-5xl text-balance font-medium text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white">
           I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
         </h1>

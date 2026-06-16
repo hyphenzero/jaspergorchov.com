@@ -11,32 +11,21 @@ type Props = {
   projects: SerializableProject[]
 }
 
-type ShowreelProject = SerializableProject & {
-  meta: SerializableProject['meta'] & {
-    showreel: NonNullable<SerializableProject['meta']['showreel']>
-  }
+type ProjectWithImage = SerializableProject & { meta: { image: NonNullable<SerializableProject['meta']['image']> } }
+
+function hasImage(project: SerializableProject): project is ProjectWithImage {
+  return Boolean(project.meta.image?.src)
 }
 
-function hasShowreel(project: SerializableProject): project is ShowreelProject {
-  const showreel = project.meta.showreel
-  if (!showreel) return false
-  return Boolean(
-    showreel.desktopImage?.src || showreel.mobileImage?.src || showreel.renderImage?.src || project.meta.image?.src
-  )
+function getImageSrc(project: ProjectWithImage): string {
+  return project.meta.image.src
 }
 
-function getImageSrc(project: ShowreelProject): string {
-  const showreel = project.meta.showreel
-  return (
-    showreel.renderImage?.src ??
-    showreel.desktopImage?.src ??
-    showreel.mobileImage?.src ??
-    project.meta.image?.src ??
-    ''
-  )
+function getImageDarkSrc(project: ProjectWithImage): string | undefined {
+  return project.meta.imageDark?.src
 }
 
-function shuffleProjects(projects: ShowreelProject[]) {
+function shuffleProjects(projects: ProjectWithImage[]) {
   const shuffled = [...projects]
   for (let index = shuffled.length - 1; index > 0; index -= 1) {
     const randomIndex = Math.floor(Math.random() * (index + 1))
@@ -45,7 +34,7 @@ function shuffleProjects(projects: ShowreelProject[]) {
   return shuffled
 }
 
-function buildQueue(projects: ShowreelProject[], lastSlug?: string) {
+function buildQueue(projects: ProjectWithImage[], lastSlug?: string) {
   const queue = shuffleProjects(projects)
 
   if (queue.length > 1 && lastSlug && queue[0].slug === lastSlug) {
@@ -59,11 +48,13 @@ function CrossScaleImage({
   project,
   previousProject,
 }: {
-  project: ShowreelProject
-  previousProject: ShowreelProject | null
+  project: ProjectWithImage
+  previousProject: ProjectWithImage | null
 }) {
   const src = getImageSrc(project)
+  const darkSrc = getImageDarkSrc(project)
   const prevSrc = previousProject ? getImageSrc(previousProject) : null
+  const prevDarkSrc = previousProject ? getImageDarkSrc(previousProject) : null
   const [scale, setScale] = useState(1)
   const [showOld, setShowOld] = useState(false)
   const cutRef = useRef(false)
@@ -117,11 +108,25 @@ function CrossScaleImage({
   return (
     <div className="absolute inset-0 bg-zinc-950 dark:bg-zinc-950">
       <div className="absolute inset-0" style={{ transform: `scale(${scale})` }}>
-        <Image src={src} alt={project.meta.title} fill priority unoptimized className="object-cover" sizes="100vw" />
+        {darkSrc ? (
+          <>
+            <Image src={src} alt={project.meta.title} fill priority unoptimized className="dark:hidden! object-cover" sizes="100vw" />
+            <Image src={darkSrc} alt={project.meta.title} fill priority unoptimized className="not-dark:hidden! absolute inset-0 object-cover" sizes="100vw" />
+          </>
+        ) : (
+          <Image src={src} alt={project.meta.title} fill priority unoptimized className="object-cover" sizes="100vw" />
+        )}
       </div>
       {showOld && prevSrc && (
         <div className="absolute inset-0" style={{ transform: `scale(${scale})` }}>
-          <Image src={prevSrc} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+          {prevDarkSrc ? (
+            <>
+              <Image src={prevSrc} alt="" fill priority unoptimized className="dark:hidden! object-cover" sizes="100vw" />
+              <Image src={prevDarkSrc} alt="" fill priority unoptimized className="not-dark:hidden! absolute inset-0 object-cover" sizes="100vw" />
+            </>
+          ) : (
+            <Image src={prevSrc} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+          )}
         </div>
       )}
     </div>
@@ -132,11 +137,13 @@ function DiagonalWipe({
   project,
   previousProject,
 }: {
-  project: ShowreelProject
-  previousProject: ShowreelProject | null
+  project: ProjectWithImage
+  previousProject: ProjectWithImage | null
 }) {
   const src = getImageSrc(project)
+  const darkSrc = getImageDarkSrc(project)
   const prevSrc = previousProject ? getImageSrc(previousProject) : null
+  const prevDarkSrc = previousProject ? getImageDarkSrc(previousProject) : null
   const overlayRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -158,38 +165,54 @@ function DiagonalWipe({
 
   return (
     <div className="absolute inset-0 bg-zinc-950 dark:bg-zinc-950">
-      {prevSrc && <Image src={prevSrc} alt="" fill priority className="object-cover" sizes="100vw" />}
+      {prevSrc && (
+        prevDarkSrc ? (
+          <>
+            <Image src={prevSrc} alt="" fill priority unoptimized className="dark:hidden! object-cover" sizes="100vw" />
+            <Image src={prevDarkSrc} alt="" fill priority unoptimized className="not-dark:hidden! absolute inset-0 object-cover" sizes="100vw" />
+          </>
+        ) : (
+          <Image src={prevSrc} alt="" fill priority unoptimized className="object-cover" sizes="100vw" />
+        )
+      )}
       <div
         ref={overlayRef}
         className="absolute inset-0"
         style={{ clipPath: 'polygon(100% 0%, 100% 0%, 100% 100%, 125% 100%)' }}
       >
-        <Image src={src} alt={project.meta.title} fill priority className="object-cover" sizes="100vw" />
+        {darkSrc ? (
+          <>
+            <Image src={src} alt={project.meta.title} fill priority unoptimized className="dark:hidden! object-cover" sizes="100vw" />
+            <Image src={darkSrc} alt={project.meta.title} fill priority unoptimized className="not-dark:hidden! absolute inset-0 object-cover" sizes="100vw" />
+          </>
+        ) : (
+          <Image src={src} alt={project.meta.title} fill priority unoptimized className="object-cover" sizes="100vw" />
+        )}
       </div>
     </div>
   )
 }
 
 export function Hero({ projects = [] }: Props) {
-  const showreelProjects = useMemo(() => projects.filter(hasShowreel), [projects])
-  const [currentProject, setCurrentProject] = useState<ShowreelProject | null>(showreelProjects[0] ?? null)
-  const [previousProject, setPreviousProject] = useState<ShowreelProject | null>(null)
+  const imageProjects = useMemo(() => projects.filter(hasImage), [projects])
+  const [currentProject, setCurrentProject] = useState<ProjectWithImage | null>(imageProjects[0] ?? null)
+  const [previousProject, setPreviousProject] = useState<ProjectWithImage | null>(null)
   const [animationType, setAnimationType] = useState<AnimationType>('cross-scale')
-  const queueRef = useRef<ShowreelProject[]>([])
+  const queueRef = useRef<ProjectWithImage[]>([])
   const indexRef = useRef(0)
   const [scrollY, setScrollY] = useState(0)
-  const currentRef = useRef<ShowreelProject | null>(null)
+  const currentRef = useRef<ProjectWithImage | null>(null)
   currentRef.current = currentProject
 
   useEffect(() => {
-    if (showreelProjects.length === 0) {
+    if (imageProjects.length === 0) {
       setCurrentProject(null)
       queueRef.current = []
       indexRef.current = 0
       return
     }
 
-    queueRef.current = buildQueue(showreelProjects)
+    queueRef.current = buildQueue(imageProjects)
     indexRef.current = 0
     setCurrentProject(queueRef.current[0] ?? null)
 
@@ -200,7 +223,7 @@ export function Hero({ projects = [] }: Props) {
       const nextIndex = indexRef.current + 1
       if (nextIndex >= queue.length) {
         const lastProject = queue[indexRef.current]
-        queueRef.current = buildQueue(showreelProjects, lastProject?.slug)
+        queueRef.current = buildQueue(imageProjects, lastProject?.slug)
         indexRef.current = 0
       } else {
         indexRef.current = nextIndex
@@ -216,7 +239,7 @@ export function Hero({ projects = [] }: Props) {
     }, 5200)
 
     return () => window.clearInterval(intervalId)
-  }, [showreelProjects])
+  }, [imageProjects])
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -249,16 +272,9 @@ export function Hero({ projects = [] }: Props) {
         </div>
       </motion.div>
 
-      <motion.div
-        className="pointer-events-none absolute z-10 bg-linear-to-b from-zinc-950/50 via-transparent to-zinc-950/50"
-        animate={{
-          top: progress * 8,
-          left: progress * 8,
-          right: progress * 8,
-          bottom: progress * 8,
-          borderRadius: progress * 30,
-        }}
-      />
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/3 bg-linear-to-b from-white/20 dark:from-zinc-950/50" />
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/3 bg-linear-to-t from-white/20 dark:from-zinc-950/70" />
 
       <motion.div
         className="pointer-events-none absolute z-20 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"

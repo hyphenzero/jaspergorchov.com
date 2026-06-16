@@ -1,9 +1,10 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
-import type { BlogPost, Project, ProjectShowreelAnimation } from '../types/post'
-import { formatDate as _formatDate } from './api-utils'
+import type { BlogPost, Note, Project } from '../types/post'
+import { formatDate as _formatDate, formatTimeLocal as _formatTimeLocal } from './api-utils'
 
 export const formatDate = _formatDate
+export const formatTimeLocal = _formatTimeLocal
 
 /** Allow only simple, filesystem-safe slugs used in dynamic imports. */
 function isValidSlug(slug: string) {
@@ -27,30 +28,6 @@ function normalizeImage(img: any): { src: string; width?: number; height?: numbe
     }
   }
   return { src: String(img) }
-}
-
-function isShowreelAnimation(animation: unknown): animation is ProjectShowreelAnimation {
-  return animation === 'website-mobile-rise' || animation === 'stepped-scale-render'
-}
-
-function normalizeShowreel(value: unknown, fallbackImage: unknown): Project['meta']['showreel'] | undefined {
-  if (!value || typeof value !== 'object') return undefined
-  const input = value as Record<string, unknown>
-  const animation = input.animation
-  if (!isShowreelAnimation(animation)) return undefined
-
-  const backgroundColor = typeof input.backgroundColor === 'string' ? input.backgroundColor : undefined
-
-  if (animation === 'website-mobile-rise') {
-    const desktopImage = normalizeImage(input.desktopImage ?? fallbackImage)
-    const mobileImage = normalizeImage(input.mobileImage ?? input.desktopImage ?? fallbackImage)
-    if (!desktopImage && !mobileImage) return undefined
-    return { animation, backgroundColor, desktopImage, mobileImage }
-  }
-
-  const renderImage = normalizeImage(input.renderImage ?? fallbackImage)
-  if (!renderImage) return undefined
-  return { animation, backgroundColor, renderImage }
 }
 
 // resolved paths are constructed from process.cwd() when needed
@@ -140,7 +117,6 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       lead: meta.lead ?? meta.excerpt ?? meta.description,
       image: normalizedImage,
       imageDark: normalizeImage(meta.imageDark),
-      showreel: normalizeShowreel(meta.showreel, normalizedImage),
     }
 
     return {
@@ -177,6 +153,56 @@ export async function getAllProjects() {
   const slugs = await getProjectSlugs()
   const projects = await Promise.all(slugs.map(getProjectBySlug))
   return projects.filter(nonNullable)
+}
+
+// Note functions
+/** Load a note MDX module and normalize its frontmatter. */
+export async function getNoteBySlug(slug: string): Promise<Note | null> {
+  try {
+    if (!isValidSlug(slug)) return null
+
+    const absolutePath = path.join(process.cwd(), `src/app/blog/_notes/${slug}.mdx`)
+    if (!(await fs.stat(absolutePath).catch(() => null))) return null
+
+    const module = await import(`../app/blog/_notes/${slug}.mdx`)
+    if (!module?.default) return null
+
+    const meta = module.meta || {}
+    const normalized: any = {
+      ...meta,
+      date: meta.date,
+      image: normalizeImage(meta.image),
+    }
+
+    return {
+      Component: module.default,
+      meta: normalized,
+      slug,
+    }
+  } catch (e) {
+    console.error(e)
+    return null
+  }
+}
+
+export async function getNoteSlugs(): Promise<string[]> {
+  try {
+    const notesDir = path.join(process.cwd(), 'src/app/blog/_notes')
+    const files = await fs.readdir(notesDir)
+    return files
+      .filter((f) => f.endsWith('.mdx'))
+      .map((f) => f.replace(/\.mdx$/, ''))
+      .filter(isValidSlug)
+  } catch (error) {
+    console.error('Error reading notes directory:', error)
+    return []
+  }
+}
+
+export async function getAllNotes(): Promise<Note[]> {
+  const slugs = await getNoteSlugs()
+  const posts = await Promise.all(slugs.map(getNoteBySlug))
+  return posts.filter(nonNullable)
 }
 
 // Utility functions

@@ -1,3 +1,15 @@
+/**
+ * Format the time portion of a timestamp in the user's local timezone.
+ * Shows the time only, e.g. "3:30 PM".
+ */
+export function formatTimeLocal(timestamp: string | Date) {
+  const date = new Date(timestamp)
+  return date.toLocaleString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+  })
+}
+
 export function formatDate(timestamp: string | Date, month: 'short' | 'long' = 'short') {
   const date = new Date(timestamp)
   // Always format in UTC so date-only frontmatter values like `2026-06-14`

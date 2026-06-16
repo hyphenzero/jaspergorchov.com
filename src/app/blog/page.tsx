@@ -1,40 +1,67 @@
 import type { Metadata } from 'next'
+import type React from 'react'
 import { Container } from '@/components/container'
-import { getAllBlogPosts } from '@/lib/api'
+import { getAllBlogPosts, getAllNotes } from '@/lib/api'
 import { BlogPostRow } from './blog-post-row'
 import { CategorySelector } from './category-selector'
+import { NoteRow } from './note-row'
+import { NotesToggle } from './notes-toggle'
 
 export const metadata: Metadata = {
   title: 'Blog',
-  description: 'Interesting articles and news from 14-year-old Jasper Gorchov.',
+  description:
+    'My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and digital creativity.',
   openGraph: {
     type: 'article',
     title: 'Latest updates - Blog',
     description: 'All the latest Tailwind CSS news, straight from the team.',
-    images: 'https://tailwindcss.com/api/og?path=/blog',
-    url: 'https://tailwindcss.com/blog',
+    images: 'https://jaspergorchov.com/api/og?path=/blog',
+    url: 'https://jaspergorchov.com/blog',
   },
 }
 
-export default async function Blog(props: { searchParams?: Promise<{ category?: string }> }) {
-  const searchParams = await props.searchParams
-  const allPosts = await getAllBlogPosts()
+async function getAllEntries() {
+  const [allPosts, allNotes] = await Promise.all([getAllBlogPosts(), getAllNotes()])
+
   const publicPosts = allPosts.filter((post) => !post.meta.private)
+
+  const entries: (
+    | { kind: 'blog'; Component: React.FC; meta: (typeof publicPosts)[number]['meta']; slug: string }
+    | { kind: 'note'; Component: React.FC; meta: (typeof allNotes)[number]['meta']; slug: string }
+  )[] = [
+    ...publicPosts.map((p) => ({ ...p, kind: 'blog' as const })),
+    ...allNotes.map((p) => ({ ...p, kind: 'note' as const })),
+  ]
+
+  entries.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+
+  return entries
+}
+
+export default async function Blog(props: { searchParams?: Promise<{ category?: string; notes?: string }> }) {
+  const searchParams = await props.searchParams
+  const entries = await getAllEntries()
 
   const tags = [
     { label: 'All categories', value: 'all' },
-    ...Array.from(new Set(publicPosts.flatMap((post) => post.meta.tags))).map((t) => ({
+    ...Array.from(new Set(entries.flatMap((e) => (e.kind === 'blog' ? e.meta.tags : [])))).map((t) => ({
       label: t,
       value: t.toLowerCase(),
     })),
   ]
 
   const category = searchParams?.category?.toLowerCase() ?? 'all'
+  const showNotes = (searchParams?.notes ?? 'show') !== 'hide'
 
-  const posts =
-    category === 'all'
-      ? publicPosts
-      : publicPosts.filter((post) => post.meta.tags.some((tag) => tag.toLowerCase() === category))
+  const filteredEntries = entries.filter((e) => {
+    // Apply notes filter first
+    if (e.kind === 'note' && !showNotes) return false
+    // Apply category filter to blog posts only
+    if (category !== 'all' && e.kind === 'blog' && !e.meta.tags.some((tag: string) => tag.toLowerCase() === category)) {
+      return false
+    }
+    return true
+  })
 
   return (
     <Container className="relative mt-28">
@@ -49,13 +76,24 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
         digital creativity.
       </p>
 
-      <CategorySelector tags={tags} category={category} />
+      <div className="mt-28 flex items-start justify-between">
+        <CategorySelector tags={tags} category={category} />
+        <NotesToggle defaultValue="show" />
+      </div>
 
       <div className="mt-6">
-        {posts.length === 0 ? (
+        {filteredEntries.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
         ) : (
-          posts.map(({ meta, slug }) => <BlogPostRow key={slug} meta={meta} slug={slug} />)
+          filteredEntries.map((entry) =>
+            entry.kind === 'blog' ? (
+              <BlogPostRow key={entry.slug} meta={entry.meta} slug={entry.slug} />
+            ) : (
+              <NoteRow key={entry.slug} meta={entry.meta}>
+                <entry.Component />
+              </NoteRow>
+            )
+          )
         )}
       </div>
     </Container>
