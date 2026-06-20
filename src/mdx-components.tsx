@@ -14,8 +14,6 @@ function getTextContent(node: React.ReactNode): string {
       return ''
     }
 
-    // Dive into element children to extract text for slug generation.
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     return getTextContent(node.props.children)
   }

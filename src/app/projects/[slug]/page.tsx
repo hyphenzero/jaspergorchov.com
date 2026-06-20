@@ -80,7 +80,7 @@ export default async function ArticlePage(props: Props) {
 
             {updatedDate && updatedDate !== releaseDate ? (
               <>
-                <div className="mx-4 size-1 rounded-full bg-current" />
+                <div className="mx-4 size-1 rounded-full bg-current/50" />
                 <span>Updated&nbsp;</span>
                 <time>{formatDate(updatedDate, 'long')}</time>
               </>

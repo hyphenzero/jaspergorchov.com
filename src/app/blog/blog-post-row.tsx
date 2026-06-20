@@ -8,9 +8,11 @@ import { formatDate } from '@/lib/api-utils'
 export function BlogPostRow({
   meta,
   slug,
+  basePath = '',
 }: {
   meta: { date: string; title: string; lead?: string; tags: string[] }
   slug: string
+  basePath?: string
 }) {
   const [rowHovered, setRowHovered] = useState(false)
   const [tagHovered, setTagHovered] = useState(false)
@@ -36,7 +38,7 @@ export function BlogPostRow({
             <li key={i} className="inline-flex items-center">
               <span className="mx-4 inline-block size-0.75 rounded-full bg-current" />
               <Link
-                href={`?category=${encodeURIComponent(tag.toLowerCase())}`}
+                href={`${basePath}?category=${encodeURIComponent(tag.toLowerCase())}`}
                 className="relative z-20 text-zinc-500 leading-none transition hover:text-zinc-950 dark:hover:text-white"
                 onMouseEnter={() => setTagHovered(true)}
                 onMouseLeave={() => setTagHovered(false)}

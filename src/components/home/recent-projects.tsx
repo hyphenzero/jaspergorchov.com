@@ -69,11 +69,11 @@ function ProjectCard({
       ref={ref}
       style={{ opacity }}
       {...props}
-      className="group relative isolate flex aspect-16/10 h-auto w-[calc(100vw-1.5rem)] max-w-[calc((var(--container-7xl)-2rem)/1.25)] shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-xl lg:w-[calc(100vw-2rem)]"
+      className="group relative isolate flex aspect-16/10 h-auto w-[calc(100vw-1.5rem)] max-w-[calc((var(--container-7xl)-2rem)/1.25)] shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-2xl lg:w-[calc(100vw-2rem)]"
     >
       {img ? (
-        <div className="relative aspect-16/10 h-auto overflow-hidden rounded-xl">
-          <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
+        <div className="relative aspect-16/10 h-auto overflow-hidden rounded-2xl">
+          <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
           <ThemeImage
             priority
             unoptimized
@@ -136,7 +136,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
           '[--scroll-padding:max(--spacing(6),calc((100vw-(var(--container-7xl)))/2+(var(--spacing)*6)))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-(var(--container-7xl)))/2+(var(--spacing)*8)))]',
         ])}
       >
-        {projects.map((project, projectIndex) => (
+        {projects.slice(0, 4).map((project, projectIndex) => (
           <ProjectCard
             key={projectIndex}
             name={project.meta.title}
@@ -155,7 +155,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
       <div className="mx-auto mt-12 max-w-7xl px-6 lg:px-8">
         <div className="flex justify-between">
           <Button href="/projects">
-            View all <ChevronRightIcon className="-mr-1!" />
+            View more <ChevronRightIcon className="-mr-1!" />
           </Button>
           <div className="hidden sm:flex sm:gap-2">
             <Button

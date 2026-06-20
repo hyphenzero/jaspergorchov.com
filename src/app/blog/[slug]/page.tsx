@@ -95,13 +95,13 @@ export default async function ArticlePage(props: Props) {
           </h1>
 
           {post.meta.lead ? (
-            <p className="mt-6 text-base/7 text-zinc-700 dark:text-zinc-300">{post.meta.lead}</p>
+            <p className="mt-5 text-base/8 text-zinc-700 dark:text-zinc-300">{post.meta.lead}</p>
           ) : null}
 
-          <div className="mt-10 flex items-center gap-x-3">
+          <div className="mt-6 flex items-center gap-x-3">
             {post.meta.tags.map((tag: string) => (
               <Link
-                className="rounded-full bg-zinc-200 px-2.5 py-1 font-medium text-sm text-zinc-950 transition hover:text-zinc-600 dark:border-white/10 dark:border-t dark:bg-zinc-700 dark:text-white dark:hover:text-zinc-300"
+                className="rounded-full bg-zinc-200 px-2.5 pt-0.75 pb-1 font-medium text-sm text-zinc-950 transition hover:text-zinc-600 dark:border-white/10 dark:border-t dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
                 key={tag}
                 href={`/blog?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
               >
@@ -111,7 +111,7 @@ export default async function ArticlePage(props: Props) {
           </div>
         </div>
       </div>
-      <article className="prose prose-blog mx-auto mt-20 max-w-7xl px-6 *:mx-auto lg:px-8">
+      <article className="prose prose-blog mx-auto mt-26 max-w-7xl px-6 *:mx-auto lg:px-8">
         {post.meta.image?.src ? (
           <div data-media>
             <div className="not-prose relative overflow-hidden rounded-xl">

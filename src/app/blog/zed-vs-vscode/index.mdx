@@ -1,0 +1,44 @@
+export const meta = {
+  title: 'Zed vs. VS Code: why I chose a different editor',
+  lead: `I've been using Zed more and more alongside Neovim, and it's made me think about what VS Code got right — and where it lost me.`,
+  date: '2026-06-16',
+  tags: ['Tooling'],
+}
+
+I use Neovim as my daily driver. But sometimes you want an editor that *just works* without fighting with Lua configs. For me, that editor is [Zed](https://zed.dev).
+
+VS Code is the obvious alternative, and I've gone back and forth over the years. But every time I try to settle on it, I hit the same friction points.
+
+## Code Actions on hover vs. Cmd+.
+
+This is the thing that surprises me most when I go back to VS Code: quick fixes appear on hover.
+
+In VS Code, if there's a lint error or a suggestion, you hover over the squiggly line and a lightbulb appears. Click it, and you get the fix.
+
+In Zed (and Neovim for that matter), you press `Cmd+.` to trigger code actions. There's no hover popup. No lightbulb. You just hit the keybinding and a list of available actions appears.
+
+I used to think VS Code's approach was better — more discoverable, more visual. But after using Zed for a while, I've changed my mind. The hover approach is distracting. Every time you move your cursor, you get popups. The lightbulb icon is visual noise. `Cmd+.` is a deliberate action — you press it when you want it, not before.
+
+That said, the discoverability problem is real. If you don't know `Cmd+.` exists, you'd never find code actions in Zed. VS Code's lightbulb at least hints that something is available.
+
+## Copilot alignment
+
+VS Code has become increasingly aligned with Copilot. GitHub Copilot is baked into the editor deeply — the suggestions, the chat panel, the inline completions. It's polished. It works well.
+
+But not everyone uses Copilot. I don't. And the deeper that alignment goes, the more VS Code feels like it's optimized for a workflow I don't have. The UI assumes you want AI features. The command palette prioritizes Copilot commands. The setup flow pushes you toward signing in with GitHub and enabling Copilot.
+
+Zed has AI features too — it has an inline assistant, a chat panel, and support for multiple providers (including local models via Ollama). But they don't take over the UI. They're there if you want them, invisible if you don't. That's the right approach.
+
+## Performance
+
+This is the boring but honest reason I reach for Zed over VS Code: it's faster. Startup is near-instant. Search across a project is immediate. No lag when typing in large files.
+
+VS Code has gotten slower over time, especially with extensions installed. Electron overhead is real.
+
+## The takeaway
+
+I don't think VS Code is a bad editor. It's the most popular editor for good reason — the extension ecosystem is unmatched, the debugger is excellent, and the remote development workflow is best in class.
+
+But for my workflow — TypeScript, Next.js, Tailwind, occasional Rust — Zed hits the sweet spot. It's fast, it stays out of my way, and the things that matter (language support, git integration, multibuffer editing) work beautifully.
+
+If you're happy with VS Code, great. But if you've ever wished it was faster or less noisy, give Zed a shot. Just remember to press `Cmd+.`.

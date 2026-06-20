@@ -140,7 +140,11 @@ export async function getProjectSlugs(): Promise<string[]> {
 
     return results
       .filter(nonNullable)
-      .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+      .sort((a, b) => {
+        const aDate = a.meta.updatedDate ?? a.meta.date
+        const bDate = b.meta.updatedDate ?? b.meta.date
+        return new Date(bDate).getTime() - new Date(aDate).getTime()
+      })
       .map((post) => post.slug)
   } catch (error) {
     console.error('Error reading projects directory:', error)

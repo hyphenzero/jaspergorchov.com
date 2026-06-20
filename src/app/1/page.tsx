@@ -45,7 +45,7 @@ const socialMedia = [
 export default function Home() {
   return (
     <>
-      <div className="relative mx-auto mt-12 grid max-w-[76rem] gap-x-10 px-6 sm:mt-20 lg:mt-24 lg:grid-cols-[3fr_2fr] lg:px-8">
+      <div className="relative mx-auto mt-12 grid max-w-304 gap-x-10 px-6 sm:mt-20 lg:mt-24 lg:grid-cols-[3fr_2fr] lg:px-8">
         <h1 className="mt-6 text-pretty text-6xl text-zinc-950 tracking-tighter sm:text-8xl dark:text-white">
           14-year-old creative developer
         </h1>

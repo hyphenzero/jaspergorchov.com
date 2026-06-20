@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Container } from '@/components/container'
+import { SubscribeForm } from '@/components/subscribe-form'
 import { getAllProjects } from '@/lib/api'
 import type { Project } from '@/types/post'
 import { CategorySelector } from './category-selector'
@@ -42,21 +43,23 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
       <span className="absolute -z-10 -mt-3 -ml-3 text-balance font-semibold text-7xl text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
         /
       </span>
-      <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
-        Projects
-      </h1>
-
-      <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
-        Browse my programming, design, and 3D art projects.
-      </p>
+      <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
+        <div>
+          <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
+            Projects
+          </h1>
+          <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
+            Browse my programming, design, and 3D art projects.
+          </p>
+        </div>
+        <SubscribeForm className="shrink-0 sm:mt-2 sm:w-72" />
+      </div>
       <CategorySelector tags={tags} category={category} />
       <div className="mt-12 grid grid-cols-1 gap-x-12 gap-y-18 md:grid-cols-2">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
         ) : (
-          posts.map(({ meta, slug }) => (
-            <ProjectCard key={slug} meta={meta} slug={slug} />
-          ))
+          posts.map(({ meta, slug }) => <ProjectCard key={slug} meta={meta} slug={slug} />)
         )}
       </div>
     </Container>

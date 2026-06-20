@@ -1,11 +1,16 @@
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { JSX, SVGProps } from 'react'
+import { BlogPostRow } from '@/app/blog/blog-post-row'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { Hero } from '@/components/home/hero'
 import { RecentProjects } from '@/components/home/recent-projects'
-import { getAllProjects } from '@/lib/api'
+import { Logo } from '@/components/logo'
+import { SubscribeForm } from '@/components/subscribe-form'
+import { ThemeImage } from '@/components/theme-image'
+import { getAllBlogPosts, getAllNotes, getAllProjects } from '@/lib/api'
+import { formatDate, formatTimeLocal } from '@/lib/api-utils'
 
 const socialMedia = [
   {
@@ -48,11 +53,18 @@ const socialMedia = [
 
 export default async function Home() {
   const projects = await getAllProjects()
+  const blogPosts = await getAllBlogPosts()
+  const notes = await getAllNotes()
 
-  // Remove non-serializable fields (like the MDX Component function)
-  // before passing data into client components. Client components
-  // cannot receive functions from server components.
   const serializableProjects = projects.map(({ Component, ...rest }) => rest)
+
+  const recentPosts = blogPosts
+    .filter((post) => !post.meta.private)
+    .sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+    .slice(0, 3)
+
+  const sortedNotes = notes.sort((a, b) => new Date(b.meta.date).getTime() - new Date(a.meta.date).getTime())
+
   return (
     <>
       <div className="absolute inset-x-0 top-0 isolate -z-10 h-dvh">
@@ -70,7 +82,7 @@ export default async function Home() {
               Projects <ChevronRightIcon className="-mr-1.5!" />
             </Button>
             <Button outline href="/blog">
-              Blog <ChevronRightIcon className="-mr-1.5!" />
+              Blog <ChevronRightIcon className="-mr-1.5! text-zinc-950/30! dark:text-white/30!" />
             </Button>
           </div>
 
@@ -88,6 +100,27 @@ export default async function Home() {
       <RecentProjects projects={serializableProjects} />
 
       <Container className="mt-56">
+        <div className="flex items-end justify-between">
+          <div>
+            <p className="font-mono font-semibold text-lime-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-lime-400">
+              Blog
+            </p>
+            <h2 className="mt-5 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] text-zinc-950 tracking-tight sm:text-[3.5rem]/[3.75rem] dark:text-white">
+              Thoughts on the craft.
+            </h2>
+          </div>
+        </div>
+        <div className="mt-16 divide-y divide-zinc-100 dark:divide-zinc-800">
+          {recentPosts.map((post) => (
+            <BlogPostRow key={post.slug} meta={post.meta} slug={post.slug} basePath="/blog" />
+          ))}
+        </div>
+        <Button href="/blog" className="mt-12">
+          View more <ChevronRightIcon className="-mr-1!" />
+        </Button>
+      </Container>
+
+      {/*<Container className="mt-56">
         <p className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
           Web development
         </p>
@@ -99,7 +132,91 @@ export default async function Home() {
           websites and web apps that not only are designed with attention to detail, but also include exceptional
           functionality.
         </p>
-        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800"></div>
+        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+      </Container>*/}
+
+      <Container className="mt-56">
+        <h2 className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
+          Web development
+        </h2>
+        <p className="mt-6 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
+          <strong className="font-normal text-gray-950 dark:text-white">High-quality web experiences</strong>{' '}
+          <span className="text-gray-500 dark:text-gray-400">
+            built with modern technologies and a focus on both design and functionality.
+          </span>
+        </p>
+
+        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+      </Container>
+
+      <Container className="mt-56">
+        <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {sortedNotes.map((note) => (
+            <div key={note.slug} className="rounded-3xl border border-zinc-200 p-4 dark:border-zinc-800">
+              <div className="flex items-center gap-3">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-950/8 dark:bg-zinc-900">
+                  <Logo className="size-5" />
+                </span>
+                <div>
+                  <p className="font-semibold text-sm text-zinc-950 dark:text-white">Jasper Gorchov</p>
+                  <p className="flex items-center font-mono text-xs/5 text-zinc-500 uppercase tracking-widest">
+                    {formatDate(note.meta.date, 'long')}
+                    <span className="mx-3 inline-block size-0.75 rounded-full bg-current" />
+                    {formatTimeLocal(note.meta.date)}
+                  </p>
+                </div>
+              </div>
+              <div className="prose prose-blog mt-4 max-w-none">
+                <note.Component />
+              </div>
+              {note.meta.image ? (
+                <div className="not-prose relative mt-6 overflow-hidden rounded-lg">
+                  <div className="pointer-events-none absolute inset-0 z-10 rounded-lg ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
+                  <ThemeImage
+                    unoptimized
+                    src={note.meta.image.src}
+                    width={note.meta.image.width!}
+                    height={note.meta.image.height!}
+                    alt=""
+                    className="aspect-auto h-auto w-full"
+                  />
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+
+        <div className="mx-auto mt-12 w-fit">
+          <Button outline href="/projects">
+            View more <ChevronRightIcon className="-mr-1!" />
+          </Button>
+        </div>
+      </Container>
+
+      <Container className="mt-56">
+        <h2 className="font-mono font-semibold text-amber-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-amber-400">
+          3D Art
+        </h2>
+        <p className="mt-6 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
+          <strong className="font-normal text-gray-950 dark:text-white">3D renders and motion design</strong>{' '}
+          <span className="text-gray-500 dark:text-gray-400">
+            crafted in Blender, with occasional interactive pieces built using Three.js.
+          </span>
+        </p>
+
+        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+      </Container>
+
+      <Container className="mt-56">
+        <p className="font-mono font-semibold text-rose-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-rose-400">
+          Newsletter
+        </p>
+        <p className="mt-6 max-w-2xl text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
+          <strong className="font-normal text-gray-950 dark:text-white">
+            Get notified when I publish something new.
+          </strong>
+        </p>
+        <SubscribeForm className="mt-10 max-w-md" />
       </Container>
     </>
   )

@@ -2,9 +2,12 @@
 
 import clsx from 'clsx'
 import { motion } from 'motion/react'
+import { usePathname } from 'next/navigation'
 import { Link } from '@/components/link'
 
 export function CategorySelector({ tags, category }: { tags: { label: string; value: string }[]; category: string }) {
+  const pathname = usePathname()
+
   return (
     <nav className="relative mt-28">
       <div className="pointer-events-none absolute inset-0 z-10 brightness-200" />
@@ -12,7 +15,7 @@ export function CategorySelector({ tags, category }: { tags: { label: string; va
         {tags.map((tag) => (
           <li key={tag.value}>
             <Link
-              href={`?category=${encodeURIComponent(tag.value)}`}
+              href={tag.value === 'all' ? pathname : `?category=${encodeURIComponent(tag.value)}`}
               scroll={false}
               className={clsx('group relative block rounded-full px-2.5 py-1 font-medium text-sm transition')}
             >
