@@ -1,6 +1,6 @@
 'use client'
 
-import { EnvelopeIcon } from '@heroicons/react/16/solid'
+import { ArrowPathIcon, EnvelopeIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/button'
@@ -43,25 +43,25 @@ export function SubscribeForm({ className }: { className?: string }) {
     <form onSubmit={handleSubmit} className={clsx('relative', className)}>
       <div className="flex items-center gap-2">
         <InputGroup className="flex-1">
-          <EnvelopeIcon data-slot="icon" />
+          <EnvelopeIcon className="translate-y-px" />
           <Input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Subscribe via email"
+            placeholder="Email address"
             required
             aria-label="Email address"
           />
         </InputGroup>
-        <Button type="submit" disabled={status === 'loading'}>
-          {status === 'loading' ? 'Sending...' : 'Subscribe'}
+        <Button type="submit" disabled={status === 'loading'} className="">
+          {status === 'loading' ? <ArrowPathIcon className="size-5 animate-spin" data-slot="icon" /> : 'Subscribe'}
         </Button>
       </div>
       {message ? (
         <p
           className={clsx(
             'mt-1.5 text-xs',
-            status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+            status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
           )}
         >
           {message}

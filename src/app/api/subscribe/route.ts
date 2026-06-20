@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) throw new Error('RESEND_API_KEY is not set')
+  return new Resend(apiKey)
+}
 
 export async function POST(request: Request) {
   try {
@@ -21,14 +25,20 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Newsletter not configured' }, { status: 500 })
     }
 
-    await resend.contacts.create({
+    const { error: resendError } = await getResend().contacts.create({
       email,
       audienceId,
     })
 
+    if (resendError) {
+      console.error('Resend error:', resendError)
+      return NextResponse.json({ error: resendError.message ?? 'Failed to subscribe' }, { status: 400 })
+    }
+
     return NextResponse.json({ message: 'Successfully subscribed' }, { status: 201 })
   } catch (error) {
     console.error('Subscribe error:', error)
-    return NextResponse.json({ error: 'Failed to subscribe' }, { status: 500 })
+    const message = error instanceof Error ? error.message : 'Failed to subscribe'
+    return NextResponse.json({ error: message }, { status: 500 })
   }
 }

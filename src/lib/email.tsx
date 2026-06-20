@@ -1,31 +1,22 @@
 import { render } from '@react-email/render'
 import type React from 'react'
-import { renderToReadableStream } from 'react-dom/server'
 import { Resend } from 'resend'
 import { PostNotification } from '@/emails/post-notification'
 import { getBlogPostBySlug, getProjectBySlug } from '@/lib/api'
 import { getHighlighter } from '@/lib/shiki'
 
-const resend = new Resend(process.env.RESEND_API_KEY!)
+function getResend() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) throw new Error('RESEND_API_KEY is not set')
+  return new Resend(apiKey)
+}
 
 async function renderReactElement(element: React.ReactElement) {
   await getHighlighter().catch(() => {})
 
-  const stream = await renderToReadableStream(element, {
-    bootstrapScripts: [],
-  })
+  const { renderToStaticMarkup } = await import('react-dom/server')
 
-  const decoder = new TextDecoder()
-  const reader = stream.getReader()
-  const chunks: string[] = []
-
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-    chunks.push(decoder.decode(value, { stream: !done }))
-  }
-
-  return chunks.join('')
+  return renderToStaticMarkup(element)
 }
 
 function makeImageUrlsAbsolute(html: string, siteUrl: string) {
@@ -116,7 +107,7 @@ export async function sendPostNotification(slug: string, type: 'blog' | 'project
   const from = process.env.FROM_EMAIL ?? 'Jasper Gorchov <jasper@jaspergorchov.com>'
 
   if (audienceId) {
-    await resend.broadcasts.create({
+    await getResend().broadcasts.create({
       audienceId,
       from,
       subject: `New ${typeLabel}: ${post.meta.title}`,
@@ -127,7 +118,7 @@ export async function sendPostNotification(slug: string, type: 'blog' | 'project
     if (!to) {
       throw new Error('RESEND_AUDIENCE_ID or TO_EMAIL must be set')
     }
-    await resend.emails.send({
+    await getResend().emails.send({
       from,
       to,
       subject: `New ${typeLabel}: ${post.meta.title}`,
