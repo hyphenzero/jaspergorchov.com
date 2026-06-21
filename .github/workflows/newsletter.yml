@@ -1,0 +1,16 @@
+name: Daily Newsletter Check
+
+on:
+  schedule:
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+
+jobs:
+  run-newsletter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger newsletter run
+        run: >
+          curl --fail -X POST "https://redesign.jaspergorchov.com/api/newsletter/run"
+          -H "Content-Type: application/json"
+          -H "Authorization: Bearer ${{ secrets.NEWSLETTER_SECRET }}"

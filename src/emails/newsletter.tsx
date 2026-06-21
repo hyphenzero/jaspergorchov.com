@@ -1,24 +1,33 @@
 import { Body, Container, Head, Heading, Hr, Html, Link, Preview, Section, Text } from '@react-email/components'
 import type { CSSProperties } from 'react'
 
-interface PostNotificationProps {
+interface DigestEntry {
   title: string
-  lead: string
-  date: string
+  summary: string
+  postUrl: string
   type: 'blog' | 'project'
-  slug: string
-  contentHtml: string
-  siteUrl: string
 }
 
-export function PostNotification({ title, lead, date, type, slug, contentHtml, siteUrl }: PostNotificationProps) {
-  const postUrl = `${siteUrl}/${type === 'blog' ? 'blog' : 'projects'}/${slug}`
-  const typeLabel = type === 'blog' ? 'blog post' : 'project'
+interface NewsletterDigestProps {
+  siteUrl: string
+  entries: DigestEntry[]
+}
+
+function TypeBadge({ type }: { type: 'blog' | 'project' }) {
+  return <Text style={typeBadgeStyle}>{type === 'blog' ? 'Blog Post' : 'Project'}</Text>
+}
+
+export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
+  const totalCount = entries.length
+  const blogCount = entries.filter((e) => e.type === 'blog').length
+  const projectCount = entries.filter((e) => e.type === 'project').length
+
+  const preview = `New${blogCount > 0 ? ' blog posts' : ''}${blogCount > 0 && projectCount > 0 ? ' and' : ''}${projectCount > 0 ? ' projects' : ''} from jaspergorchov.com`
 
   return (
     <Html>
       <Head />
-      <Preview>{lead.slice(0, 150)}</Preview>
+      <Preview>{preview}</Preview>
       <Body style={main}>
         <Container style={container}>
           <Section style={header}>
@@ -26,24 +35,24 @@ export function PostNotification({ title, lead, date, type, slug, contentHtml, s
           </Section>
 
           <Section>
-            <Text style={tagline}>New {typeLabel}</Text>
-            <Heading style={h1}>{title}</Heading>
-            <Text style={meta}>{date}</Text>
-            {lead ? <Text style={leadStyle}>{lead}</Text> : null}
+            <Heading style={h1}>
+              {totalCount} new {totalCount === 1 ? 'post' : 'posts'}
+            </Heading>
           </Section>
+
+          {entries.map((entry, i) => (
+            <Section key={entry.postUrl} style={i > 0 ? entrySpaced : undefined}>
+              <TypeBadge type={entry.type} />
+              <Link href={entry.postUrl} style={entryTitle}>
+                {entry.title}
+              </Link>
+              {entry.summary ? <Text style={entrySummary}>{entry.summary}</Text> : null}
+            </Section>
+          ))}
 
           <Hr style={divider} />
 
           <Section>
-            <div dangerouslySetInnerHTML={{ __html: contentHtml }} style={contentWrapper} />
-          </Section>
-
-          <Hr style={divider} />
-
-          <Section style={footerSection}>
-            <Link href={postUrl} style={button}>
-              View this {typeLabel} online →
-            </Link>
             <Text style={footerText}>
               You received this because you subscribed to updates from jaspergorchov.com. If you no longer wish to
               receive these emails, you can{' '}
@@ -87,35 +96,41 @@ const headerText: CSSProperties = {
   textTransform: 'uppercase',
 }
 
-const tagline: CSSProperties = {
-  color: '#0284c7',
-  fontSize: '13px',
-  fontWeight: 600,
-  letterSpacing: '0.05em',
-  margin: '0 0 8px',
-  textTransform: 'uppercase',
-}
-
 const h1: CSSProperties = {
   color: '#09090b',
   fontSize: '28px',
   fontWeight: 700,
   letterSpacing: '-0.02em',
   lineHeight: '1.2',
-  margin: '0 0 8px',
-}
-
-const meta: CSSProperties = {
-  color: '#a1a1aa',
-  fontSize: '13px',
-  margin: '0 0 16px',
-}
-
-const leadStyle: CSSProperties = {
-  color: '#52525b',
-  fontSize: '16px',
-  lineHeight: '1.6',
   margin: '0',
+}
+
+const typeBadgeStyle: CSSProperties = {
+  color: '#0284c7',
+  fontSize: '11px',
+  fontWeight: 600,
+  letterSpacing: '0.05em',
+  margin: '0 0 4px',
+  textTransform: 'uppercase',
+}
+
+const entryTitle: CSSProperties = {
+  color: '#09090b',
+  fontSize: '18px',
+  fontWeight: 600,
+  lineHeight: '1.3',
+  textDecoration: 'none',
+}
+
+const entrySummary: CSSProperties = {
+  color: '#52525b',
+  fontSize: '15px',
+  lineHeight: '1.6',
+  margin: '4px 0 0',
+}
+
+const entrySpaced: CSSProperties = {
+  marginTop: '20px',
 }
 
 const divider: CSSProperties = {
@@ -123,32 +138,11 @@ const divider: CSSProperties = {
   margin: '24px 0',
 }
 
-const contentWrapper: CSSProperties = {
-  color: '#3f3f46',
-  fontSize: '15px',
-  lineHeight: '1.7',
-}
-
-const footerSection: CSSProperties = {
-  marginTop: '32px',
-}
-
-const button: CSSProperties = {
-  backgroundColor: '#18181b',
-  borderRadius: '6px',
-  color: '#ffffff',
-  display: 'inline-block',
-  fontSize: '14px',
-  fontWeight: 600,
-  padding: '10px 20px',
-  textDecoration: 'none',
-}
-
 const footerText: CSSProperties = {
   color: '#a1a1aa',
   fontSize: '12px',
   lineHeight: '1.5',
-  margin: '16px 0 0',
+  margin: '0',
 }
 
 const footerLink: CSSProperties = {
