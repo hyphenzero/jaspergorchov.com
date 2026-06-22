@@ -102,7 +102,7 @@ export default async function Home() {
       <Container className="mt-56">
         <div className="flex items-end justify-between">
           <div>
-            <p className="font-mono font-semibold text-lime-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-lime-400">
+            <p className="font-mono font-semibold text-indigo-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-indigo-400">
               Blog
             </p>
             <h2 className="mt-5 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] text-zinc-950 tracking-tight sm:text-[3.5rem]/[3.75rem] dark:text-white">

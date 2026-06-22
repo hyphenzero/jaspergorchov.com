@@ -78,3 +78,36 @@ export async function insertSendRecords(records: SendRecord[], resendId: string 
     client.release()
   }
 }
+
+export async function ensureAuditLogTable(): Promise<void> {
+  const client = await getPool().connect()
+  try {
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS newsletter_audit_log (
+        id SERIAL PRIMARY KEY,
+        action TEXT NOT NULL,
+        timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        metadata JSONB DEFAULT '{}'::jsonb
+      )
+    `)
+  } finally {
+    client.release()
+  }
+}
+
+export async function logAuditAction(action: string, metadata: Record<string, unknown> = {}): Promise<void> {
+  try {
+    await ensureAuditLogTable()
+    const client = await getPool().connect()
+    try {
+      await client.query(`INSERT INTO newsletter_audit_log (action, metadata) VALUES ($1, $2)`, [
+        action,
+        JSON.stringify(metadata),
+      ])
+    } finally {
+      client.release()
+    }
+  } catch (error) {
+    console.error('[audit] failed to log action:', action, error)
+  }
+}

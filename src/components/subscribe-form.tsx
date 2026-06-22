@@ -1,6 +1,6 @@
 'use client'
 
-import { ArrowPathIcon, EnvelopeIcon } from '@heroicons/react/16/solid'
+import { ArrowPathIcon, CheckIcon, EnvelopeIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import { type FormEvent, useState } from 'react'
 import { Button } from '@/components/button'
@@ -31,8 +31,6 @@ export function SubscribeForm({ className }: { className?: string }) {
       }
 
       setStatus('success')
-      setMessage('Subscribed!')
-      setEmail('')
     } catch (err) {
       setStatus('error')
       setMessage(err instanceof Error ? err.message : 'Something went wrong')
@@ -47,25 +45,27 @@ export function SubscribeForm({ className }: { className?: string }) {
           <Input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              setEmail(e.target.value)
+              if (status !== 'idle') setStatus('idle')
+            }}
             placeholder="Email address"
             required
             aria-label="Email address"
           />
         </InputGroup>
-        <Button type="submit" disabled={status === 'loading'} className="">
-          {status === 'loading' ? <ArrowPathIcon className="size-5 animate-spin" data-slot="icon" /> : 'Subscribe'}
+        <Button type="submit" className={status !== 'idle' ? 'pointer-events-none' : ''}>
+          {status === 'loading' ? (
+            <ArrowPathIcon className="animate-spin text-white!" data-slot="icon" />
+          ) : status === 'success' ? (
+            <CheckIcon className="text-white!" data-slot="icon" />
+          ) : (
+            'Subscribe'
+          )}
         </Button>
       </div>
-      {message ? (
-        <p
-          className={clsx(
-            'mt-1.5 text-xs',
-            status === 'success' ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-500 dark:text-red-400'
-          )}
-        >
-          {message}
-        </p>
+      {message && status === 'error' ? (
+        <p className="mt-1.5 text-red-500 text-xs dark:text-red-400">{message}</p>
       ) : null}
     </form>
   )
