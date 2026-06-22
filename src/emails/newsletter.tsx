@@ -1,5 +1,5 @@
-import { Body, Container, Head, Heading, Hr, Html, Link, Preview, Section, Text } from '@react-email/components'
 import type { CSSProperties } from 'react'
+import { Body, Container, Head, Heading, Hr, Html, Link, Preview, Section, Text } from 'react-email'
 
 interface DigestEntry {
   title: string
