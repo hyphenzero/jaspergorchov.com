@@ -6,9 +6,9 @@ import { Link } from './link'
 const styles = {
   base: [
     // Base
-    'relative isolate inline-flex items-baseline justify-center gap-x-2 rounded-full border text-sm/6 font-semibold *:data-[slot=icon]:transition-colors',
+    'relative isolate inline-flex items-baseline justify-center gap-x-2 rounded-full border text-base/6 sm:text-sm/6 font-semibold *:data-[slot=icon]:transition-colors',
     // Sizing
-    'px-[calc(--spacing(4)-1px)] py-[calc(--spacing(1.75)-1px)]',
+    'px-3.25 py-2.25 sm:px-3.5 sm:py-1.25',
     // Focus
     'focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500',
     // Disabled

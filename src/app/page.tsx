@@ -7,7 +7,7 @@ import { Container } from '@/components/container'
 import { Hero } from '@/components/home/hero'
 import { RecentProjects } from '@/components/home/recent-projects'
 import { Logo } from '@/components/logo'
-import { SubscribeForm } from '@/components/subscribe-form'
+import { NewsletterSection } from '@/components/newsletter-section'
 import { ThemeImage } from '@/components/theme-image'
 import { getAllBlogPosts, getAllNotes, getAllProjects } from '@/lib/api'
 import { formatDate, formatTimeLocal } from '@/lib/api-utils'
@@ -208,15 +208,17 @@ export default async function Home() {
       </Container>
 
       <Container className="mt-56">
-        <p className="font-mono font-semibold text-rose-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-rose-400">
-          Newsletter
-        </p>
-        <p className="mt-6 max-w-2xl text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
-          <strong className="font-normal text-gray-950 dark:text-white">
-            Get notified when I publish something new.
-          </strong>
-        </p>
-        <SubscribeForm className="mt-10 max-w-md" />
+        <NewsletterSection>
+          <p className="font-mono font-semibold text-rose-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-rose-400">
+            Newsletter
+          </p>
+          <p className="mt-6 max-w-2xl text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
+            <strong className="font-normal text-gray-950 dark:text-white">
+              Get notified when I publish something new.
+            </strong>
+            
+          </p>
+        </NewsletterSection>
       </Container>
     </>
   )

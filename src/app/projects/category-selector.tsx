@@ -11,7 +11,7 @@ export function CategorySelector({ tags, category }: { tags: { label: string; va
   return (
     <nav className="relative mt-28">
       <div className="pointer-events-none absolute inset-0 z-10 brightness-200" />
-      <ul className="flex gap-4">
+      <ul className="flex gap-4 overflow-x-auto flex-nowrap">
         {tags.map((tag) => (
           <li key={tag.value}>
             <Link

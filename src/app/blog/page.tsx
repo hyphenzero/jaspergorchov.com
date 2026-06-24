@@ -69,8 +69,8 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
       <span className="absolute -z-10 -mt-3 -ml-3 text-balance font-semibold text-7xl text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
         /
       </span>
-      <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-start">
-        <div>
+      <div className="flex w-full flex-col justify-between gap-6 sm:flex-row sm:items-end">
+        <div className="w-full">
           <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
             Blog
           </h1>
@@ -79,7 +79,7 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
             digital creativity.
           </p>
         </div>
-        <SubscribeForm className="shrink-0 sm:mt-2 sm:w-72" />
+        <SubscribeForm label="Subscribe via email" className="shrink-0 sm:mb-3" />
       </div>
 
       <div className="mt-28 flex items-start justify-between">

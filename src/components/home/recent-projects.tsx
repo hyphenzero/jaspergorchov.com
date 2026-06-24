@@ -163,7 +163,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
               outline={true}
               aria-label="Previous project"
               disabled={activeIndex === 0}
-              className="px-3!"
+              className="px-2.75!"
             >
               <ChevronLeftIcon />
             </Button>
@@ -172,7 +172,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
               outline={true}
               aria-label="Next project"
               disabled={activeIndex >= projects.length - 1}
-              className="px-3!"
+              className="px-2.75!"
             >
               <ChevronRightIcon />
             </Button>

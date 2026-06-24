@@ -11,7 +11,9 @@ export function InputGroup({ children }: React.ComponentPropsWithoutRef<'span'>)
         'has-[[data-slot=icon]:last-child]:[&_input]:pr-10 has-[[data-slot=icon]:first-child]:[&_input]:pl-10 sm:has-[[data-slot=icon]:last-child]:[&_input]:pr-8',
         '*:data-[slot=icon]:pointer-events-none *:data-[slot=icon]:absolute *:data-[slot=icon]:top-3 *:data-[slot=icon]:z-10 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:top-2.5 sm:*:data-[slot=icon]:size-4',
         '[&>[data-slot=icon]:first-child]:left-4 [&>[data-slot=icon]:last-child]:right-3 sm:[&>[data-slot=icon]:last-child]:right-2.5',
-        '*:data-[slot=icon]:text-zinc-500 dark:*:data-[slot=icon]:text-zinc-400'
+        '*:data-[slot=icon]:text-zinc-500 dark:*:data-[slot=icon]:text-zinc-400',
+        'has-[:focus-within]:*:data-[slot=icon]:text-sky-500 dark:has-[:focus-within]:*:data-[slot=icon]:text-sky-400',
+        'has-[[data-invalid]]:*:data-[slot=icon]:text-red-500 dark:has-[[data-invalid]]:*:data-[slot=icon]:text-red-400'
       )}
     >
       {children}
@@ -44,7 +46,7 @@ export const Input = forwardRef(function Input(
         // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
         'dark:before:hidden',
         // Focus ring
-        'after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-blue-500',
+        'after:pointer-events-none after:absolute after:inset-0 after:rounded-full after:ring-transparent after:ring-inset sm:focus-within:after:ring-2 sm:focus-within:after:ring-sky-500 dark:sm:focus-within:after:ring-sky-400',
         // Disabled state
         'has-data-disabled:opacity-50 has-data-disabled:before:bg-zinc-950/5 has-data-disabled:before:shadow-none',
         // Invalid state
@@ -72,7 +74,7 @@ export const Input = forwardRef(function Input(
               '[&::-webkit-datetime-edit-meridiem-field]:p-0',
             ],
           // Basic layout
-          'relative block w-full appearance-none rounded-full px-3.25 py-2.5 sm:px-4 sm:py-1.5',
+          'relative block w-full appearance-none rounded-full px-3.25 py-2.25 sm:px-4 sm:py-1.25',
           // Typography
           'text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white',
           // Border
