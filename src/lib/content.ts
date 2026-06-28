@@ -161,10 +161,10 @@ export async function getNoteBySlug(slug: string): Promise<Note | null> {
   try {
     if (!isValidSlug(slug)) return null
 
-    const absolutePath = path.join(process.cwd(), `src/app/blog/_notes/${slug}.mdx`)
+    const absolutePath = path.join(process.cwd(), `src/app/blog/_notes/${slug}/index.mdx`)
     if (!(await fs.stat(absolutePath).catch(() => null))) return null
 
-    const module = await import(`../app/blog/_notes/${slug}.mdx`)
+    const module = await import(`../app/blog/_notes/${slug}/index.mdx`)
     if (!module?.default) return null
 
     const meta = module.meta || {}
@@ -188,10 +188,10 @@ export async function getNoteBySlug(slug: string): Promise<Note | null> {
 export async function getNoteSlugs(): Promise<string[]> {
   try {
     const notesDir = path.join(process.cwd(), 'src/app/blog/_notes')
-    const files = await fs.readdir(notesDir)
-    return files
-      .filter((f) => f.endsWith('.mdx'))
-      .map((f) => f.replace(/\.mdx$/, ''))
+    const entries = await fs.readdir(notesDir, { withFileTypes: true })
+    return entries
+      .filter((e) => e.isDirectory())
+      .map((e) => e.name)
       .filter(isValidSlug)
   } catch (error) {
     console.error('Error reading notes directory:', error)
