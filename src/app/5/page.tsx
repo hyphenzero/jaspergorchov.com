@@ -42,7 +42,7 @@ const socialMedia = [
 export default function Home() {
   return (
     <>
-      <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+      <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
         <div className="flex max-md:flex-col max-md:space-y-6 md:items-end md:justify-between">
           <h1 className="flex-1 text-pretty pr-6 font-medium text-5xl text-zinc-900 tracking-tight sm:text-6xl lg:text-[5rem] dark:text-white">
             Jasper Gorchov
@@ -57,7 +57,7 @@ export default function Home() {
         <div className="aspect-video w-full rounded-4xl bg-zinc-200 dark:bg-zinc-900" />
       </div>
 
-      <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+      <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
         <p className="text-pretty font-mono font-semibold text-[0.8125rem]/6 text-sky-500 uppercase tracking-widest">
           Projects
         </p>

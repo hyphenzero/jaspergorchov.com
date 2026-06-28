@@ -147,9 +147,9 @@ export function Testimonials() {
         ref={scrollRef}
         className={clsx([
           'mt-16 flex gap-8 px-(--scroll-padding)',
-          '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'scrollbar-none [&::-webkit-scrollbar]:hidden',
           'snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth',
-          '[--scroll-padding:max(--spacing(6),calc((100vw-96rem)/2+--spacing(6)))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-96rem)/2+--spacing(8)))]',
+          '[--scroll-padding:max(--spacing(6),calc((100vw-96rem)/2+(--spacing(6))))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-96rem)/2+(--spacing(8))))]',
         ])}
       >
         {testimonials.map(({ img, name, title, quote }, testimonialIndex) => (

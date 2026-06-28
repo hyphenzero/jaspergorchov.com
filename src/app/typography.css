@@ -6,7 +6,6 @@
   --prose-code-color: var(--color-zinc-950);
   --prose-marker-color: color-mix(in oklab, var(--color-zinc-700) 25%, transparent);
   --prose-link-underline-color: var(--color-zinc-200);
-  /* --prose-link-underline-hover-color: var(--color-zinc-400); */
   --prose-link-underline-hover-color: var(--color-sky-500);
   --prose-link-icon-bg-color: var(--color-zinc-200);
   --prose-link-icon-color: var(--color-zinc-400);
@@ -25,7 +24,6 @@
     --prose-code-color: var(--color-white);
     --prose-marker-color: color-mix(in oklab, var(--color-zinc-300) 35%, transparent);
     --prose-link-underline-color: var(--color-zinc-600);
-    /* --prose-link-underline-hover-color: var(--color-zinc-400); */
     --prose-link-underline-hover-color: var(--color-sky-400);
     --prose-link-icon-bg-color: var(--color-zinc-900);
     --prose-link-icon-color: var(--color-zinc-500);

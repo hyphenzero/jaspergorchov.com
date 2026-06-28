@@ -34,8 +34,8 @@ export default function Home() {
   return (
     <>
       <TabGroup>
-        <div className="mx-auto grid h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] max-w-[128rem] grid-cols-10 gap-12 p-6 pb-8 sm:h-[calc(100vh-5.25rem)] sm:max-h-[calc(100vh-5.25rem)] lg:px-8 [@media(width>=96rem)]:pt-10">
-          <div className="col-span-4 flex size-full flex-col justify-between space-y-8 [@media(width>=96rem)]:col-span-3">
+        <div className="mx-auto grid h-[calc(100vh-5.5rem)] max-h-[calc(100vh-5.5rem)] max-w-[128rem] grid-cols-10 gap-12 p-6 pb-8 sm:h-[calc(100vh-5.25rem)] sm:max-h-[calc(100vh-5.25rem)] lg:px-8 2xl:pt-10">
+          <div className="col-span-4 flex size-full flex-col justify-between space-y-8 2xl:col-span-3">
             <div className="flex h-full flex-1 grow flex-col space-y-8">
               <h1 className="text-pretty text-6xl tracking-tighter sm:text-8xl">Jasper Gorchov</h1>
               <p className="max-w-2xl text-pretty font-medium text-lg/7 text-zinc-600 dark:text-zinc-400">
@@ -97,7 +97,7 @@ export default function Home() {
               </Button>
             </div>
           </div>
-          <div className="col-span-6 size-full rounded-3xl bg-zinc-900/50 [@media(width>=96rem)]:col-span-7">
+          <div className="col-span-6 size-full rounded-3xl bg-zinc-900/50 2xl:col-span-7">
             <TabPanels>
               <TabPanel>Websites</TabPanel>
               <TabPanel>Web Apps</TabPanel>

@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
+import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { SubscribeForm } from '@/components/subscribe-form'
 import { getAllProjects } from '@/lib/api'
 import type { Project } from '@/types/post'
 import { CategorySelector } from './category-selector'
 import { ProjectCard } from './project-card'
-import { Button } from '@/components/button'
 
 export const metadata: Metadata = {
   title: 'Projects',

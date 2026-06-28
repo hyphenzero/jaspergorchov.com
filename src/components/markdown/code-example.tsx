@@ -121,7 +121,7 @@ export function HighlightedCode({
       example={example}
       className={clsx(
         '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 not-dark:*:shadow-sm *:ring *:ring-zinc-950/5 dark:*:border-t dark:*:bg-zinc-900!',
-        '**:[.line]:isolate **:[.line]:not-last:min-h-[1lh]',
+        '**:[.line]:isolate **:[.line]:not-last:min-h-lh',
         className
       )}
     />

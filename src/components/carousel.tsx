@@ -102,12 +102,12 @@ function TestimonialCard({
       ref={ref}
       style={{ opacity }}
       {...props}
-      className="relative flex aspect-[9/16] w-72 shrink-0 snap-start scroll-ml-[var(--scroll-padding)] flex-col justify-end overflow-hidden rounded-3xl sm:aspect-[3/4] sm:w-96"
+      className="relative flex aspect-9/16 w-72 shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-3xl sm:aspect-3/4 sm:w-96"
     >
       <img alt="" src={img} className="absolute inset-x-0 top-0 aspect-square w-full object-cover" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 rounded-3xl bg-gradient-to-t from-[calc(7/16*100%)] from-black ring-1 ring-zinc-950/10 ring-inset sm:from-25%"
+        className="absolute inset-0 rounded-3xl bg-linear-to-t from-[calc(7/16*100%)] from-black ring-1 ring-zinc-950/10 ring-inset sm:from-25%"
       />
       <figure className="relative p-10">
         <blockquote>
@@ -124,7 +124,7 @@ function TestimonialCard({
         <figcaption className="mt-6 border-white/20 border-t pt-6">
           <p className="font-medium text-sm/6 text-white">{name}</p>
           <p className="font-medium text-sm/6">
-            <span className="bg-gradient-to-r from-[#fff1be] from-[28%] via-[#ee87cb] via-[70%] to-[#b060ff] bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-28% from-[#fff1be] via-70% via-[#ee87cb] to-[#b060ff] bg-clip-text text-transparent">
               {title}
             </span>
           </p>
@@ -174,9 +174,9 @@ export function Carousel() {
         style={{ paddingInline: 'var(--scroll-padding)' }}
         className={clsx([
           'mt-16 flex gap-8',
-          '[scrollbar-width:none] [&::-webkit-scrollbar]:hidden',
+          'scrollbar-none [&::-webkit-scrollbar]:hidden',
           'snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth',
-          '[--scroll-padding:max(calc(var(--spacing)*6),calc((100vw-72rem)/2))] lg:[--scroll-padding:max(calc(var(--spacing)*8),calc((100vw-72rem)/2))]',
+          '[--scroll-padding:max(--spacing(6),calc((100vw-72rem)/2))] `lg:[--scroll-padding:max(--spacing(8),calc((100vw-72rem)/2))]',
         ])}
       >
         {testimonials.map(({ img, name, title, quote }, testimonialIndex) => (
@@ -192,7 +192,7 @@ export function Carousel() {
             {quote}
           </TestimonialCard>
         ))}
-        <div className="w-[42rem] shrink-0 sm:w-[54rem]" />
+        <div className="w-2xl shrink-0 sm:w-216" />
       </div>
       <div className="mx-auto mt-16 max-w-7xl px-6 lg:px-8">
         <div className="flex justify-between">
@@ -206,8 +206,8 @@ export function Carousel() {
                 aria-label={`Scroll to testimonial from ${name}`}
                 className={clsx(
                   'size-2.5 rounded-full border border-transparent bg-zinc-300 transition',
-                  'data-[active]:bg-zinc-400 data-[hover]:bg-zinc-400',
-                  'forced-colors:data-[active]:bg-[Highlight] forced-colors:data-[focus]:outline-offset-4'
+                  'data-active:bg-zinc-400 data-hover:bg-zinc-400',
+                  'forced-colors:data-active:bg-[Highlight] forced-colors:data-focus:outline-offset-4'
                 )}
               />
             ))}

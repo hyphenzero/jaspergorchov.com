@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <>
       <TabGroup>
-        <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+        <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
           <h1 className="text-balance font-medium text-2xl text-white tracking-tight sm:text-[clamp(2rem,3.75vw,3rem)]/tight">
             I’m Jasper Gorchov, a 14-year-old developer, designer, and 3D artist.
           </h1>
@@ -93,7 +93,7 @@ export default function Home() {
             </TabPanels>
           </div>
         </div>
-        <div className="mx-auto mt-12 max-w-[76rem] px-6 sm:mt-20 lg:mt-24 lg:px-8">
+        <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
           <p className="text-pretty font-mono font-semibold text-[0.8125rem]/6 text-sky-500 uppercase tracking-widest">
             Projects
           </p>
