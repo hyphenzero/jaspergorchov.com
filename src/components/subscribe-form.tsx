@@ -114,7 +114,8 @@ export function SubscribeForm({
         }
       }}
       noValidate
-      className={clsx('relative w-96.75 shrink-0', className)}>
+      className={clsx('relative w-96.75 shrink-0', className)}
+    >
       <Field>
         {label && <Label>{label}</Label>}
         <div className="relative" data-slot="control">
@@ -126,7 +127,7 @@ export function SubscribeForm({
                 type="email"
                 name="email"
                 value={email}
-                invalid={(showErrors && !isValidEmail) || (state.status === 'error')}
+                invalid={(showErrors && !isValidEmail) || state.status === 'error'}
                 onChange={(e) => {
                   setEmail(e.target.value)
                   setShowErrors(false)
@@ -154,8 +155,12 @@ export function SubscribeForm({
               }}
             />
           </div>
-          {showErrors && !isValidEmail && <ErrorMessage className="absolute left-0 top-full mt-2">Invalid email</ErrorMessage>}
-          {state.status === 'error' && state.message && <ErrorMessage className="absolute left-0 top-full mt-2">{state.message}</ErrorMessage>}
+          {showErrors && !isValidEmail && (
+            <ErrorMessage className="absolute top-full left-0 mt-2">Invalid email</ErrorMessage>
+          )}
+          {state.status === 'error' && state.message && (
+            <ErrorMessage className="absolute top-full left-0 mt-2">{state.message}</ErrorMessage>
+          )}
         </div>
       </Field>
       <input type="text" name="website" aria-hidden="true" tabIndex={-1} autoComplete="off" className="hidden" />

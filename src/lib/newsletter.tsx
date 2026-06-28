@@ -5,7 +5,8 @@ import { getAllBlogPosts, getAllProjects } from '@/lib/api'
 import { acquireAdvisoryLock, getSentSlugs, insertSendRecords } from '@/lib/db'
 
 const SITE_URL = process.env.SITE_URL ?? 'https://jaspergorchov.com'
-const FROM_EMAIL = process.env.FROM_EMAIL ?? 'Jasper Gorchov <jasper@jaspergorchov.com>'
+const FROM_EMAIL = process.env.FROM_EMAIL ?? 'Jasper Gorchov <jasper@updates.jaspergorchov.com>'
+const TEST_EMAIL = process.env.TEST_EMAIL ?? 'jasper@jaspergorchov.com'
 
 export interface UnsentContent {
   slug: string
@@ -13,6 +14,9 @@ export interface UnsentContent {
   title: string
   date: string | undefined
   lead: string
+  tags: string[]
+  image?: { src: string; width?: number; height?: number }
+  imageDark?: { src: string; width?: number; height?: number }
 }
 
 export interface NewsletterEntry {
@@ -20,6 +24,10 @@ export interface NewsletterEntry {
   summary: string
   postUrl: string
   type: 'blog' | 'project'
+  date: string
+  tag: string
+  image?: { src: string; width?: number; height?: number }
+  imageDark?: { src: string; width?: number; height?: number }
 }
 
 export interface NewsletterPayload {
@@ -44,6 +52,7 @@ export async function getUnsentNewsletterContent(): Promise<UnsentContent[]> {
       title: p.meta.title,
       date: p.meta.date,
       lead: p.meta.lead ?? '',
+      tags: p.meta.tags ?? [],
     })),
     ...projects.map((p) => ({
       slug: p.slug,
@@ -51,6 +60,9 @@ export async function getUnsentNewsletterContent(): Promise<UnsentContent[]> {
       title: p.meta.title,
       date: p.meta.date,
       lead: p.meta.lead ?? '',
+      tags: p.meta.tags ?? [],
+      image: p.meta.image,
+      imageDark: p.meta.imageDark,
     })),
   ]
 
@@ -71,13 +83,13 @@ export async function buildNewsletterPayload(unsentPosts: UnsentContent[]): Prom
     summary: p.lead || `A new ${p.type === 'blog' ? 'blog post' : 'project'} has been published.`,
     postUrl: `${SITE_URL}/${p.type === 'blog' ? 'blog' : 'projects'}/${p.slug}`,
     type: p.type,
+    date: p.date!,
+    tag: p.tags[0] ?? (p.type === 'blog' ? 'Writing' : 'Project'),
+    image: p.image ? { ...p.image, src: `${SITE_URL}${p.image.src}` } : undefined,
+    imageDark: p.imageDark ? { ...p.imageDark, src: `${SITE_URL}${p.imageDark.src}` } : undefined,
   }))
 
-  const totalCount = unsentPosts.length
-  const subject =
-    totalCount === 1
-      ? `New ${unsentPosts[0].type === 'blog' ? 'blog post' : 'project'}: ${unsentPosts[0].title}`
-      : `New posts from jaspergorchov.com`
+  const subject = unsentPosts.length === 1 ? unsentPosts[0].title : `${unsentPosts[0].title} & more`
 
   const html = await render(<NewsletterDigest siteUrl={SITE_URL} entries={entries} />)
 
@@ -111,13 +123,30 @@ export async function sendNewsletter(payload: NewsletterPayload): Promise<SendRe
   }
 }
 
-export async function markNewsletterSent(unsentPosts: UnsentContent[], broadcastId: string): Promise<void> {
-  const sendRecords = unsentPosts.map((p) => ({
-    slug: p.slug,
-    type: p.type,
-    title: p.title,
-    url: `${SITE_URL}/${p.type === 'blog' ? 'blog' : 'projects'}/${p.slug}`,
-  }))
+export async function sendTestEmail(payload: NewsletterPayload): Promise<SendResult> {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) throw new Error('RESEND_API_KEY is not set')
 
-  await insertSendRecords(sendRecords, broadcastId)
+  const resend = new Resend(apiKey)
+
+  const { data, error } = await resend.emails.send({
+    from: FROM_EMAIL,
+    to: TEST_EMAIL,
+    subject: payload.subject,
+    html: payload.html,
+  })
+
+  if (error || !data?.id) {
+    throw new Error(error?.message ?? 'Failed to send test email')
+  }
+
+  return {
+    broadcastId: data.id,
+    count: payload.entries.length,
+    slugs: payload.entries.map((e) => e.postUrl.split('/').pop()!),
+  }
+}
+
+export async function markNewsletterSent(unsentPosts: UnsentContent[]): Promise<void> {
+  await insertSendRecords(unsentPosts.map((p) => p.slug))
 }

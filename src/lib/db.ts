@@ -51,24 +51,14 @@ export async function getSentSlugs(): Promise<Set<string>> {
   }
 }
 
-interface SendRecord {
-  slug: string
-  type: 'blog' | 'project'
-  title: string
-  url: string
-}
-
-export async function insertSendRecords(records: SendRecord[], resendId: string | null): Promise<void> {
-  if (records.length === 0) return
+export async function insertSendRecords(slugs: string[]): Promise<void> {
+  if (slugs.length === 0) return
 
   const client = await getPool().connect()
   try {
     await client.query('BEGIN')
-    for (const record of records) {
-      await client.query(
-        `INSERT INTO newsletter_sends (slug, type, title, url, resend_id) VALUES ($1, $2, $3, $4, $5) ON CONFLICT (slug) DO NOTHING`,
-        [record.slug, record.type, record.title, record.url, resendId]
-      )
+    for (const slug of slugs) {
+      await client.query(`INSERT INTO newsletter_sends (slug) VALUES ($1) ON CONFLICT (slug) DO NOTHING`, [slug])
     }
     await client.query('COMMIT')
   } catch (error) {
@@ -76,38 +66,5 @@ export async function insertSendRecords(records: SendRecord[], resendId: string 
     throw error
   } finally {
     client.release()
-  }
-}
-
-export async function ensureAuditLogTable(): Promise<void> {
-  const client = await getPool().connect()
-  try {
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS newsletter_audit_log (
-        id SERIAL PRIMARY KEY,
-        action TEXT NOT NULL,
-        timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-        metadata JSONB DEFAULT '{}'::jsonb
-      )
-    `)
-  } finally {
-    client.release()
-  }
-}
-
-export async function logAuditAction(action: string, metadata: Record<string, unknown> = {}): Promise<void> {
-  try {
-    await ensureAuditLogTable()
-    const client = await getPool().connect()
-    try {
-      await client.query(`INSERT INTO newsletter_audit_log (action, metadata) VALUES ($1, $2)`, [
-        action,
-        JSON.stringify(metadata),
-      ])
-    } finally {
-      client.release()
-    }
-  } catch (error) {
-    console.error('[audit] failed to log action:', action, error)
   }
 }

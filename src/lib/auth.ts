@@ -1,10 +1,30 @@
 const SESSION_COOKIE = 'admin_session'
-const SESSION_DURATION_MS = 24 * 60 * 60 * 1000
+const COOKIE_MAX_AGE_SECONDS = 400 * 24 * 60 * 60
 
-function getSecret(): string {
-  const secret = process.env.NEWSLETTER_SECRET
-  if (!secret) throw new Error('NEWSLETTER_SECRET is not set')
-  return secret
+const MAX_LOGIN_ATTEMPTS = 10
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000
+
+export function getPassword(): string {
+  const password = process.env.ADMIN_PASSWORD
+  if (!password) throw new Error('ADMIN_PASSWORD is not set')
+  return password
+}
+
+function getSigningKey(): string {
+  const key = process.env.SESSION_SECRET
+  if (!key) throw new Error('SESSION_SECRET is not set')
+  return key
+}
+
+export async function constantTimeCompare(a: string, b: string): Promise<boolean> {
+  const { timingSafeEqual } = await import('node:crypto')
+  const bufA = Buffer.from(a, 'utf8')
+  const bufB = Buffer.from(b, 'utf8')
+  if (bufA.length !== bufB.length) {
+    timingSafeEqual(bufA, bufA)
+    return false
+  }
+  return timingSafeEqual(bufA, bufB)
 }
 
 async function hmacSign(data: string, secret: string): Promise<string> {
@@ -33,6 +53,47 @@ async function hmacVerify(data: string, signature: string, secret: string): Prom
   return crypto.subtle.verify('HMAC', key, sigBytes, new TextEncoder().encode(data))
 }
 
+function generateNonce(): string {
+  const bytes = crypto.getRandomValues(new Uint8Array(16))
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('')
+}
+
+const loginAttempts = new Map<string, { count: number; resetAt: number }>()
+
+function pruneRateLimitStore(): void {
+  const now = Date.now()
+  for (const [ip, entry] of loginAttempts) {
+    if (now > entry.resetAt) loginAttempts.delete(ip)
+  }
+}
+
+export function checkLoginRateLimit(ip: string): { allowed: boolean; remaining: number } {
+  const now = Date.now()
+  const entry = loginAttempts.get(ip)
+
+  if (!entry || now > entry.resetAt) {
+    loginAttempts.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS })
+    return { allowed: true, remaining: MAX_LOGIN_ATTEMPTS - 1 }
+  }
+
+  if (entry.count >= MAX_LOGIN_ATTEMPTS) {
+    return { allowed: false, remaining: 0 }
+  }
+
+  entry.count++
+  entry.resetAt = now + RATE_LIMIT_WINDOW_MS
+  return { allowed: true, remaining: Math.max(0, MAX_LOGIN_ATTEMPTS - entry.count) }
+}
+
+export function resetLoginRateLimit(ip: string): void {
+  loginAttempts.delete(ip)
+  if (loginAttempts.size > 1000) {
+    pruneRateLimitStore()
+  }
+}
+
 export async function createSessionCookie(): Promise<{
   name: string
   value: string
@@ -44,10 +105,11 @@ export async function createSessionCookie(): Promise<{
     maxAge: number
   }
 }> {
-  const secret = getSecret()
-  const expiry = Date.now() + SESSION_DURATION_MS
-  const sig = await hmacSign(String(expiry), secret)
-  const value = `${expiry}.${sig}`
+  const secret = getSigningKey()
+  const nonce = generateNonce()
+  const payload = `${Date.now()}.${nonce}`
+  const sig = await hmacSign(payload, secret)
+  const value = `${payload}.${sig}`
 
   return {
     name: SESSION_COOKIE,
@@ -57,7 +119,7 @@ export async function createSessionCookie(): Promise<{
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       path: '/',
-      maxAge: SESSION_DURATION_MS / 1000,
+      maxAge: COOKIE_MAX_AGE_SECONDS,
     },
   }
 }
@@ -65,18 +127,16 @@ export async function createSessionCookie(): Promise<{
 export async function validateSession(token: string | undefined): Promise<boolean> {
   if (!token) return false
 
-  const secret = getSecret()
+  const secret = getSigningKey()
 
   try {
     const parts = token.split('.')
-    if (parts.length !== 2) return false
+    if (parts.length !== 3) return false
 
-    const [expiryStr, sig] = parts
-    const expiry = Number.parseInt(expiryStr, 10)
-    if (Number.isNaN(expiry)) return false
-    if (Date.now() > expiry) return false
+    const [expiryStr, nonce, sig] = parts
+    const payload = `${expiryStr}.${nonce}`
 
-    return hmacVerify(expiryStr, sig, secret)
+    return hmacVerify(payload, sig, secret)
   } catch {
     return false
   }

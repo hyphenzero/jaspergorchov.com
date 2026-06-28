@@ -1,11 +1,28 @@
-import type { CSSProperties } from 'react'
-import { Body, Container, Head, Heading, Hr, Html, Link, Preview, Section, Text } from 'react-email'
+import {
+  Body,
+  Container,
+  Head,
+  Heading,
+  Hr,
+  Html,
+  Link,
+  Preview,
+  pixelBasedPreset,
+  Section,
+  Tailwind,
+  Text,
+} from 'react-email'
+import { formatDate } from '@/lib/api-utils'
 
 interface DigestEntry {
   title: string
   summary: string
   postUrl: string
   type: 'blog' | 'project'
+  date: string
+  tag: string
+  image?: { src: string; width?: number; height?: number }
+  imageDark?: { src: string; width?: number; height?: number }
 }
 
 interface NewsletterDigestProps {
@@ -13,139 +30,202 @@ interface NewsletterDigestProps {
   entries: DigestEntry[]
 }
 
-function TypeBadge({ type }: { type: 'blog' | 'project' }) {
-  return <Text style={typeBadgeStyle}>{type === 'blog' ? 'Blog Post' : 'Project'}</Text>
-}
-
 export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
   const totalCount = entries.length
-  const blogCount = entries.filter((e) => e.type === 'blog').length
-  const projectCount = entries.filter((e) => e.type === 'project').length
+  const blogEntries = entries.filter((e) => e.type === 'blog')
+  const projectEntries = entries.filter((e) => e.type === 'project')
+  const blogCount = blogEntries.length
+  const projectCount = projectEntries.length
+  const contentLabel = describeContent(blogCount, projectCount)
 
-  const preview = `New${blogCount > 0 ? ' blog posts' : ''}${blogCount > 0 && projectCount > 0 ? ' and' : ''}${projectCount > 0 ? ' projects' : ''} from jaspergorchov.com`
+  const preview = `A new dispatch from Jasper: ${contentLabel}.`
 
   return (
     <Html>
-      <Head />
       <Preview>{preview}</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          <Section style={header}>
-            <Text style={headerText}>jaspergorchov.com</Text>
-          </Section>
+      <Tailwind
+        config={{
+          presets: [pixelBasedPreset],
+          theme: {
+            extend: {
+              fontFamily: {
+                sans: ['"Inter var"', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                mono: [
+                  '"IBM Plex Mono"',
+                  'ui-monospace',
+                  'SFMono-Regular',
+                  'Menlo',
+                  'Monaco',
+                  '"Roboto Mono"',
+                  '"Segoe UI Mono"',
+                  'monospace',
+                ],
+              },
+            },
+          },
+        }}
+      >
+        <Head>
+          <style>
+            {`
+              :root {
+                --email-bg: #fff;
+                --text-body: #09090b;
+                --text-secondary: #52525b;
+                --text-muted: #a1a1aa;
+                --text-link: #0ea5e9;
+                --border-default: #e4e4e7;
+              }
+              .bg-default { background-color: var(--email-bg); }
+              .text-body { color: var(--text-body); }
+              .text-secondary { color: var(--text-secondary); }
+              .text-muted { color: var(--text-muted); }
+              .text-link { color: var(--text-link); }
+              .border-default { border-color: var(--border-default); }
+              @media (prefers-color-scheme: dark) {
+                :root {
+                  --email-bg: #09090b;
+                  --text-body: #fafafa;
+                  --text-secondary: #d4d4d8;
+                  --text-muted: #71717a;
+                  --text-link: #38bdf8;
+                  --border-default: #27272a;
+                }
+              }
+            `}
+          </style>
+          <link rel="preconnect" href="https://rsms.me/" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+          <link
+            href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
+            rel="stylesheet"
+          />
+        </Head>
+        <Body
+          style={{
+            fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"',
+            fontOpticalSizing: 'auto',
+          }}
+          className="m-0 bg-default p-0 font-sans"
+        >
+          <Container className="mx-auto max-w-[660px] bg-default px-9 pt-16 pb-10">
+            <Section className="mb-12">
+              <Text className="m-0 font-mono font-semibold text-link text-sm uppercase tracking-widest">
+                Jasper Gorchov
+              </Text>
 
-          <Section>
-            <Heading style={h1}>
-              {totalCount} new {totalCount === 1 ? 'post' : 'posts'}
-            </Heading>
-          </Section>
+              <Heading className="mt-[18px] mb-0 font-medium text-[40px] text-body tracking-[-0.03em]">
+                New from the site
+              </Heading>
 
-          {entries.map((entry, i) => (
-            <Section key={entry.postUrl} style={i > 0 ? entrySpaced : undefined}>
-              <TypeBadge type={entry.type} />
-              <Link href={entry.postUrl} style={entryTitle}>
-                {entry.title}
-              </Link>
-              {entry.summary ? <Text style={entrySummary}>{entry.summary}</Text> : null}
+              <Text className="mt-[22px] mb-0 text-secondary text-sm leading-7">
+                Hey, I recently published <span className="font-semibold text-body">{contentLabel}</span>. Here&apos;s
+                the short version, with links if you want to read more.
+              </Text>
             </Section>
-          ))}
 
-          <Hr style={divider} />
+            {blogEntries.length > 0 && (
+              <Section>
+                <Text className="m-0 mb-6 font-mono font-semibold text-muted text-sm uppercase tracking-widest">
+                  Blog Posts
+                </Text>
 
-          <Section>
-            <Text style={footerText}>
-              You received this because you subscribed to updates from jaspergorchov.com. If you no longer wish to
-              receive these emails, you can{' '}
-              <Link href={`${siteUrl}/api/unsubscribe`} style={footerLink}>
-                unsubscribe here
-              </Link>
-              .
-            </Text>
-          </Section>
-        </Container>
-      </Body>
+                {blogEntries.map((entry, i) => (
+                  <Section
+                    key={entry.postUrl}
+                    className={i > 0 ? 'mt-10 border-default border-t border-solid pt-10' : ''}
+                  >
+                    <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
+
+                    {entry.summary ? (
+                      <Text className="mt-3 mb-0 text-secondary text-sm leading-7">{entry.summary}</Text>
+                    ) : null}
+
+                    <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
+                      Read more
+                    </Link>
+                  </Section>
+                ))}
+              </Section>
+            )}
+
+            {projectEntries.length > 0 && blogEntries.length > 0 && <Hr className="my-12 border-default" />}
+
+            {projectEntries.length > 0 && (
+              <Section>
+                <Text className="m-0 mb-6 font-mono font-semibold text-muted text-sm uppercase tracking-widest">
+                  Projects
+                </Text>
+
+                {projectEntries.map((entry, i) => (
+                  <Section
+                    key={entry.postUrl}
+                    className={i > 0 ? 'mt-10 border-default border-t border-solid pt-10' : ''}
+                  >
+                    {entry.image ? (
+                      <picture>
+                        {entry.imageDark ? (
+                          <source srcSet={entry.imageDark.src} media="(prefers-color-scheme: dark)" />
+                        ) : null}
+                        <img
+                          src={entry.image.src}
+                          alt={entry.title}
+                          width={entry.image.width ?? 600}
+                          height={entry.image.height ?? 338}
+                          className="mb-4 w-full rounded object-cover"
+                          style={{ maxWidth: '100%', height: 'auto' }}
+                        />
+                      </picture>
+                    ) : null}
+                    <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
+
+                    {entry.summary ? (
+                      <Text className="mt-3 mb-0 text-secondary text-sm leading-7">{entry.summary}</Text>
+                    ) : null}
+
+                    <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
+                      Read more
+                    </Link>
+                  </Section>
+                ))}
+              </Section>
+            )}
+
+            <Hr className="mt-12 mb-7 border-default" />
+
+            <Section>
+              <Text className="m-0 text-muted text-xs">
+                You received this because you subscribed to updates from jaspergorchov.com. If you no longer wish to
+                receive these emails, you can{' '}
+                <Link href={`${siteUrl}/api/unsubscribe`} className="text-muted underline">
+                  unsubscribe here
+                </Link>
+                .
+              </Text>
+            </Section>
+          </Container>
+        </Body>
+      </Tailwind>
     </Html>
   )
 }
 
-const main: CSSProperties = {
-  backgroundColor: '#fafafa',
-  fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  padding: '40px 0',
-}
+function describeContent(blogCount: number, projectCount: number) {
+  const parts = []
 
-const container: CSSProperties = {
-  backgroundColor: '#ffffff',
-  border: '1px solid #e4e4e7',
-  borderRadius: '8px',
-  margin: '0 auto',
-  maxWidth: '600px',
-  padding: '40px 32px',
-}
+  if (blogCount > 0) {
+    parts.push(`${blogCount} new blog ${blogCount === 1 ? 'post' : 'posts'}`)
+  }
 
-const header: CSSProperties = {
-  marginBottom: '32px',
-}
+  if (projectCount > 0) {
+    parts.push(`${projectCount} new ${projectCount === 1 ? 'project' : 'projects'}`)
+  }
 
-const headerText: CSSProperties = {
-  color: '#71717a',
-  fontSize: '14px',
-  fontWeight: 600,
-  letterSpacing: '0.05em',
-  margin: '0',
-  textTransform: 'uppercase',
-}
+  if (parts.length === 0) {
+    return 'a new update'
+  }
 
-const h1: CSSProperties = {
-  color: '#09090b',
-  fontSize: '28px',
-  fontWeight: 700,
-  letterSpacing: '-0.02em',
-  lineHeight: '1.2',
-  margin: '0',
-}
-
-const typeBadgeStyle: CSSProperties = {
-  color: '#0284c7',
-  fontSize: '11px',
-  fontWeight: 600,
-  letterSpacing: '0.05em',
-  margin: '0 0 4px',
-  textTransform: 'uppercase',
-}
-
-const entryTitle: CSSProperties = {
-  color: '#09090b',
-  fontSize: '18px',
-  fontWeight: 600,
-  lineHeight: '1.3',
-  textDecoration: 'none',
-}
-
-const entrySummary: CSSProperties = {
-  color: '#52525b',
-  fontSize: '15px',
-  lineHeight: '1.6',
-  margin: '4px 0 0',
-}
-
-const entrySpaced: CSSProperties = {
-  marginTop: '20px',
-}
-
-const divider: CSSProperties = {
-  borderColor: '#e4e4e7',
-  margin: '24px 0',
-}
-
-const footerText: CSSProperties = {
-  color: '#a1a1aa',
-  fontSize: '12px',
-  lineHeight: '1.5',
-  margin: '0',
-}
-
-const footerLink: CSSProperties = {
-  color: '#a1a1aa',
-  textDecoration: 'underline',
+  return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0]
 }
