@@ -7,10 +7,11 @@ import { Container } from '@/components/container'
 import { Hero } from '@/components/home/hero'
 import { RecentProjects } from '@/components/home/recent-projects'
 import { Logo } from '@/components/logo'
+import { MiniEditor } from '@/components/mini-editor/mini-editor'
 import { NewsletterSection } from '@/components/newsletter-section'
 import { ThemeImage } from '@/components/theme-image'
 import { getAllBlogPosts, getAllNotes, getAllProjects } from '@/lib/api'
-import { formatDate, formatTimeLocal } from '@/lib/api-utils'
+import { timeAgo } from '@/lib/api-utils'
 
 const socialMedia = [
   {
@@ -120,21 +121,6 @@ export default async function Home() {
         </Button>
       </Container>
 
-      {/*<Container className="mt-56">
-        <p className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
-          Web development
-        </p>
-        <h2 className="mt-5 font-medium text-[2.5rem]/10 text-zinc-950 tracking-tight dark:text-white">
-          Crafting the best web experiences I can.
-        </h2>
-        <p className="mt-8 max-w-(--breakpoint-md) text-base/8 text-zinc-600 dark:text-zinc-400">
-          With over 4 years of experience, I use modern web technologies such as Next.js and Tailwind CSS to build
-          websites and web apps that not only are designed with attention to detail, but also include exceptional
-          functionality.
-        </p>
-        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
-      </Container>*/}
-
       <Container className="mt-56">
         <h2 className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
           Web development
@@ -146,7 +132,9 @@ export default async function Home() {
           </span>
         </p>
 
-        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+        <div className="mt-24 aspect-16/10 w-full">
+          <MiniEditor />
+        </div>
       </Container>
 
       <Container className="mt-56">
@@ -159,10 +147,8 @@ export default async function Home() {
                 </span>
                 <div>
                   <p className="font-semibold text-sm text-zinc-950 dark:text-white">Jasper Gorchov</p>
-                  <p className="flex items-center font-mono text-xs/5 text-zinc-500 uppercase tracking-widest">
-                    {formatDate(note.meta.date, 'long')}
-                    <span className="mx-3 inline-block size-0.75 rounded-full bg-current" />
-                    {formatTimeLocal(note.meta.date)}
+                  <p className="font-mono text-xs/5 text-zinc-500 uppercase tracking-widest">
+                    {timeAgo(note.meta.date)}
                   </p>
                 </div>
               </div>
@@ -200,7 +186,7 @@ export default async function Home() {
         <p className="mt-6 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
           <strong className="font-normal text-gray-950 dark:text-white">3D renders and motion design</strong>{' '}
           <span className="text-gray-500 dark:text-gray-400">
-            crafted in Blender, with occasional interactive pieces built using Three.js.
+            crafted in Blender, and interactive pieces brought to the web with Three.js.
           </span>
         </p>
 
@@ -216,7 +202,6 @@ export default async function Home() {
             <strong className="font-normal text-gray-950 dark:text-white">
               Get notified when I publish something new.
             </strong>
-            
           </p>
         </NewsletterSection>
       </Container>
