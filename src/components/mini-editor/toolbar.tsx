@@ -33,11 +33,11 @@ const swatches = ['#0ea5e9', '#8b5cf6', '#14b8a6', '#f43f5e', '#f8fafc', '#18181
 
 function toolbarClassName(theme: ThemeId) {
   if (theme === 'terminal') {
-    return 'pointer-events-auto flex items-center gap-1.5 rounded-none border border-green-400 bg-zinc-950 px-3 py-2 font-mono shadow-[0_0_0_1px_rgb(22_163_74),0_0_18px_rgb(34_197_94/0.18)]'
+    return 'pointer-events-auto flex items-center gap-1.5 rounded-none border border-green-500 bg-zinc-950 p-2 font-mono'
   }
 
   if (theme === 'retro') {
-    return 'pointer-events-auto flex items-center gap-1.5 rounded-none border-2 border-zinc-950 bg-zinc-100 px-3 py-2 font-mono shadow-[4px_4px_0_0_rgb(24_24_27)] dark:border-white dark:bg-zinc-300 dark:shadow-[4px_4px_0_0_rgb(255_255_255)]'
+    return 'pointer-events-auto flex items-center gap-1.5 rounded-none border-2 border-black bg-white font-mono dark:border-zinc-300 dark:bg-zinc-500'
   }
 
   if (theme === 'tactile') {
@@ -49,11 +49,11 @@ function toolbarClassName(theme: ThemeId) {
 
 function popoverClassName(theme: ThemeId) {
   if (theme === 'terminal') {
-    return 'mb-3 flex items-center gap-3 rounded-none border border-green-400 bg-zinc-950 px-4 py-2 font-mono text-green-300 shadow-[0_0_0_1px_rgb(22_163_74)]'
+    return 'mb-3 flex items-center gap-3 rounded-none border border-green-500 bg-zinc-950 px-4 py-2 font-mono text-green-300'
   }
 
   if (theme === 'retro') {
-    return 'mb-3 flex items-center gap-3 rounded-none border-2 border-zinc-950 bg-zinc-100 px-4 py-2 font-mono shadow-[3px_3px_0_0_rgb(24_24_27)] dark:border-white dark:bg-zinc-300 dark:text-zinc-950 dark:shadow-[3px_3px_0_0_rgb(255_255_255)]'
+    return 'mb-3 flex items-center gap-3 rounded-none border-2 border-black bg-white font-mono text-black dark:border-zinc-300 dark:bg-zinc-500 dark:text-zinc-100'
   }
 
   if (theme === 'tactile') {
@@ -67,16 +67,16 @@ function toolButtonClassName(theme: ThemeId, isActive: boolean) {
   if (theme === 'terminal') {
     return `flex size-8 items-center justify-center rounded-none border font-mono transition-colors ${
       isActive
-        ? 'border-green-300 bg-zinc-950 text-green-200 shadow-[inset_0_0_0_1px_rgb(74_222_128)]'
+        ? 'border-green-500 bg-green-400 text-black'
         : 'border-green-700 bg-zinc-950 text-green-400 hover:border-green-300 hover:text-green-200 disabled:cursor-not-allowed disabled:opacity-30'
     }`
   }
 
   if (theme === 'retro') {
-    return `flex size-8 items-center justify-center rounded-none border-2 border-zinc-950 transition-colors dark:border-zinc-950 ${
+    return `flex size-8 items-center justify-center rounded-none border-2 transition-colors ${
       isActive
-        ? 'bg-zinc-950 text-white dark:bg-zinc-950 dark:text-white'
-        : 'bg-zinc-100 text-zinc-950 hover:bg-white disabled:cursor-not-allowed disabled:opacity-30 dark:bg-zinc-300 dark:text-zinc-950 dark:hover:bg-white'
+        ? 'border-black bg-black text-white dark:border-zinc-200 dark:bg-zinc-200 dark:text-zinc-900'
+        : 'border-black bg-white text-black hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-30 dark:border-zinc-300 dark:bg-zinc-500 dark:text-zinc-100 dark:hover:bg-zinc-400'
     }`
   }
 
@@ -97,18 +97,18 @@ function toolButtonClassName(theme: ThemeId, isActive: boolean) {
 
 function dividerClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'mx-1 h-6 w-px bg-green-700'
-  if (theme === 'retro') return 'mx-1 h-6 w-0.5 bg-zinc-950'
+  if (theme === 'retro') return 'mx-1 h-6 w-0.5 bg-black dark:bg-zinc-300'
   if (theme === 'tactile') return 'mx-1 h-6 w-px bg-white shadow-[1px_0_0_rgb(113_113_122/0.35)] dark:bg-white/15'
   return 'mx-1 h-6 w-px bg-zinc-200 dark:bg-zinc-700'
 }
 
 function swatchClassName(theme: ThemeId) {
   if (theme === 'terminal') {
-    return 'size-5 rounded-none border border-green-400 ring-1 ring-green-900 transition-transform hover:scale-110'
+    return 'size-5 rounded-none border border-green-600 transition-transform hover:scale-110'
   }
 
   if (theme === 'retro') {
-    return 'size-5 rounded-none border-2 border-zinc-950 transition-transform hover:scale-110'
+    return 'size-5 rounded-none border-2 border-black transition-transform hover:scale-110 dark:border-zinc-300'
   }
 
   if (theme === 'tactile') {
@@ -153,7 +153,7 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
             state.theme === 'terminal'
               ? 'border-green-700'
               : state.theme === 'retro'
-                ? 'border-zinc-950'
+                ? 'border-black dark:border-zinc-300'
                 : state.theme === 'tactile'
                   ? 'border-white/70 dark:border-white/10'
                   : 'border-zinc-200 dark:border-zinc-700'
@@ -170,7 +170,7 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
               state.theme === 'terminal'
                 ? 'rounded-none bg-green-900'
                 : state.theme === 'retro'
-                  ? 'rounded-none bg-zinc-950'
+                  ? 'rounded-none bg-black dark:bg-zinc-300'
                   : state.theme === 'tactile'
                     ? 'rounded-full bg-zinc-300 shadow-inner dark:bg-zinc-950'
                     : 'rounded-full bg-zinc-200 dark:bg-zinc-700'
@@ -181,7 +181,7 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
               state.theme === 'terminal'
                 ? 'text-green-300'
                 : state.theme === 'retro'
-                  ? 'text-zinc-950'
+                  ? 'text-black dark:text-zinc-100'
                   : 'text-zinc-500 dark:text-zinc-400'
             }`}
           >

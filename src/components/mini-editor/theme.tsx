@@ -13,11 +13,11 @@ const themeNames: Record<ThemeId, string> = {
 
 function switcherClassName(theme: ThemeId) {
   if (theme === 'terminal') {
-    return 'flex items-center gap-1.5 rounded-none border border-green-400 bg-zinc-950 px-3 py-1.5 font-mono font-medium text-green-300 text-xs shadow-[0_0_0_1px_rgb(22_163_74)]'
+    return 'flex items-center gap-1.5 rounded-none border border-green-500 bg-zinc-950 px-3 py-1.5 font-mono font-medium text-green-300 text-xs'
   }
 
   if (theme === 'retro') {
-    return 'flex items-center gap-1.5 rounded-none border-2 border-zinc-950 bg-zinc-100 px-3 py-1.5 font-mono font-bold text-xs text-zinc-950 shadow-[3px_3px_0_0_rgb(24_24_27)] dark:border-white dark:bg-zinc-300 dark:text-zinc-950 dark:shadow-[3px_3px_0_0_rgb(255_255_255)]'
+    return 'flex items-center gap-1.5 rounded-none border-2 border-black bg-white px-3 py-1.5 font-mono font-bold text-xs text-black dark:border-zinc-300 dark:bg-zinc-500 dark:text-zinc-100'
   }
 
   if (theme === 'tactile') {

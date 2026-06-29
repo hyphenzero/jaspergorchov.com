@@ -8,7 +8,6 @@ import {
   useMemo,
   useRef,
   useState,
-  type WheelEvent,
 } from 'react'
 import { useEditor } from './store'
 import {
@@ -26,8 +25,6 @@ import {
 
 const MIN_LAYER_SIZE = 8
 const DEFAULT_VIEWPORT = { width: ARTBOARD_WIDTH, height: ARTBOARD_HEIGHT }
-const MIN_ZOOM = 0.5
-const MAX_ZOOM = 3
 
 function generateId() {
   return `layer-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
@@ -177,7 +174,7 @@ function getHandlePosition(handle: string): CSSProperties {
 
 function viewportClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'relative size-full min-w-0 overflow-hidden bg-zinc-950'
-  if (theme === 'retro') return 'relative size-full min-w-0 overflow-hidden bg-zinc-300 font-mono dark:bg-zinc-950'
+  if (theme === 'retro') return 'relative size-full min-w-0 overflow-hidden bg-zinc-300 dark:bg-zinc-700'
   if (theme === 'tactile') {
     return 'relative size-full min-w-0 overflow-hidden bg-gradient-to-b from-zinc-50 to-zinc-300 dark:from-zinc-800 dark:to-zinc-950'
   }
@@ -189,7 +186,7 @@ function artboardClassName(theme: ThemeId, cursorClass: string) {
     return `absolute top-0 left-0 overflow-hidden border border-green-500 bg-zinc-950 ${cursorClass}`
   }
   if (theme === 'retro') {
-    return `absolute top-0 left-0 overflow-hidden border-2 border-zinc-950 bg-zinc-100 shadow-[6px_6px_0_0_rgb(24_24_27)] dark:border-white dark:bg-zinc-300 dark:shadow-[6px_6px_0_0_rgb(255_255_255)] ${cursorClass}`
+    return `absolute top-0 left-0 overflow-hidden border-2 border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
   }
   if (theme === 'tactile') {
     return `absolute top-0 left-0 overflow-hidden border border-white/70 bg-gradient-to-b from-zinc-50 to-zinc-200 shadow-[inset_0_1px_0_rgb(255_255_255),inset_0_-1px_0_rgb(113_113_122/0.3),0_18px_40px_rgb(24_24_27/0.25)] dark:border-white/10 dark:from-zinc-800 dark:to-zinc-950 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.16),inset_0_-1px_0_rgb(0_0_0/0.8),0_18px_40px_rgb(0_0_0/0.5)] ${cursorClass}`
@@ -199,21 +196,21 @@ function artboardClassName(theme: ThemeId, cursorClass: string) {
 
 function edgeRingClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-green-400 ring-inset'
-  if (theme === 'retro') return 'pointer-events-none absolute inset-0 z-10 ring-2 ring-zinc-950 ring-inset dark:ring-white'
+  if (theme === 'retro') return 'pointer-events-none absolute inset-0 z-10 ring-2 ring-black ring-inset dark:ring-zinc-300'
   if (theme === 'tactile') return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-white/70 ring-inset dark:ring-white/10'
   return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10'
 }
 
 function selectionBorderClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'absolute inset-0 border border-green-400'
-  if (theme === 'retro') return 'absolute inset-0 border-2 border-zinc-950 dark:border-white'
+  if (theme === 'retro') return 'absolute inset-0 border-2 border-black dark:border-zinc-200'
   if (theme === 'tactile') return 'absolute inset-0 border border-sky-500 shadow-[0_0_0_1px_rgb(255_255_255/0.7)] dark:border-sky-300'
   return 'absolute inset-0 border border-sky-500 dark:border-sky-400'
 }
 
 function selectionHandleClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'pointer-events-auto absolute size-2 bg-zinc-950 ring-2 ring-green-400'
-  if (theme === 'retro') return 'pointer-events-auto absolute size-2 bg-white ring-2 ring-zinc-950 dark:ring-white'
+  if (theme === 'retro') return 'pointer-events-auto absolute size-2 bg-white ring-2 ring-black dark:bg-zinc-500 dark:ring-zinc-200'
   if (theme === 'tactile') {
     return 'pointer-events-auto absolute size-2 rounded-sm bg-gradient-to-b from-white to-sky-100 ring-2 ring-sky-500 shadow-[inset_0_1px_0_rgb(255_255_255),0_1px_3px_rgb(24_24_27/0.3)] dark:ring-sky-300'
   }
@@ -294,8 +291,6 @@ export function Canvas() {
   const artboardRef = useRef<HTMLDivElement>(null)
   const interactionRef = useRef<Interaction>({ type: 'idle' })
   const [viewport, setViewport] = useState(DEFAULT_VIEWPORT)
-  const [zoom, setZoom] = useState(1)
-
   useEffect(() => {
     const viewportNode = viewportRef.current
     if (!viewportNode) return
@@ -312,19 +307,10 @@ export function Canvas() {
     return () => observer.disconnect()
   }, [])
 
-  const baseScale = useMemo(() => {
+  const scale = useMemo(() => {
     if (viewport.width === 0 || viewport.height === 0) return 1
     return Math.max(viewport.width / ARTBOARD_WIDTH, viewport.height / ARTBOARD_HEIGHT)
   }, [viewport])
-
-  const scale = baseScale * zoom
-
-  const handleWheel = useCallback((event: WheelEvent<HTMLDivElement>) => {
-    event.preventDefault()
-    const delta = -event.deltaY
-    const nextZoom = delta > 0 ? 1.08 : 1 / 1.08
-    setZoom((current) => clamp(current * nextZoom, MIN_ZOOM, MAX_ZOOM))
-  }, [])
 
   const commit = useCallback(() => {
     const interaction = interactionRef.current
@@ -569,7 +555,6 @@ export function Canvas() {
     <div
       ref={viewportRef}
       className={viewportClassName(state.theme)}
-      onWheel={handleWheel}
     >
       <div className={edgeRingClassName(state.theme)} />
       <div className="absolute inset-0 flex items-center justify-center">
