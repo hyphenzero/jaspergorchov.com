@@ -21,7 +21,7 @@ function switcherClassName(theme: ThemeId) {
   }
 
   if (theme === 'tactile') {
-    return 'flex items-center gap-1.5 rounded-full border border-white/70 bg-gradient-to-b from-white to-zinc-200 px-3 py-1.5 font-medium text-xs text-zinc-600 shadow-[inset_0_1px_0_rgb(255_255_255),0_8px_18px_rgb(24_24_27/0.18)] transition-colors hover:text-zinc-950 dark:border-white/10 dark:from-zinc-700 dark:to-zinc-900 dark:text-zinc-200 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.18),0_8px_18px_rgb(0_0_0/0.38)]'
+    return 'flex items-center gap-1.5 rounded-full border border-white/20 bg-gradient-to-b from-white/15 to-white/5 px-3 py-1.5 font-medium text-xs text-zinc-300 shadow-[inset_0_1px_0_rgb(255_255_255/0.2),0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-md transition-colors hover:text-white dark:border-white/15 dark:from-white/10 dark:to-white/5'
   }
 
   return 'flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5 font-medium text-xs text-zinc-500 shadow-sm ring-1 ring-zinc-200 backdrop-blur-md transition-colors hover:text-zinc-700 dark:bg-zinc-900/80 dark:text-zinc-400 dark:ring-zinc-700 dark:hover:text-zinc-200'
