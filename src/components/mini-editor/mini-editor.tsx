@@ -60,7 +60,7 @@ function EditorInner() {
       <div className="absolute top-3 right-3 z-10">
         <ThemeSwitcher />
       </div>
-      <div className="absolute inset-x-0 bottom-4 z-10">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
         <BottomToolbar />
       </div>
     </div>

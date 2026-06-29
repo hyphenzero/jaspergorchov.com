@@ -186,7 +186,7 @@ function artboardClassName(theme: ThemeId, cursorClass: string) {
     return `absolute top-0 left-0 overflow-hidden border border-green-500 bg-zinc-950 ${cursorClass}`
   }
   if (theme === 'retro') {
-    return `absolute top-0 left-0 overflow-hidden border-2 border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
+    return `absolute top-0 left-0 overflow-hidden border border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
   }
   if (theme === 'tactile') {
     return `absolute top-0 left-0 overflow-hidden border border-white/70 bg-gradient-to-b from-zinc-50 to-zinc-200 shadow-[inset_0_1px_0_rgb(255_255_255),inset_0_-1px_0_rgb(113_113_122/0.3),0_18px_40px_rgb(24_24_27/0.25)] dark:border-white/10 dark:from-zinc-800 dark:to-zinc-950 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.16),inset_0_-1px_0_rgb(0_0_0/0.8),0_18px_40px_rgb(0_0_0/0.5)] ${cursorClass}`
