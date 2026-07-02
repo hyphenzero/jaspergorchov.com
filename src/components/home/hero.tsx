@@ -2,7 +2,7 @@
 
 import { animate, motion } from 'motion/react'
 import Image from 'next/image'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SerializableProject } from '@/types/post'
 
 type Props = {
@@ -23,11 +23,12 @@ function getImageDarkSrc(project: ProjectWithImage): string | undefined {
   return project.meta.imageDark?.src
 }
 
-const THUMB_W = 280
-const THUMB_H = 210
-const GRID_GAP = 24
-const GRID_PADDING = 48
-const GRID_MODE_FILL = 1
+const THUMB_H = 512
+const GRID_GAP = 53
+const CENTER_Y_OFFSET = 60
+const DURATION = 2
+const FADE_LEAD_MS = 600
+const FADED_OPACITY = 0.25
 
 type Position = {
   x: number
@@ -46,9 +47,7 @@ type GridLayout = {
 
 function getTileSize(project: ProjectWithImage) {
   const ratio =
-    project.meta.image.width && project.meta.image.height
-      ? project.meta.image.width / project.meta.image.height
-      : THUMB_W / THUMB_H
+    project.meta.image.width && project.meta.image.height ? project.meta.image.width / project.meta.image.height : 1
 
   return {
     width: Math.round(THUMB_H * ratio),
@@ -159,29 +158,10 @@ function getDistantOrder(positions: Position[]) {
   return order
 }
 
-function getFitScale(layout: GridLayout, vw: number, vh: number) {
-  const paddedWidth = Math.max(vw - GRID_PADDING * 2, THUMB_W)
-  const paddedHeight = Math.max(vh - GRID_PADDING * 2, THUMB_H)
-  const maxVisibleScale = Math.min(paddedWidth / layout.width, paddedHeight / layout.height)
-
-  return maxVisibleScale > 1 ? Math.max(1, maxVisibleScale * GRID_MODE_FILL) : maxVisibleScale
-}
-
-function getCoverScale(position: Position, vw: number, vh: number) {
-  return Math.max(vw / position.width, vh / position.height)
-}
-
-function getGridTransform(layout: GridLayout, scale: number, vw: number, vh: number) {
+function getFocusedTransform(centerX: number, centerY: number, vw: number, vh: number) {
   return {
-    x: (vw - layout.width * scale) / 2,
-    y: (vh - layout.height * scale) / 2,
-  }
-}
-
-function getFocusedTransform(centerX: number, centerY: number, scale: number, vw: number, vh: number) {
-  return {
-    x: vw / 2 - centerX * scale,
-    y: vh / 2 - centerY * scale,
+    x: vw / 2 - centerX,
+    y: vh / 2 - centerY - CENTER_Y_OFFSET,
   }
 }
 
@@ -192,6 +172,7 @@ export function Hero({ projects = [] }: Props) {
   const [vw, setVw] = useState(0)
   const [vh, setVh] = useState(0)
   const [scrollY, setScrollY] = useState(0)
+  const [activeIdx, setActiveIdx] = useState(0)
 
   const viewportRef = useRef<HTMLDivElement>(null)
   const wrapperRef = useRef<HTMLDivElement>(null)
@@ -221,74 +202,66 @@ export function Hero({ projects = [] }: Props) {
   )
   const order = useMemo(() => getDistantOrder(layout.positions), [layout.positions])
 
-  useEffect(() => {
-    if (imageProjects.length === 0 || order.length === 0 || !vw || !vh) return
-    if (!wrapperRef.current) return
+  useLayoutEffect(() => {
+    if (imageProjects.length === 0 || order.length === 0) return
+    if (!wrapperRef.current || !viewportRef.current) return
+
+    setActiveIdx(order[0])
 
     const wrapper = wrapperRef.current
+    const w = displayVw
+    const h = displayVh
     let running = true
 
+    const firstPos = layout.positions[order[0]]
+    if (firstPos) {
+      const t = getFocusedTransform(firstPos.centerX, firstPos.centerY, w, h)
+      wrapper.style.transform = `translate(${t.x}px, ${t.y}px)`
+    }
+
+    let currentOrderIndex = 0
+
     async function run() {
-      const zoomOutScale = getFitScale(layout, vw, vh)
-      const initial = getGridTransform(layout, zoomOutScale, vw, vh)
-
-      let currentOrderIndex = 0
-
-      try {
-        await animate(wrapper, { x: initial.x, y: initial.y, scale: zoomOutScale }, { duration: 0 }).finished
-      } catch {
-        return
-      }
-
       while (running) {
-        await delay(100)
-        if (!running) return
-
-        const currentProjectIdx = order[currentOrderIndex]
-        const currentPos = layout.positions[currentProjectIdx]
-        if (!currentPos) continue
-
-        const zoomInScale = getCoverScale(currentPos, vw, vh)
-        const zoomIn = getFocusedTransform(currentPos.centerX, currentPos.centerY, zoomInScale, vw, vh)
-        try {
-          await animate(
-            wrapper,
-            { x: zoomIn.x, y: zoomIn.y, scale: zoomInScale },
-            { duration: 1.15, ease: [0.22, 1, 0.36, 1] }
-          ).finished
-        } catch {
-          return
-        }
-
-        if (!running) return
-        await delay(3200)
-        if (!running) return
-
-        const zoomOut = getFocusedTransform(currentPos.centerX, currentPos.centerY, zoomOutScale, vw, vh)
-        try {
-          await animate(
-            wrapper,
-            { x: zoomOut.x, y: zoomOut.y, scale: zoomOutScale },
-            { duration: 0.95, ease: [0.22, 1, 0.36, 1] }
-          ).finished
-        } catch {
-          return
-        }
-
-        if (!running) return
-        await delay(500)
+        await delay(3000)
         if (!running) return
 
         const nextOrderIndex = (currentOrderIndex + 1) % order.length
         const nextProjectIdx = order[nextOrderIndex]
         const nextPos = layout.positions[nextProjectIdx]
-        const pan = nextPos ? getFocusedTransform(nextPos.centerX, nextPos.centerY, zoomOutScale, vw, vh) : zoomOut
+        if (!nextPos) {
+          currentOrderIndex = nextOrderIndex
+          continue
+        }
+
+        const currentPos = layout.positions[order[currentOrderIndex]]
+        const to = getFocusedTransform(nextPos.centerX, nextPos.centerY, w, h)
+
+        const screenDist = Math.hypot(nextPos.centerX - currentPos.centerX, nextPos.centerY - currentPos.centerY)
+        const viewportRadius = Math.min(w, h) * 0.4
+        const fadeDelay = Math.max(0, ((screenDist - viewportRadius) / screenDist) * DURATION * 1000 - FADE_LEAD_MS)
+
+        let fadeTimeout: ReturnType<typeof setTimeout> | null = null
+
+        if (fadeDelay <= 0) {
+          setActiveIdx(nextProjectIdx)
+        } else {
+          setActiveIdx(-1)
+          fadeTimeout = setTimeout(() => {
+            fadeTimeout = null
+            if (running) setActiveIdx(nextProjectIdx)
+          }, fadeDelay)
+        }
 
         try {
-          await animate(wrapper, { x: pan.x, y: pan.y }, { duration: 0.8, ease: [0.22, 1, 0.36, 1] }).finished
+          await animate(wrapper, { x: to.x, y: to.y }, { duration: DURATION, ease: [0.42, 0, 0.58, 1] }).finished
         } catch {
+          if (fadeTimeout) clearTimeout(fadeTimeout)
           return
         }
+
+        setActiveIdx(nextProjectIdx)
+        if (fadeTimeout) clearTimeout(fadeTimeout)
 
         currentOrderIndex = nextOrderIndex
       }
@@ -299,7 +272,7 @@ export function Hero({ projects = [] }: Props) {
     return () => {
       running = false
     }
-  }, [imageProjects.length, layout, order, vw, vh])
+  }, [imageProjects.length, order, layout, displayVw, displayVh])
 
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
@@ -312,13 +285,10 @@ export function Hero({ projects = [] }: Props) {
 
   if (imageProjects.length === 0) return null
 
-  const initialScale = getFitScale(layout, displayVw, displayVh)
-  const initialTransform = getGridTransform(layout, initialScale, displayVw, displayVh)
-
   return (
     <div ref={viewportRef} className="relative isolate -z-10 size-full min-h-full overflow-hidden">
       <motion.div
-        className="absolute inset-0 overflow-hidden bg-zinc-300 dark:bg-zinc-600"
+        className="absolute inset-0 overflow-hidden bg-zinc-200 dark:bg-zinc-900"
         animate={{
           top: progress * 8,
           left: progress * 8,
@@ -333,8 +303,6 @@ export function Hero({ projects = [] }: Props) {
           style={{
             width: layout.width,
             height: layout.height,
-            transform: `translate(${initialTransform.x}px, ${initialTransform.y}px) scale(${initialScale})`,
-            transformOrigin: '0 0',
           }}
         >
           {imageProjects.map((project, idx) => {
@@ -343,16 +311,20 @@ export function Hero({ projects = [] }: Props) {
             const src = getImageSrc(project)
             const darkSrc = getImageDarkSrc(project)
             return (
-              <div
+              <motion.div
                 key={project.slug}
-                className="absolute overflow-hidden rounded-lg bg-zinc-800"
+                className="absolute overflow-hidden rounded-xl bg-zinc-500"
                 style={{
                   width: pos.width,
                   height: pos.height,
                   left: pos.x,
                   top: pos.y,
                 }}
+                animate={{ opacity: idx === activeIdx ? 1 : FADED_OPACITY }}
+                transition={{ duration: 1.2, ease: [0.42, 0, 0.58, 1] }}
               >
+                <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
+
                 {darkSrc ? (
                   <>
                     <Image
@@ -385,15 +357,11 @@ export function Hero({ projects = [] }: Props) {
                     sizes={`${Math.ceil(pos.width)}px`}
                   />
                 )}
-              </div>
+              </motion.div>
             )
           })}
         </div>
       </motion.div>
-
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-1/5 bg-linear-to-b from-white/20 dark:from-zinc-950/70" />
-
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-1/3 bg-linear-to-t from-white/20 dark:from-zinc-950/70" />
 
       <motion.div
         className="pointer-events-none absolute z-20 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"
