@@ -73,8 +73,8 @@ export default async function Home() {
       </div>
 
       <div className="relative mx-auto mt-[calc(100dvh-1.5rem)] flex -translate-y-full items-end justify-between px-6 pb-20 lg:px-14">
-        <h1 className="max-w-5xl text-balance font-medium text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-shadow-md dark:text-white">
-          I’m Jasper Gorchov, a web developer, design engineer, and 3D artist.
+        <h1 className="max-w-5xl text-balance font-medium text-4xl/11 text-zinc-950 tracking-tight md:text-5xl/17 dark:text-white">
+          I’m Jasper Gorchov, a software developer, design engineer, and 3D artist.
         </h1>
 
         <div className="flex flex-col justify-center max-sm:*:w-full">
@@ -121,21 +121,25 @@ export default async function Home() {
         </Button>
       </Container>
 
-      <Container className="mt-56">
+      <Container className="mt-56 mb-24">
         <h2 className="font-mono font-semibold text-sky-500 text-sm uppercase tracking-widest max-2xl:mb-4 dark:text-sky-400">
-          Web development
+          Software development
         </h2>
         <p className="mt-6 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
-          <strong className="font-normal text-gray-950 dark:text-white">High-quality web experiences</strong>{' '}
-          <span className="text-gray-500 dark:text-gray-400">
+          <strong className="font-normal text-zinc-950 dark:text-white">High-quality software experiences</strong>{' '}
+          <span className="text-zinc-500 dark:text-zinc-400">
             built with modern technologies and a focus on both design and functionality.
           </span>
         </p>
-
-        <div className="mt-24 aspect-16/10 w-full">
-          <MiniEditor />
-        </div>
       </Container>
+
+      <div className="absolute inset-x-0 z-10 h-px bg-zinc-950/10 dark:bg-white/10" />
+      <Container className="relative aspect-16/10">
+        <div className="absolute -inset-y-12 z-10 w-px bg-zinc-950/10 dark:bg-white/10" />
+        <MiniEditor />
+        <div className="absolute -inset-y-12 right-6 z-10 w-px bg-zinc-950/10 lg:right-8 dark:bg-white/10" />
+      </Container>
+      <div className="absolute inset-x-0 z-10 h-px bg-zinc-950/10 dark:bg-white/10" />
 
       <Container className="mt-56">
         <div className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -184,8 +188,8 @@ export default async function Home() {
           3D Art
         </h2>
         <p className="mt-6 max-w-[40ch] text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
-          <strong className="font-normal text-gray-950 dark:text-white">3D renders and motion design</strong>{' '}
-          <span className="text-gray-500 dark:text-gray-400">
+          <strong className="font-normal text-zinc-950 dark:text-white">3D renders and motion design</strong>{' '}
+          <span className="text-zinc-500 dark:text-zinc-400">
             crafted in Blender, and interactive pieces brought to the web with Three.js.
           </span>
         </p>
@@ -199,7 +203,7 @@ export default async function Home() {
             Newsletter
           </p>
           <p className="mt-6 max-w-2xl text-pretty text-[2.5rem]/[2.75rem] tracking-tight sm:text-[3.5rem]/[3.75rem]">
-            <strong className="font-normal text-gray-950 dark:text-white">
+            <strong className="font-normal text-zinc-950 dark:text-white">
               Get notified when I publish something new.
             </strong>
           </p>
