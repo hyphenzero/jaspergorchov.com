@@ -11,7 +11,7 @@ import {
   StopIcon,
 } from '@heroicons/react/16/solid'
 import { useEditor } from './store'
-import { TOOL_IDS, type ThemeId, type ToolId } from './types'
+import { type ThemeId, TOOL_IDS, type ToolId } from './types'
 
 const toolIcons: Record<ToolId, typeof CursorArrowRaysIcon> = {
   move: CursorArrowRaysIcon,
@@ -44,7 +44,7 @@ function toolbarClassName(theme: ThemeId) {
     return 'pointer-events-auto flex items-center gap-1.5 rounded-full border border-white/15 bg-gradient-to-b from-white/12 to-white/5 px-3 py-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.15),inset_0_-1px_0_rgb(0_0_0/0.4),0_12px_28px_rgb(0_0_0/0.5)] backdrop-blur-md dark:border-white/15 dark:from-white/10 dark:to-white/5'
   }
 
-  return 'pointer-events-auto flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-2 shadow-sm ring-1 ring-zinc-200 backdrop-blur-md dark:bg-zinc-900/90 dark:ring-zinc-700'
+  return 'pointer-events-auto flex items-center gap-1.5 rounded-full bg-white p-1 shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/5'
 }
 
 function popoverClassName(theme: ThemeId) {
@@ -171,8 +171,8 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
                 ? 'rounded-none bg-green-900'
                 : state.theme === 'retro'
                   ? 'rounded-none bg-black dark:bg-zinc-300'
-                    : state.theme === 'tactile'
-                      ? 'rounded-full bg-white/10 shadow-[inset_0_1px_2px_rgb(0_0_0/0.4)] dark:bg-white/10'
+                  : state.theme === 'tactile'
+                    ? 'rounded-full bg-white/10 shadow-[inset_0_1px_2px_rgb(0_0_0/0.4)] dark:bg-white/10'
                     : 'rounded-full bg-zinc-200 dark:bg-zinc-700'
             }`}
           />

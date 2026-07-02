@@ -68,7 +68,7 @@ function TextInput({
         name={name}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className={`min-w-0 flex-1 bg-transparent px-2 text-[var(--text-primary)] text-sm/5 outline-none ${
+        className={`min-w-0 flex-1 bg-transparent px-2 text-(--text-primary) text-sm/5 outline-none ${
           mono ? 'font-mono text-[0.75rem]/5' : 'font-medium'
         }`}
       />
@@ -101,7 +101,7 @@ function NumberField({
           min={min}
           max={max}
           onChange={(event) => onChange(clamp(toNumber(event.target.value, value), min, max))}
-          className="min-w-0 flex-1 bg-transparent px-2 font-mono text-[0.75rem]/5 text-[var(--text-primary)] tabular-nums outline-none"
+          className="min-w-0 flex-1 bg-transparent px-2 font-mono text-(--text-primary) text-[0.75rem]/5 tabular-nums outline-none"
         />
       </InputBase>
     </Field>
@@ -130,7 +130,7 @@ function ColorField({
           aria-label={`${label} picker`}
           value={colorValue}
           onChange={(event) => onChange(event.target.value)}
-          className="size-8 shrink-0 cursor-pointer rounded-[var(--radius-sm)] border-0 bg-transparent p-0"
+          className="size-8 shrink-0 cursor-pointer rounded-sm border-0 bg-transparent p-0"
         />
         <TextInput name={name} value={value} onChange={onChange} mono />
       </div>
@@ -142,7 +142,7 @@ function OpacitySlider({ value, onChange }: { value: number; onChange: (value: n
   return (
     <Field label="Opacity">
       <div className="grid gap-1">
-        <div className="flex items-center justify-between font-mono text-[0.625rem]/4 text-[var(--text-secondary)] tabular-nums">
+        <div className="flex items-center justify-between font-mono text-(--text-secondary) text-[0.625rem]/4 tabular-nums">
           <span>0%</span>
           <span>{value}%</span>
         </div>

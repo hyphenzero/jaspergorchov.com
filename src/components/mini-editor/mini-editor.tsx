@@ -57,10 +57,10 @@ function EditorInner() {
   return (
     <div tabIndex={0} onKeyDown={handleKeyDown} className="relative h-full overflow-hidden outline-none">
       <Canvas />
-      <div className="absolute top-3 right-3 z-10">
+      <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">
         <ThemeSwitcher />
       </div>
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
+      <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
         <BottomToolbar />
       </div>
     </div>

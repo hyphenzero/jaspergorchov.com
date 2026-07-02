@@ -1,14 +1,6 @@
 'use client'
 
-import {
-  type CSSProperties,
-  type PointerEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { type CSSProperties, type PointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useEditor } from './store'
 import {
   ARTBOARD_HEIGHT,
@@ -196,21 +188,25 @@ function artboardClassName(theme: ThemeId, cursorClass: string) {
 
 function edgeRingClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-green-400 ring-inset'
-  if (theme === 'retro') return 'pointer-events-none absolute inset-0 z-10 ring-2 ring-black ring-inset dark:ring-zinc-300'
-  if (theme === 'tactile') return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-white/10 ring-inset dark:ring-white/10'
-  return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10'
+  if (theme === 'retro')
+    return 'pointer-events-none absolute inset-0 z-10 ring-2 ring-black ring-inset dark:ring-zinc-300'
+  if (theme === 'tactile')
+    return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-white/10 ring-inset dark:ring-white/10'
+  return 'pointer-events-none absolute inset-0 z-10'
 }
 
 function selectionBorderClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'absolute inset-0 border border-green-400'
   if (theme === 'retro') return 'absolute inset-0 border-2 border-black dark:border-zinc-200'
-  if (theme === 'tactile') return 'absolute inset-0 border border-sky-500/80 shadow-[0_0_0_1px_rgb(255_255_255/0.3)] dark:border-sky-400/80'
+  if (theme === 'tactile')
+    return 'absolute inset-0 border border-sky-500/80 shadow-[0_0_0_1px_rgb(255_255_255/0.3)] dark:border-sky-400/80'
   return 'absolute inset-0 border border-sky-500 dark:border-sky-400'
 }
 
 function selectionHandleClassName(theme: ThemeId) {
   if (theme === 'terminal') return 'pointer-events-auto absolute size-2 bg-zinc-950 ring-2 ring-green-400'
-  if (theme === 'retro') return 'pointer-events-auto absolute size-2 bg-white ring-2 ring-black dark:bg-zinc-500 dark:ring-zinc-200'
+  if (theme === 'retro')
+    return 'pointer-events-auto absolute size-2 bg-white ring-2 ring-black dark:bg-zinc-500 dark:ring-zinc-200'
   if (theme === 'tactile') {
     return 'pointer-events-auto absolute size-2 rounded-full bg-gradient-to-b from-white to-sky-200 ring-2 ring-sky-500 shadow-[inset_0_1px_0_rgb(255_255_255/0.8),0_1px_4px_rgb(0_0_0/0.4)] dark:ring-sky-400'
   }
@@ -552,10 +548,7 @@ export function Canvas() {
     state.activeTool === 'move' ? 'cursor-default' : state.activeTool === 'text' ? 'cursor-text' : 'cursor-crosshair'
 
   return (
-    <div
-      ref={viewportRef}
-      className={viewportClassName(state.theme)}
-    >
+    <div ref={viewportRef} className={viewportClassName(state.theme)}>
       <div className={edgeRingClassName(state.theme)} />
       <div className="absolute inset-0 flex items-center justify-center">
         <div
@@ -585,7 +578,11 @@ export function Canvas() {
             ))}
 
             {showSelection && (
-              <SelectionHandles layer={selectedLayer} theme={state.theme} onResizePointerDown={handleResizePointerDown} />
+              <SelectionHandles
+                layer={selectedLayer}
+                theme={state.theme}
+                onResizePointerDown={handleResizePointerDown}
+              />
             )}
           </div>
         </div>
