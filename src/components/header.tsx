@@ -63,7 +63,6 @@ export function Header() {
     // Allow the indicator animation state to apply before routing.
     await new Promise((r) => setTimeout(r, 40))
     router.push(target)
-    setTimeout(() => setAnimateIndicator(false), 400)
   }
 
   return (
