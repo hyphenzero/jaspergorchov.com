@@ -6,6 +6,7 @@ import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { Hero } from '@/components/home/hero'
 import { RecentProjects } from '@/components/home/recent-projects'
+import { TextureLab } from '@/components/home/texture-lab-client'
 import { Logo } from '@/components/logo'
 import { MiniEditor } from '@/components/mini-editor/mini-editor'
 import { NewsletterSection } from '@/components/newsletter-section'
@@ -79,17 +80,17 @@ export default async function Home() {
 
         <div className="flex flex-col justify-center max-sm:*:w-full">
           <div className="flex gap-x-6 *:w-32">
-            <Button href="/projects" color="sky">
+            <Button href="/projects" color="sky" data-track="hero-projects">
               Projects <ChevronRightIcon className="-mr-1.5!" />
             </Button>
-            <Button outline href="/blog">
+            <Button outline href="/blog" data-track="hero-blog">
               Blog <ChevronRightIcon className="-mr-1.5! text-zinc-950/30! dark:text-white/30!" />
             </Button>
           </div>
 
           <div className="mt-9 mb-4 flex w-full items-center justify-between px-6">
             {socialMedia.map((item) => (
-              <Link key={item.name} href={item.href}>
+              <Link key={item.name} href={item.href} data-track={`hero-social-${item.name.toLowerCase()}`}>
                 <item.icon className="size-5 text-zinc-950/75 mix-blend-plus-lighter transition-colors duration-200 hover:text-zinc-950 dark:text-white/75 dark:hover:text-white" />
                 <span className="sr-only">{item.name}</span>
               </Link>
@@ -116,7 +117,7 @@ export default async function Home() {
             <BlogPostRow key={post.slug} meta={post.meta} slug={post.slug} basePath="/blog" />
           ))}
         </div>
-        <Button href="/blog" className="mt-12">
+        <Button href="/blog" className="mt-12" data-track="blog-section-view-more">
           View more <ChevronRightIcon className="-mr-1!" />
         </Button>
       </Container>
@@ -177,7 +178,7 @@ export default async function Home() {
         </div>
 
         <div className="mx-auto mt-12 w-fit">
-          <Button outline href="/projects">
+          <Button outline href="/projects" data-track="notes-section-view-more">
             View more <ChevronRightIcon className="-mr-1!" />
           </Button>
         </div>
@@ -194,7 +195,7 @@ export default async function Home() {
           </span>
         </p>
 
-        <div className="mt-24 aspect-16/10 w-full rounded-2xl bg-zinc-200 dark:bg-zinc-800" />
+        <TextureLab className="mt-24" />
       </Container>
 
       <Container className="mt-56">
