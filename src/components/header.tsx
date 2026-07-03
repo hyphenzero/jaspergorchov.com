@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { type MouseEvent, useEffect, useRef, useState } from 'react'
 import { Banner } from './banner'
+import { ClickTracker } from './click-tracker'
 import { Logo } from './logo-box'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
 
@@ -125,6 +126,7 @@ export function Header() {
           </DialogPanel>
         </div>
       </Dialog>
+      <ClickTracker />
     </header>
   )
 }

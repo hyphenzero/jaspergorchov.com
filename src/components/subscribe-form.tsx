@@ -73,10 +73,12 @@ export function SubscribeForm({
   className,
   label,
   onStateChangeAction,
+  source,
 }: {
   className?: string
   label?: string
   onStateChangeAction?: (state: { email: string; flipped: boolean }) => void
+  source?: string
 }) {
   const [state, formAction] = useActionState(subscribeToNewsletter, { status: 'idle' })
   const [email, setEmail] = useState('')
@@ -114,6 +116,7 @@ export function SubscribeForm({
         }
       }}
       noValidate
+      data-track={source ? `subscribe-${source}` : undefined}
       className={clsx('relative w-96.75 shrink-0', className)}
     >
       <Field>

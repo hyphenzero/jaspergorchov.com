@@ -4,6 +4,7 @@ import { signOut } from '@/actions/admin'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { sessionCookieName, validateSession } from '@/lib/auth'
+import { getAllAnalytics } from '@/lib/db-analytics'
 import { buildNewsletterPayload, getUnsentNewsletterContent } from '@/lib/newsletter'
 import { AdminClient } from './client'
 import { AdminLoginForm } from './login-form'
@@ -21,6 +22,7 @@ export default async function AdminPage() {
 
   const unsent = await getUnsentNewsletterContent()
   const payload = unsent.length > 0 ? await buildNewsletterPayload(unsent) : null
+  const analytics = await getAllAnalytics()
 
   return (
     <Container className="relative mt-28">
@@ -32,8 +34,8 @@ export default async function AdminPage() {
           <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
             Admin
           </h1>
-          <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
-            Review unsent content, check the generated email, then send a digest when everything looks right.
+          <p className="mt-8 max-w-xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
+            Manage the newsletter, review analytics, and monitor how visitors engage with content.
           </p>
         </div>
         <form action={signOut} className="shrink-0 sm:mb-3">
@@ -44,7 +46,7 @@ export default async function AdminPage() {
         </form>
       </div>
 
-      <AdminClient unsent={unsent} payload={payload} />
+      <AdminClient unsent={unsent} payload={payload} analytics={analytics} />
     </Container>
   )
 }

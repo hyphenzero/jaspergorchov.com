@@ -2,7 +2,9 @@
 
 import * as Headless from '@headlessui/react'
 import { PaperAirplaneIcon } from '@heroicons/react/16/solid'
+import { useSearchParams } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { AnalyticsDashboard } from '@/components/admin/analytics-dashboard'
 import { Button } from '@/components/button'
 import { Checkbox } from '@/components/checkbox'
 import { Description, Field, Label } from '@/components/fieldset'
@@ -10,15 +12,25 @@ import { Heading, Subheading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Switch } from '@/components/switch'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/table'
+import { Tabs } from '@/components/tabs'
 import { Text } from '@/components/text'
+import type { AnalyticsSummary, ButtonClickRow, PageViewRow, PreviewClickRow } from '@/lib/db-analytics'
 import type { NewsletterPayload, UnsentContent } from '@/lib/newsletter'
 
 interface Props {
   unsent: UnsentContent[]
   payload: NewsletterPayload | null
+  analytics: {
+    summary: AnalyticsSummary
+    pageViews: PageViewRow[]
+    previewClicks: PreviewClickRow[]
+    buttonClicks: ButtonClickRow[]
+  }
 }
 
-export function AdminClient({ unsent, payload }: Props) {
+export function AdminClient({ unsent, payload, analytics }: Props) {
+  const searchParams = useSearchParams()
+  const activeTab = searchParams.get('tab') || 'newsletter'
   const [selectedSlugs, setSelectedSlugs] = useState<Set<string>>(new Set(unsent.map((p) => p.slug)))
   const [subject, setSubject] = useState(payload?.subject ?? '')
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle')
@@ -184,205 +196,231 @@ export function AdminClient({ unsent, payload }: Props) {
   }
 
   return (
-    <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
-      <div className="min-w-0 space-y-10">
-        <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <Heading>Unsent content</Heading>
-            <Text className="mt-1 text-pretty">
-              {selected.length} of {unsent.length} entries selected for this digest.
-            </Text>
-          </div>
-          <p className="text-base/7 text-zinc-500 tabular-nums sm:text-sm/6 dark:text-zinc-400">
-            {selectedBlogCount} blog / {selectedProjectCount} project
-          </p>
-        </div>
+    <div className="mt-10">
+      <Tabs
+        tabs={[
+          { label: 'Newsletter', value: 'newsletter' },
+          { label: 'Analytics', value: 'analytics' },
+        ]}
+        activeTab={activeTab}
+        layoutId="admin-tab-selected-background"
+        paramName="tab"
+      />
 
-        <div className="space-y-8">
-          {renderTable('Blog posts', blogPosts)}
-          {renderTable('Projects', projectPosts)}
-        </div>
-
-        {payload && (
-          <section>
-            <div className="flex items-center justify-between">
-              <Heading>Email preview</Heading>
-              {previewLoading && <span className="text-sm text-zinc-400 dark:text-zinc-500">Updating…</span>}
-            </div>
-            <div className="mt-5 overflow-hidden rounded-3xl ring ring-zinc-950/10 dark:ring-white/10">
-              {previewHtml ? (
-                <iframe title="Email preview" srcDoc={previewHtml} className="h-200 w-full" />
-              ) : (
-                <div className="flex h-200 items-center justify-center text-zinc-400 dark:text-zinc-500">
-                  {selected.length === 0 ? 'Select items to preview' : 'No preview available'}
-                </div>
-              )}
-            </div>
-          </section>
-        )}
-      </div>
-
-      {payload && (
-        <aside className="lg:sticky lg:top-24">
-          <section className="relative rounded-t-3xl rounded-b-[38px] bg-white p-5 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-3xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline">
-            <div>
-              <Heading level={2} className="text-balance">
-                Send digest
-              </Heading>
-              <p className="mt-1 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                {selected.length} of {unsent.length} entries selected for this newsletter.
+      {activeTab === 'newsletter' ? (
+        <div className="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-start">
+          <div className="min-w-0 space-y-10">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <Heading>Unsent content</Heading>
+                <Text className="mt-1 text-pretty">
+                  {selected.length} of {unsent.length} entries selected for this digest.
+                </Text>
+              </div>
+              <p className="text-base/7 text-zinc-500 tabular-nums sm:text-sm/6 dark:text-zinc-400">
+                {selectedBlogCount} blog / {selectedProjectCount} project
               </p>
             </div>
 
-            <Field className="pt-5">
-              <Label>Email subject</Label>
-              <Input
-                name="subject"
-                type="text"
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                disabled={isLocked}
-              />
-              <Description>Shown in the inbox before the digest content.</Description>
-            </Field>
-
-            <div className="mt-6 divide-y divide-zinc-950/10 dark:divide-white/10">
-              <Headless.Field className="grid grid-cols-[1fr_auto] gap-4 py-4">
-                <div className="min-w-0">
-                  <Label>Dry run</Label>
-                  <Description>Generate and log the send without emailing subscribers or writing records.</Description>
-                </div>
-                <Switch name="dry_run" color="sky" checked={dryRun} onChange={handleDryRunChange} disabled={isLocked} />
-              </Headless.Field>
-
-              <Headless.Field className="grid grid-cols-[1fr_auto] gap-4 py-4">
-                <div className="min-w-0">
-                  <Label>Send test</Label>
-                  <Description>Email jasper@jaspergorchov.com without saving to the database.</Description>
-                </div>
-                <Switch
-                  name="test_mode"
-                  color="sky"
-                  checked={testMode}
-                  onChange={setTestMode}
-                  disabled={isLocked || dryRun}
-                />
-              </Headless.Field>
+            <div className="space-y-8">
+              {renderTable('Blog posts', blogPosts)}
+              {renderTable('Projects', projectPosts)}
             </div>
 
-            <div className="pt-5">
-              <Button
-                color="sky"
-                className="w-full"
-                onClick={() => setShowConfirm(true)}
-                disabled={isLocked || selected.length === 0}
-              >
-                {selected.length === 0 ? 'Select items to send' : actionLabel}
-                <PaperAirplaneIcon />
-              </Button>
-            </div>
+            {payload && (
+              <section>
+                <div className="flex items-center justify-between">
+                  <Heading>Email preview</Heading>
+                  {previewLoading && <span className="text-sm text-zinc-400 dark:text-zinc-500">Updating…</span>}
+                </div>
+                <div className="mt-5 overflow-hidden rounded-3xl ring ring-zinc-950/10 dark:ring-white/10">
+                  {previewHtml ? (
+                    <iframe title="Email preview" srcDoc={previewHtml} className="h-200 w-full" />
+                  ) : (
+                    <div className="flex h-200 items-center justify-center text-zinc-400 dark:text-zinc-500">
+                      {selected.length === 0 ? 'Select items to preview' : 'No preview available'}
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
+          </div>
 
-            {status === 'success' && (
-              <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-base/7 text-emerald-900 sm:text-sm/6 dark:text-emerald-200">
-                {dryRun ? (
-                  <p>{message}</p>
-                ) : (
-                  <div className="space-y-2">
-                    <p className="font-medium">Newsletter sent successfully!</p>
-                    <p className="text-emerald-800 dark:text-emerald-300">{message}</p>
-                    {!testMode && (
-                      <a
-                        href="/admin"
-                        className="font-medium text-emerald-800 underline hover:text-emerald-700 dark:text-emerald-300 dark:hover:text-emerald-200"
-                      >
-                        Refresh to verify sent state
-                      </a>
+          {payload && (
+            <aside className="lg:sticky lg:top-24">
+              <section className="relative rounded-xl bg-white p-5 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline">
+                <div>
+                  <Heading level={2} className="text-balance">
+                    Send digest
+                  </Heading>
+                  <p className="mt-1 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                    {selected.length} of {unsent.length} entries selected for this newsletter.
+                  </p>
+                </div>
+
+                <Field className="pt-5">
+                  <Label>Email subject</Label>
+                  <Input
+                    name="subject"
+                    type="text"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    disabled={isLocked}
+                  />
+                  <Description>Shown in the inbox before the digest content.</Description>
+                </Field>
+
+                <div className="mt-6 divide-y divide-zinc-950/10 dark:divide-white/10">
+                  <Headless.Field className="grid grid-cols-[1fr_auto] gap-4 py-4">
+                    <div className="min-w-0">
+                      <Label>Dry run</Label>
+                      <Description>
+                        Generate and log the send without emailing subscribers or writing records.
+                      </Description>
+                    </div>
+                    <Switch
+                      name="dry_run"
+                      color="sky"
+                      checked={dryRun}
+                      onChange={handleDryRunChange}
+                      disabled={isLocked}
+                    />
+                  </Headless.Field>
+
+                  <Headless.Field className="grid grid-cols-[1fr_auto] gap-4 py-4">
+                    <div className="min-w-0">
+                      <Label>Send test</Label>
+                      <Description>Email jasper@jaspergorchov.com without saving to the database.</Description>
+                    </div>
+                    <Switch
+                      name="test_mode"
+                      color="sky"
+                      checked={testMode}
+                      onChange={setTestMode}
+                      disabled={isLocked || dryRun}
+                    />
+                  </Headless.Field>
+                </div>
+
+                <div className="pt-5">
+                  <Button
+                    color="sky"
+                    className="w-full"
+                    onClick={() => setShowConfirm(true)}
+                    disabled={isLocked || selected.length === 0}
+                  >
+                    {selected.length === 0 ? 'Select items to send' : actionLabel}
+                    <PaperAirplaneIcon />
+                  </Button>
+                </div>
+
+                {status === 'success' && (
+                  <div className="mt-5 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-base/7 text-emerald-900 sm:text-sm/6 dark:text-emerald-200">
+                    {dryRun ? (
+                      <p>{message}</p>
+                    ) : (
+                      <div className="space-y-2">
+                        <p className="font-medium">Newsletter sent successfully!</p>
+                        <p className="text-emerald-800 dark:text-emerald-300">{message}</p>
+                        {!testMode && (
+                          <a
+                            href="/admin"
+                            className="font-medium text-emerald-800 underline hover:text-emerald-700 dark:text-emerald-300 dark:hover:text-emerald-200"
+                          >
+                            Refresh to verify sent state
+                          </a>
+                        )}
+                      </div>
                     )}
                   </div>
                 )}
-              </div>
-            )}
 
-            {status === 'error' && (
-              <div className="mt-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-base/7 text-red-900 sm:text-sm/6 dark:text-red-200">
-                {message}
-              </div>
-            )}
-
-            {showConfirm && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-                <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl ring-1 ring-black/10 dark:bg-zinc-900 dark:shadow-none dark:ring-white/10">
-                  {dryRun ? (
-                    <>
-                      <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
-                        Run dry-run preview?
-                      </h3>
-                      <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                        This will generate the full digest and log the output, but will <strong>not</strong> send any
-                        email or write to the database.
-                      </p>
-                      <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                        Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
-                      </p>
-                    </>
-                  ) : testMode ? (
-                    <>
-                      <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
-                        Send test email?
-                      </h3>
-                      <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                        A test email with the subject below will be sent to{' '}
-                        <strong className="text-zinc-700 dark:text-zinc-300">jasper@jaspergorchov.com</strong>. No
-                        records will be written to the database.
-                      </p>
-                      <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                        Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
-                      </p>
-                    </>
-                  ) : (
-                    <>
-                      <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
-                        Send newsletter to all subscribers?
-                      </h3>
-                      <div className="mt-3 space-y-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
-                        <p>
-                          This will send a broadcast to your entire Resend audience with{' '}
-                          <strong className="text-zinc-700 dark:text-zinc-300">{selected.length} entries</strong>:
-                        </p>
-                        <ul className="list-disc pl-5">
-                          {selectedBlogCount > 0 && (
-                            <li>
-                              {selectedBlogCount} blog post{selectedBlogCount !== 1 ? 's' : ''}
-                            </li>
-                          )}
-                          {selectedProjectCount > 0 && (
-                            <li>
-                              {selectedProjectCount} project{selectedProjectCount !== 1 ? 's' : ''}
-                            </li>
-                          )}
-                        </ul>
-                        <p className="pt-1">
-                          Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
-                        </p>
-                        <p className="pt-2 text-zinc-400">
-                          This action cannot be undone. Recipients will receive the email immediately.
-                        </p>
-                      </div>
-                    </>
-                  )}
-                  <div className="mt-6 flex justify-end gap-3">
-                    <Button type="button" outline onClick={() => setShowConfirm(false)}>
-                      Cancel
-                    </Button>
-                    <Button type="button" color="sky" onClick={() => handleSend(dryRun)}>
-                      {dryRun ? 'Run dry run' : testMode ? 'Send test' : 'Confirm send'}
-                    </Button>
+                {status === 'error' && (
+                  <div className="mt-5 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-base/7 text-red-900 sm:text-sm/6 dark:text-red-200">
+                    {message}
                   </div>
-                </div>
-              </div>
-            )}
-          </section>
-        </aside>
+                )}
+
+                {showConfirm && (
+                  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+                    <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl ring-1 ring-black/10 dark:bg-zinc-900 dark:shadow-none dark:ring-white/10">
+                      {dryRun ? (
+                        <>
+                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                            Run dry-run preview?
+                          </h3>
+                          <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                            This will generate the full digest and log the output, but will <strong>not</strong> send
+                            any email or write to the database.
+                          </p>
+                          <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                            Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
+                          </p>
+                        </>
+                      ) : testMode ? (
+                        <>
+                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                            Send test email?
+                          </h3>
+                          <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                            A test email with the subject below will be sent to{' '}
+                            <strong className="text-zinc-700 dark:text-zinc-300">jasper@jaspergorchov.com</strong>. No
+                            records will be written to the database.
+                          </p>
+                          <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                            Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                            Send newsletter to all subscribers?
+                          </h3>
+                          <div className="mt-3 space-y-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                            <p>
+                              This will send a broadcast to your entire Resend audience with{' '}
+                              <strong className="text-zinc-700 dark:text-zinc-300">{selected.length} entries</strong>:
+                            </p>
+                            <ul className="list-disc pl-5">
+                              {selectedBlogCount > 0 && (
+                                <li>
+                                  {selectedBlogCount} blog post{selectedBlogCount !== 1 ? 's' : ''}
+                                </li>
+                              )}
+                              {selectedProjectCount > 0 && (
+                                <li>
+                                  {selectedProjectCount} project{selectedProjectCount !== 1 ? 's' : ''}
+                                </li>
+                              )}
+                            </ul>
+                            <p className="pt-1">
+                              Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
+                            </p>
+                            <p className="pt-2 text-zinc-400">
+                              This action cannot be undone. Recipients will receive the email immediately.
+                            </p>
+                          </div>
+                        </>
+                      )}
+                      <div className="mt-6 flex justify-end gap-3">
+                        <Button type="button" outline onClick={() => setShowConfirm(false)}>
+                          Cancel
+                        </Button>
+                        <Button type="button" color="sky" onClick={() => handleSend(dryRun)}>
+                          {dryRun ? 'Run dry run' : testMode ? 'Send test' : 'Confirm send'}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </section>
+            </aside>
+          )}
+        </div>
+      ) : (
+        <div className="mt-10">
+          <AnalyticsDashboard {...analytics} />
+        </div>
       )}
     </div>
   )

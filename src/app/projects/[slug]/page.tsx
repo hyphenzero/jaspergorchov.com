@@ -5,6 +5,7 @@ import type { Metadata } from 'next/types'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { ThemeImage } from '@/components/theme-image'
+import { TrackPageView } from '@/components/track-page-view'
 import { formatDate, getProjectBySlug, getProjectSlugs } from '@/lib/api'
 import type { Project } from '@/types/post'
 
@@ -140,6 +141,7 @@ export default async function ArticlePage(props: Props) {
         ) : null}
         <post.Component />
       </article>
+      <TrackPageView />
     </>
   )
 }

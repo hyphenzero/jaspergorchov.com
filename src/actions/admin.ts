@@ -43,6 +43,13 @@ export async function adminLogin(_prevState: AdminLoginState, formData: FormData
   const cookie = await createSessionCookie()
   const cookieStore = await cookies()
   cookieStore.set(cookie.name, cookie.value, cookie.options)
+  cookieStore.set('admin_logged_in', 'true', {
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    path: '/',
+    maxAge: 400 * 24 * 60 * 60,
+  })
 
   redirect('/admin')
 }
@@ -50,5 +57,6 @@ export async function adminLogin(_prevState: AdminLoginState, formData: FormData
 export async function signOut() {
   const cookieStore = await cookies()
   cookieStore.set(sessionCookieName(), '', { maxAge: 0, path: '/' })
+  cookieStore.set('admin_logged_in', '', { maxAge: 0, path: '/' })
   redirect('/admin')
 }

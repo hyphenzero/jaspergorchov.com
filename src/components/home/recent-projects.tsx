@@ -154,7 +154,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
       </div>
       <div className="mx-auto mt-12 max-w-7xl px-6 lg:px-8">
         <div className="flex justify-between">
-          <Button href="/projects">
+          <Button href="/projects" data-track="carousel-view-more">
             View more <ChevronRightIcon className="-mr-1!" />
           </Button>
           <div className="hidden sm:flex sm:gap-2">
