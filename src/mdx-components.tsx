@@ -2,6 +2,7 @@ import type { MDXComponents } from 'mdx/types'
 import Link from 'next/link'
 import React, { ReactNode } from 'react'
 import { CodeExample } from './components/markdown/code-example'
+import { SitePreview } from './components/markdown/site-preview'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/table'
 
 function getTextContent(node: React.ReactNode): string {
@@ -134,6 +135,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         </code>
       )
     },
+
+    SitePreview,
 
     pre(props) {
       let child = React.Children.only(props.children) as React.ReactElement<{
