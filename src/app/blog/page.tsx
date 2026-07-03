@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import type React from 'react'
 import { Container } from '@/components/container'
 import { SubscribeForm } from '@/components/subscribe-form'
+import { Tabs } from '@/components/tabs'
 import { getAllBlogPosts, getAllNotes } from '@/lib/api'
 import { BlogPostRow } from './blog-post-row'
-import { CategorySelector } from './category-selector'
 import { NoteRow } from './note-row'
 import { NotesToggle } from './notes-toggle'
 
@@ -79,11 +79,11 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
             digital creativity.
           </p>
         </div>
-        <SubscribeForm label="Subscribe via email" className="shrink-0 sm:mb-3" />
+        <SubscribeForm label="Subscribe via email" className="shrink-0 sm:mb-3" source="blog" />
       </div>
 
       <div className="mt-28 flex items-start justify-between">
-        <CategorySelector tags={tags} category={category} />
+        <Tabs tabs={tags} activeTab={category} layoutId="blog-selected-background" paramName="category" />
         <NotesToggle defaultValue="show" />
       </div>
 

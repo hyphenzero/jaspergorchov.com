@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { SubscribeForm } from '@/components/subscribe-form'
+import { Tabs } from '@/components/tabs'
 import { getAllProjects } from '@/lib/api'
 import type { Project } from '@/types/post'
-import { CategorySelector } from './category-selector'
 import { ProjectCard } from './project-card'
 
 export const metadata: Metadata = {
@@ -53,9 +53,17 @@ export default async function Projects(props: { searchParams?: Promise<{ categor
             Browse my programming, design, and 3D art projects.
           </p>
         </div>
-        <SubscribeForm label="Subscribe via email" className="shrink-0 sm:mb-3" />
+        <SubscribeForm label="Subscribe via email" className="shrink-0 sm:mb-3" source="projects" />
       </div>
-      <CategorySelector tags={tags} category={category} />
+
+      <Tabs
+        tabs={tags}
+        activeTab={category}
+        layoutId="projects-selected-background"
+        paramName="category"
+        className="mt-28"
+      />
+
       <div className="mt-12 grid grid-cols-1 gap-x-12 gap-y-18 md:grid-cols-2">
         {posts.length === 0 ? (
           <p className="py-32 text-center text-zinc-500 dark:text-zinc-400">No posts found.</p>
