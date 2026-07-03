@@ -6,7 +6,7 @@ export function Video({ className, ...props }: React.VideoHTMLAttributes<HTMLVid
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"></div>
+        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
         <video autoPlay playsInline loop muted {...props} />
       </div>
     </div>
@@ -17,7 +17,7 @@ export function YouTubeVideo({ className, id, ...props }: React.IframeHTMLAttrib
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"></div>
+        <div className="pointer-events-none absolute inset-0 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
         <iframe
           src={`https://www.youtube.com/embed/${id}`}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

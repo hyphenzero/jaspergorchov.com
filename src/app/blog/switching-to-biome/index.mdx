@@ -7,149 +7,22 @@ export const meta = {
   tags: ['Tooling'],
 }
 
-For as long as I've been building Next.js projects, my linting and formatting setup looked the same: ESLint with the Next.js configs, plus Prettier with a couple of plugins to bridge the gap — `prettier-plugin-organize-imports` and `prettier-plugin-tailwindcss`.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
 
-It worked, but it always felt like two tools doing one job. Two configs to maintain. Two sets of dependencies to keep up to date. And running both `next lint` and `prettier --write .` separately was tedious.
+## Section one
 
-Enter [Biome](https://biomejs.dev) — a single tool written in Rust that handles linting, formatting, and more. I'd been hearing about it for a while and decided to give it a shot.
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.
 
-## The old setup
+Aenean fermentum, elit eget tincidunt condimentum, eros ipsum rutrum orci, sagittis tempus lacus enim ac dui. Donec non enim in turpis pulvinar facilisis. Ut felis. Praesent dapibus, neque id cursus faucibus, tortor neque egestas augue, eu vulputate magna eros eu erat. Aliquam erat volutpat. Nam dui mi, tincidunt quis, accumsan porttitor, facilisis luctus, metus.
 
-Before the switch, my `package.json` had this inline Prettier config:
+## Section two
 
-```json
-{
-  "semi": false,
-  "singleQuote": true,
-  "printWidth": 120,
-  "trailingComma": "es5",
-  "tailwindFunctions": ["clsx", "tw"],
-  "plugins": [
-    "prettier-plugin-organize-imports",
-    "prettier-plugin-tailwindcss"
-  ],
-  "tailwindStylesheet": "./src/app/globals.css"
-}
-```
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. Aenean ultricies mi vitae est. Mauris placerat eleifend leo. Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, condimentum sed, commodo vitae, ornare sit amet, wisi.
 
-And an `.eslintrc.json` that pulled in the Next.js presets:
+Cras non semper nunc. Nulla facilisi. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
 
-```json
-{
-  "extends": ["next/core-web-vitals", "next/typescript"]
-}
-```
+## Section three
 
-Two config files, four dependencies (`eslint`, `prettier`, and two plugins), and two separate commands to run. It was the standard Next.js setup, but it wasn't exactly streamlined.
+At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
 
-## Why Biome
-
-I had three main reasons for switching:
-
-1. **Speed** — Biome is written in Rust. It's noticeably faster than running ESLint + Prettier sequentially, especially on save.
-2. **Unified tool** — One tool for linting and formatting means one config, one dependency, one command. The mental overhead is lower.
-3. **Built-in features** — Tailwind CSS class sorting and import organization are built into Biome. No plugins needed.
-
-The fact that `useSortedClasses` works with `clsx` out of the box was a big pull — I use `clsx` all over this site.
-
-## The migration
-
-The actual migration took about ten minutes. Remove the old stuff, add Biome, create a config, update the scripts.
-
-```shell
-pnpm remove eslint prettier prettier-plugin-organize-imports prettier-plugin-tailwindcss
-pnpm add -D @biomejs/biome
-```
-
-Then I created `biome.json`:
-
-```json
-{
-  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
-  "vcs": {
-    "enabled": true,
-    "clientKind": "git",
-    "useIgnoreFile": true
-  },
-  "files": {
-    "ignoreUnknown": false
-  },
-  "formatter": {
-    "enabled": true,
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 120
-  },
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "single",
-      "semicolons": "asNeeded",
-      "trailingCommas": "es5"
-    }
-  },
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
-    }
-  },
-  "linter": {
-    "enabled": true,
-    "rules": {
-      "recommended": false,
-      "nursery": {
-        "useSortedClasses": {
-          "level": "error",
-          "options": {
-            "functions": ["clsx", "tw"],
-            "attributes": ["class", "className"]
-          }
-        }
-      }
-    }
-  },
-  "assist": {
-    "enabled": true,
-    "actions": {
-      "source": {
-        "organizeImports": "on",
-        "useSortedKeys": "off"
-      }
-    }
-  }
-}
-```
-
-And updated the scripts in `package.json`:
-
-```json
-{
-  "scripts": {
-    "lint": "biome check .",                // [!code ++]
-    "format": "biome check . --write --unsafe", // [!code ++]
-    "lint": "next lint",                   // [!code --]
-    "format": "prettier --write ."          // [!code --]
-  }
-}
-```
-
-That's it. Ran `pnpm lint` and `pnpm format` to verify everything worked, committed, and moved on.
-
-## What I gained
-
-The biggest quality-of-life improvement is that `organizeImports` and `useSortedClasses` run automatically when I format. I don't have to think about import order or whether my Tailwind classes follow the convention — Biome just handles it.
-
-The speed difference is real too. Formatting the entire project went from taking a noticeable moment with Prettier to being essentially instant with Biome.
-
-## The leftovers
-
-One thing I discovered while writing this post: the migration commit didn't clean up everything. The old `.eslintrc.json` was still sitting in the repo root, completely unused. There was also an inert `// eslint-disable-next-line` comment in `src/mdx-components.tsx` that no longer did anything.
-
-I'm deleting both as part of publishing this article. It's a small thing, but I like keeping the repo tidy.
-
-## Verdict
-
-Would I recommend Biome? For a Next.js + Tailwind project like this one, absolutely. It covers everything the old two-tool setup did in a single, faster package. The built-in Tailwind class sorting and import organization alone are worth the switch.
-
-The one caveat is plugin ecosystem. ESLint has a massive library of plugins for every framework and convention under the sun. Biome doesn't match that yet. But for the standard Next.js + TypeScript + Tailwind stack, you won't miss anything.
-
-I don't see myself going back.
+Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.

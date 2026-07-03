@@ -12,7 +12,7 @@ export function NewsletterSection({ className, children }: { className?: string;
     <div className={clsx('flex items-center gap-8', className)}>
       <div className="flex-1">
         {children}
-        <SubscribeForm onStateChangeAction={setEnvelopeState} className="mt-10" />
+        <SubscribeForm onStateChangeAction={setEnvelopeState} className="mt-10" source="homepage" />
       </div>
       <Envelope email={envelopeState.email} flipped={envelopeState.flipped} className="hidden md:block" />
     </div>
