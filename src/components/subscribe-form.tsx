@@ -47,7 +47,7 @@ function SubmitButton({ status, onClick }: { status: SubscribeState['status']; o
         <Button
           type="submit"
           onClick={onClick}
-          className={clsx('relative size-full justify-center px-0', status !== 'idle' && 'pointer-events-none')}
+          className={clsx('relative size-full! justify-center px-0', status !== 'idle' && 'pointer-events-none')}
         >
           <motion.span
             animate={{ opacity: isSuccess ? 0 : 1, scale: isSuccess ? 0.5 : 1 }}

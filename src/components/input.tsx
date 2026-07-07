@@ -7,7 +7,7 @@ export function InputGroup({ children }: React.ComponentPropsWithoutRef<'span'>)
     <span
       data-slot="control"
       className={clsx(
-        'relative isolate block',
+        'relative isolate block transition *:data-[slot=icon]:transition',
         'has-[[data-slot=icon]:last-child]:[&_input]:pr-10 has-[[data-slot=icon]:first-child]:[&_input]:pl-10 sm:has-[[data-slot=icon]:last-child]:[&_input]:pr-8',
         '*:data-[slot=icon]:pointer-events-none *:data-[slot=icon]:absolute *:data-[slot=icon]:top-3 *:data-[slot=icon]:z-10 *:data-[slot=icon]:size-5 sm:*:data-[slot=icon]:top-2.25 sm:*:data-[slot=icon]:size-4',
         '[&>[data-slot=icon]:first-child]:left-4 [&>[data-slot=icon]:last-child]:right-3 sm:[&>[data-slot=icon]:last-child]:right-2.5',
@@ -40,7 +40,7 @@ export const Input = forwardRef(function Input(
       className={clsx([
         className,
         // Basic layout
-        'relative block w-full',
+        'relative block w-full transition after:transition before:transition',
         // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
         'before:absolute before:inset-px before:rounded-full before:bg-white before:shadow-sm',
         // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
@@ -74,7 +74,7 @@ export const Input = forwardRef(function Input(
               '[&::-webkit-datetime-edit-meridiem-field]:p-0',
             ],
           // Basic layout
-          'relative block w-full appearance-none rounded-full px-3.25 py-2.25 sm:px-4 sm:py-1.25',
+          'relative transition duration-100 block w-full appearance-none rounded-full px-3.25 py-2.25 sm:px-4 sm:py-1.25',
           // Typography
           'text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white',
           // Border

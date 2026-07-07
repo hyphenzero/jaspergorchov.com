@@ -60,9 +60,9 @@ function getRowWidth(widths: number[], start: number, end: number, gap: number) 
   return widths.slice(start, end).reduce((total, width) => total + width, 0) + Math.max(0, end - start - 1) * gap
 }
 
-function getGridColumns(widths: number[], vw: number, vh: number, tileHeight: number, gap: number) {
+function getGridColumns(widths: number[], tileHeight: number, gap: number) {
   const count = widths.length
-  const targetRatio = vw / vh
+  const targetRatio = 1
   let bestColumns = 1
   let bestScore = Number.POSITIVE_INFINITY
 
@@ -82,15 +82,14 @@ function getGridColumns(widths: number[], vw: number, vh: number, tileHeight: nu
     }
   }
 
+  if (bestColumns === 1 && count >= 2) {
+    bestColumns = 2
+  }
+
   return bestColumns
 }
 
-function getGridLayout(
-  projects: ProjectWithImage[],
-  vw: number,
-  vh: number,
-  tileHeight: number
-): GridLayout {
+function getGridLayout(projects: ProjectWithImage[], tileHeight: number): GridLayout {
   if (projects.length === 0) {
     return { width: 0, height: 0, positions: [] }
   }
@@ -99,7 +98,7 @@ function getGridLayout(
   const tileSizes = projects.map((p) => getTileSize(p, tileHeight))
   const widths = tileSizes.map((size) => size.width)
   const count = projects.length
-  const columns = getGridColumns(widths, vw, vh, tileHeight, gap)
+  const columns = getGridColumns(widths, tileHeight, gap)
   const rows = Math.ceil(count / columns)
   const width = Math.max(
     ...Array.from({ length: rows }, (_, row) =>
@@ -212,8 +211,8 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   }, [imageProjects, tileHeight, displayVw])
 
   const layout = useMemo(
-    () => getGridLayout(imageProjects, displayVw, displayVh, tileHeight),
-    [imageProjects, displayVw, displayVh, tileHeight]
+    () => getGridLayout(imageProjects, tileHeight),
+    [imageProjects, tileHeight]
   )
   const order = useMemo(() => getDistantOrder(layout.positions), [layout.positions])
 
@@ -247,13 +246,16 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     const firstPos = positions[currentOrder[0]]
     if (firstPos) {
       const firstProject = imageProjectsRef.current[currentOrder[0]]
-      const firstRatio = firstProject?.meta.image.width && firstProject?.meta.image.height
-        ? firstProject.meta.image.width / firstProject.meta.image.height
-        : 1.6
+      const firstRatio =
+        firstProject?.meta.image.width && firstProject?.meta.image.height
+          ? firstProject.meta.image.width / firstProject.meta.image.height
+          : 1.6
       const firstScale = isPortraitRef.current
         ? (displayVwRef.current - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * firstRatio)
         : 1
-      setWrapperTarget(getFocusedTransform(firstPos.centerX, firstPos.centerY, displayVwRef.current / 2, targetY, firstScale))
+      setWrapperTarget(
+        getFocusedTransform(firstPos.centerX, firstPos.centerY, displayVwRef.current / 2, targetY, firstScale)
+      )
       setInstantTransition(false)
     }
 
@@ -284,12 +286,11 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
 
       const currentPos = pos[o[currentOrderIdx]]
       const nextProject = imageProjectsRef.current[nextProjectIdx]
-      const nextRatio = nextProject?.meta.image.width && nextProject?.meta.image.height
-        ? nextProject.meta.image.width / nextProject.meta.image.height
-        : 1.6
-      const nextScale = isPortraitRef.current
-        ? (w - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * nextRatio)
-        : 1
+      const nextRatio =
+        nextProject?.meta.image.width && nextProject?.meta.image.height
+          ? nextProject.meta.image.width / nextProject.meta.image.height
+          : 1.6
+      const nextScale = isPortraitRef.current ? (w - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * nextRatio) : 1
       const to = getFocusedTransform(nextPos.centerX, nextPos.centerY, w / 2, targetY, nextScale)
 
       setWrapperTarget(to)
@@ -330,9 +331,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     const h = displayVh || 800
     const targetY = focusCenterY || h / 2 - 60
     const currentProject = imageProjects[idx]
-    const curRatio = currentProject?.meta.image.width && currentProject?.meta.image.height
-      ? currentProject.meta.image.width / currentProject.meta.image.height
-      : 1.6
+    const curRatio =
+      currentProject?.meta.image.width && currentProject?.meta.image.height
+        ? currentProject.meta.image.width / currentProject.meta.image.height
+        : 1.6
     const resizeScale = isPortrait
       ? ((displayVw || 1200) - 2 * PORTRAIT_PADDING) / ((imageHeight || 512) * curRatio)
       : 1
@@ -387,7 +389,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
             return (
               <motion.div
                 key={project.slug}
-                className="absolute overflow-hidden rounded-xl bg-zinc-500"
+                className="absolute overflow-hidden rounded-2xl bg-zinc-500"
                 style={{
                   width: pos.width,
                   height: pos.height,
@@ -397,7 +399,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                 animate={{ opacity: idx === activeIdx ? 1 : FADED_OPACITY }}
                 transition={{ duration: 1.2, ease: [0.42, 0, 0.58, 1] }}
               >
-                <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
+                <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
 
                 {darkSrc ? (
                   <>

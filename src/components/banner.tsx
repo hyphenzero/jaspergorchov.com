@@ -8,7 +8,7 @@ export function Banner({ className }: { className?: string }) {
       <Link
         href="/blog/my-personal-website-reimagined"
         className={clsx(
-          'group/banner relative flex @max-[22rem]:hidden flex-nowrap items-center gap-2 overflow-hidden whitespace-nowrap rounded-full px-3.25 py-2.25 text-xs/4 ring ring-zinc-950/10 ring-inset backdrop-blur-md transition hover:bg-zinc-950/2 hover:ring-zinc-950/17 dark:ring-white/7.5 dark:hover:bg-white/2 dark:hover:ring-white/10',
+          'group/banner relative flex @max-[22rem]:hidden flex-nowrap items-center gap-2 overflow-hidden whitespace-nowrap rounded-full px-3.25 py-2.25 text-xs/4 ring ring-zinc-950/10 ring-inset backdrop-blur-xs transition hover:bg-zinc-950/2 hover:ring-zinc-950/17 dark:ring-white/7.5 dark:hover:bg-white/2 dark:hover:ring-white/10',
           className
         )}
       >
