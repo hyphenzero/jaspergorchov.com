@@ -1,12 +1,13 @@
 'use client'
 
-import { Dialog, DialogBackdrop, DialogPanel } from '@headlessui/react'
+import { Popover, PopoverBackdrop, PopoverButton, PopoverPanel } from '@headlessui/react'
 import { Bars2Icon, XMarkIcon } from '@heroicons/react/16/solid'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { type MouseEvent, useEffect, useRef, useState } from 'react'
 import { Banner } from './banner'
+import { Button } from './button'
 import { ClickTracker } from './click-tracker'
 import { Logo } from './logo-box'
 import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from './navbar'
@@ -19,10 +20,10 @@ const navigation = [
 const SCROLL_TRIGGER_OFFSET = 28
 
 export function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const pathname = usePathname()
   const [animateIndicator, setAnimateIndicator] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const prevPathRef = useRef<string | null>(null)
 
   /** Return true when the given path is inside a top-level nav route. */
@@ -43,6 +44,28 @@ export function Header() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
+
+  // track the uncontrolled Popover close (Escape, outside click) to our state
+  useEffect(() => {
+    if (!menuOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenuOpen(false)
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => document.removeEventListener('keydown', onKeyDown)
+  }, [menuOpen])
+
+  // lock body scroll while the mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [menuOpen])
 
   const router = useRouter()
 
@@ -68,14 +91,20 @@ export function Header() {
 
   return (
     <header
+      data-scrolled={scrolled ? 'true' : undefined}
       className={clsx(
-        'sticky inset-x-0 top-0 z-50 transition-[background-color,box-shadow,-webkit-backdrop-filter,backdrop-filter] duration-500',
+        'sticky inset-x-0 top-0 z-50',
+        scrolled && 'bg-white/85 backdrop-blur-3xl dark:bg-zinc-950/90',
         scrolled &&
-          'bg-white/85 shadow-[0_1px_0_0_--alpha(var(--color-zinc-950)/10%)] backdrop-blur-xl dark:bg-zinc-950/85 dark:shadow-[0_1px_0_0_--alpha(var(--color-white)/10%)]'
+          !menuOpen &&
+          'shadow-[0_1px_0_0_--alpha(var(--color-zinc-950)/10%)] dark:shadow-[0_1px_0_0_--alpha(var(--color-white)/10%)]'
       )}
+      style={{
+        transition: 'background-color 500ms, box-shadow 300ms, -webkit-backdrop-filter 500ms, backdrop-filter 500ms',
+      }}
     >
-      <Navbar className={clsx('relative mx-auto px-6 py-3.25 lg:px-8')}>
-        <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')}>
+      <Navbar className="relative mx-auto px-6 py-3.25 lg:px-8">
+        <Link href="/" aria-label="Home" onClick={(e) => handleNavClick(e, '/')} className="z-60">
           <Logo className="size-10 sm:size-8" />
         </Link>
         <Banner />
@@ -93,39 +122,47 @@ export function Header() {
             </NavbarItem>
           ))}
         </NavbarSection>
-        <NavbarSection className="lg:hidden">
-          <NavbarItem onClick={() => setMobileMenuOpen((v) => !v)}>
-            {mobileMenuOpen ? <XMarkIcon /> : <Bars2Icon />}
-          </NavbarItem>
-        </NavbarSection>
+        <Popover className="relative inset-0 lg:hidden">
+          {({ open }) => (
+            <>
+              <PopoverButton
+                as={Button}
+                plain
+                className="z-60 **:data-[slot=icon]:text-zinc-950/40! sm:px-2.75! dark:**:data-[slot=icon]:text-white/40!"
+                onClick={() => setMenuOpen((prev) => !prev)}
+              >
+                {open ? <XMarkIcon /> : <Bars2Icon />}
+              </PopoverButton>
+              <PopoverBackdrop
+                transition
+                onClick={() => setMenuOpen(false)}
+                className={clsx(
+                  'fixed inset-x-0 not-dark:top-0 bottom-0 z-50 h-screen w-screen bg-linear-to-b to-20% to-zinc-950/10 transition duration-200 ease-out data-closed:opacity-0 dark:top-17.5 dark:to-zinc-950/50 dark:sm:top-15.5',
+                  scrolled && 'from-zinc-950/90'
+                )}
+              />
+              <PopoverPanel
+                anchor="bottom end"
+                transition
+                className="z-60 w-full origin-top-right rounded-2xl bg-white p-2 shadow-lg ring-1 ring-zinc-950/10 transition duration-200 ease-in-out [--anchor-gap:--spacing(3.25)] [--anchor-padding:--spacing(3)] data-closed:scale-95 data-closed:opacity-0 dark:bg-zinc-900 dark:ring-white/10"
+              >
+                <nav>
+                  {navigation.map((item) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setMenuOpen(false)}
+                      className="not-first:mt-1 block rounded-lg px-4 py-3 font-semibold text-lg text-zinc-900 transition hover:bg-zinc-950/5 dark:text-white dark:hover:bg-white/5"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </nav>
+              </PopoverPanel>
+            </>
+          )}
+        </Popover>
       </Navbar>
-
-      <Dialog open={mobileMenuOpen} onClose={setMobileMenuOpen} className="lg:hidden">
-        <DialogBackdrop
-          transition
-          className="fixed inset-0 bg-zinc-950/15 transition duration-100 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in dark:bg-zinc-950/50"
-        />
-
-        <div className="fixed inset-x-0 top-0 z-10 px-6 pt-16.5 sm:pt-14.5">
-          <DialogPanel
-            transition
-            className="w-full origin-top-right rounded-2xl bg-white p-6 shadow-lg ring-1 ring-zinc-950/10 transition duration-100 will-change-transform data-closed:data-enter:scale-90 data-closed:opacity-0 data-enter:ease-out data-leave:ease-in dark:bg-zinc-900 dark:ring-white/10"
-          >
-            <nav className="space-y-1">
-              {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block rounded-lg px-3 py-2 font-semibold text-base/7 text-zinc-900 transition hover:bg-zinc-50 dark:text-white dark:hover:bg-white/5"
-                >
-                  {item.name}
-                </Link>
-              ))}
-            </nav>
-          </DialogPanel>
-        </div>
-      </Dialog>
       <ClickTracker />
     </header>
   )
