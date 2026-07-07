@@ -6,7 +6,7 @@ import { Link } from './link'
 const styles = {
   base: [
     // Base
-    'relative isolate inline-flex items-baseline justify-center gap-x-2 rounded-full border text-base/6 sm:text-sm/6 font-semibold *:data-[slot=icon]:transition-colors',
+    'relative h-fit isolate inline-flex items-baseline justify-center gap-x-2 rounded-full border text-base/6 sm:text-sm/6 font-semibold *:data-[slot=icon]:transition-colors',
     // Sizing
     'px-3.25 py-2.25 sm:px-3.5 sm:py-1.25',
     // Focus

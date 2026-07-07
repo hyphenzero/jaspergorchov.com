@@ -29,7 +29,7 @@ export function Tabs({
   return (
     <TabGroup selectedIndex={activeIndex} onChange={(index) => onChange?.(tabs[index].value)}>
       <nav className={clsx('relative', className)}>
-        <TabList className="flex flex-nowrap gap-4 overflow-x-visible isolate">
+        <TabList className="isolate flex flex-nowrap gap-4 overflow-x-visible">
           {tabs.map((tab) =>
             onChange ? (
               <Tab

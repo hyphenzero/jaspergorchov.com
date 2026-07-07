@@ -1,5 +1,3 @@
-import React from 'react'
-
 interface ProgressiveBlurProps extends React.HTMLAttributes<HTMLDivElement> {
   strength?: number
   steps?: number

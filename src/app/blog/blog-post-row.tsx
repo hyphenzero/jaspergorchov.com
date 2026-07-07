@@ -21,7 +21,7 @@ export function BlogPostRow({
 
   return (
     <div
-      className="relative grid grid-cols-1 border-b border-b-zinc-100 py-10 **:cursor-pointer first:border-t first:border-t-zinc-200 max-sm:gap-3 sm:grid-cols-3 dark:border-b-zinc-900 dark:first:border-t-zinc-800"
+      className="relative isolate grid grid-cols-1 border-b border-b-zinc-100 py-10 **:cursor-pointer first:border-t first:border-t-zinc-200 max-sm:gap-3 sm:grid-cols-3 dark:border-b-zinc-900 dark:first:border-t-zinc-800"
       onMouseEnter={() => setRowHovered(true)}
       onMouseLeave={() => {
         setRowHovered(false)
