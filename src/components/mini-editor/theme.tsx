@@ -28,7 +28,7 @@ function getThemeMenuStyles(theme: ThemeId): ThemeMenuStyles {
         'data-open:rounded-b-none data-open:border-b-green-700'
       ),
       panel: clsx(
-        'isolate z-20 w-[var(--button-width)] overflow-hidden rounded-none border border-green-500 border-t-0 bg-zinc-950 py-0.5 font-mono shadow-lg outline-none',
+        'isolate z-20 w-(--button-width) overflow-hidden rounded-none border border-green-500 border-t-0 bg-zinc-950 py-0.5 font-mono shadow-lg outline-none',
         '[--anchor-gap:0px]'
       ),
       option: clsx(
@@ -48,7 +48,7 @@ function getThemeMenuStyles(theme: ThemeId): ThemeMenuStyles {
         'data-open:rounded-b-none data-open:border-b-black dark:data-open:border-b-zinc-300'
       ),
       panel: clsx(
-        'isolate z-20 w-[var(--button-width)] overflow-hidden rounded-none border-2 border-black border-t-0 bg-white py-0.5 font-mono shadow-lg outline-none dark:border-zinc-300 dark:bg-zinc-500',
+        'isolate z-20 w-(--button-width) overflow-hidden rounded-none border-2 border-black border-t-0 bg-white py-0.5 font-mono shadow-lg outline-none dark:border-zinc-300 dark:bg-zinc-500',
         '[--anchor-gap:0px]'
       ),
       option: clsx(
@@ -68,7 +68,7 @@ function getThemeMenuStyles(theme: ThemeId): ThemeMenuStyles {
         'data-open:rounded-b-none data-open:border-b-white/10'
       ),
       panel: clsx(
-        'isolate z-20 w-[var(--button-width)] overflow-hidden rounded-b-xl border border-white/15 border-t-0 bg-gradient-to-b from-white/12 to-white/5 py-0.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_12px_28px_rgb(0_0_0/0.5)] outline-none backdrop-blur-md dark:border-white/15 dark:from-white/10 dark:to-white/5',
+        'isolate z-20 w-(--button-width) overflow-hidden rounded-b-xl border border-white/15 border-t-0 bg-gradient-to-b from-white/12 to-white/5 py-0.5 shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_12px_28px_rgb(0_0_0/0.5)] outline-none backdrop-blur-md dark:border-white/15 dark:from-white/10 dark:to-white/5',
         '[--anchor-gap:0px]'
       ),
       option: clsx(
@@ -87,7 +87,7 @@ function getThemeMenuStyles(theme: ThemeId): ThemeMenuStyles {
       'data-open:rounded-b-none data-open:border-zinc-200 data-open:border-b dark:data-open:border-zinc-700'
     ),
     panel: clsx(
-      'isolate z-20 w-[var(--button-width)] overflow-hidden rounded-b-xl bg-white/90 py-0.5 shadow-lg outline-none ring-1 ring-zinc-200 backdrop-blur-md dark:bg-zinc-900/90 dark:ring-zinc-700',
+      'isolate z-20 w-(--button-width) overflow-hidden rounded-b-xl bg-white/90 py-0.5 shadow-lg outline-none ring-1 ring-zinc-200 backdrop-blur-md dark:bg-zinc-900/90 dark:ring-zinc-700',
       '[--anchor-gap:0px]'
     ),
     option: clsx(

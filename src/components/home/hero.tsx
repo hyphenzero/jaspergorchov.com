@@ -210,10 +210,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     })
   }, [imageProjects, tileHeight, displayVw])
 
-  const layout = useMemo(
-    () => getGridLayout(imageProjects, tileHeight),
-    [imageProjects, tileHeight]
-  )
+  const layout = useMemo(() => getGridLayout(imageProjects, tileHeight), [imageProjects, tileHeight])
   const order = useMemo(() => getDistantOrder(layout.positions), [layout.positions])
 
   const orderRef = useRef(order)

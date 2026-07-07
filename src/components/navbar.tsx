@@ -79,10 +79,10 @@ export const NavbarItem = forwardRef(function NavbarItem(
             // initial/exit to prevent the fade/scale effect.
             {...(animateIndicator
               ? {
-                initial: { opacity: 0, scaleX: 0.5 },
-                animate: { opacity: 1, scaleX: 1 },
-                exit: { opacity: 0, scaleX: 0.5 },
-              }
+                  initial: { opacity: 0, scaleX: 0.5 },
+                  animate: { opacity: 1, scaleX: 1 },
+                  exit: { opacity: 0, scaleX: 0.5 },
+                }
               : {})}
             className={clsx(
               'pointer-events-none absolute inset-x-0 h-0.5 origin-center translate-y-0! rounded-full bg-sky-500 shadow-2xl shadow-sky-400 dark:bg-sky-400',

@@ -40,7 +40,7 @@ export const Input = forwardRef(function Input(
       className={clsx([
         className,
         // Basic layout
-        'relative block w-full transition after:transition before:transition',
+        'relative block w-full transition before:transition after:transition',
         // Background color + shadow applied to inset pseudo element, so shadow blends with border in light mode
         'before:absolute before:inset-px before:rounded-full before:bg-white before:shadow-sm',
         // Background color is moved to control and shadow is removed in dark mode so hide `before` pseudo
@@ -74,7 +74,7 @@ export const Input = forwardRef(function Input(
               '[&::-webkit-datetime-edit-meridiem-field]:p-0',
             ],
           // Basic layout
-          'relative transition duration-100 block w-full appearance-none rounded-full px-3.25 py-2.25 sm:px-4 sm:py-1.25',
+          'relative block w-full appearance-none rounded-full px-3.25 py-2.25 transition duration-100 sm:px-4 sm:py-1.25',
           // Typography
           'text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white',
           // Border

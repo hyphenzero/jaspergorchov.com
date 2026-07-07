@@ -33,7 +33,7 @@ export function ToolsPanel() {
   const { state, dispatch } = useEditor()
 
   return (
-    <div className="editor-tools flex w-18 shrink-0 select-none flex-col items-center gap-3 border-[var(--panel-border)] border-r bg-[var(--panel-bg)] px-2 py-3">
+    <div className="editor-tools flex w-18 shrink-0 select-none flex-col items-center gap-3 border-(--panel-border) border-r bg-(--panel-bg) px-2 py-3">
       <div className="flex flex-col gap-1.5">
         {TOOL_IDS.map((toolId) => {
           const Icon = toolIcons[toolId]
@@ -46,10 +46,10 @@ export function ToolsPanel() {
               aria-label={toolLabels[toolId]}
               title={toolLabels[toolId]}
               onClick={() => dispatch({ type: 'SET_TOOL', tool: toolId })}
-              className={`relative inline-flex size-9 items-center justify-center rounded-[var(--radius-sm)] ${
+              className={`relative inline-flex size-9 items-center justify-center rounded-sm ${
                 isActive
-                  ? 'bg-[var(--accent)] fill-white'
-                  : 'fill-[var(--text-secondary)] hover:bg-[var(--control-hover)] hover:fill-[var(--text-primary)]'
+                  ? 'bg-(--accent) fill-white'
+                  : 'fill-(--text-secondary) hover:bg-(--control-hover) hover:fill-(--text-primary)'
               }`}
             >
               <span
@@ -62,7 +62,7 @@ export function ToolsPanel() {
         })}
       </div>
 
-      <div className="h-px w-10 bg-[var(--panel-border)]" />
+      <div className="h-px w-10 bg-(--panel-border)" />
 
       <div className="grid grid-cols-2 gap-1.5" aria-label="Color swatches">
         {swatches.map((color) => {
@@ -78,7 +78,7 @@ export function ToolsPanel() {
                 dispatch({ type: 'SET_FILL_COLOR', color })
                 dispatch({ type: 'SET_BRUSH_COLOR', color })
               }}
-              className="size-5 rounded-[var(--radius-xs)] ring-1 ring-[var(--swatch-ring)] ring-offset-1 ring-offset-[var(--panel-bg)]"
+              className="size-5 rounded-xs ring-(--swatch-ring) ring-1 ring-offset-(--panel-bg) ring-offset-1"
               style={{
                 background: color,
                 outline: selected ? '2px solid var(--accent)' : undefined,
@@ -90,7 +90,7 @@ export function ToolsPanel() {
       </div>
 
       <label className="mt-auto flex flex-col items-center gap-2">
-        <span className="font-mono text-[0.625rem]/4 text-[var(--text-tertiary)] uppercase tracking-wide">Brush</span>
+        <span className="font-mono text-(--text-tertiary) text-[0.625rem]/4 uppercase tracking-wide">Brush</span>
         <input
           type="range"
           name="brush-size"
@@ -101,9 +101,7 @@ export function ToolsPanel() {
           onChange={(event) => dispatch({ type: 'SET_BRUSH_SIZE', size: Number(event.target.value) })}
           className="editor-vertical-range"
         />
-        <span className="font-mono text-[0.625rem]/4 text-[var(--text-secondary)] tabular-nums">
-          {state.brushSize}px
-        </span>
+        <span className="font-mono text-(--text-secondary) text-[0.625rem]/4 tabular-nums">{state.brushSize}px</span>
       </label>
     </div>
   )

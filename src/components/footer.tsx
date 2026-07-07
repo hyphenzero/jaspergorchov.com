@@ -1,3 +1,4 @@
+import { clsx } from 'clsx'
 import Link from 'next/link'
 
 const navigation = {
@@ -30,9 +31,9 @@ const navigation = {
     },
   ],
 }
-export function Footer() {
+export function Footer({ className }: { className?: string }) {
   return (
-    <footer className="bg-white dark:bg-zinc-950">
+    <footer className={clsx('bg-white dark:bg-zinc-950', className)}>
       <div className="mx-auto max-w-7xl overflow-hidden px-6 pt-32 sm:pt-48 lg:px-8">
         <div className="mb-8 flex w-full items-center justify-between">
           <p className="text-sm/6 text-zinc-500">

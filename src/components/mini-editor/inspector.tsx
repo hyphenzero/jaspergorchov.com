@@ -24,9 +24,9 @@ function clamp(value: number, min?: number, max?: number) {
 
 function PanelHeader() {
   return (
-    <div className="flex h-9 shrink-0 items-center gap-2 border-[var(--panel-border)] border-b bg-[var(--panel-header-bg)] px-3">
-      <AdjustmentsHorizontalIcon className="size-4 shrink-0 fill-[var(--text-tertiary)]" />
-      <h3 className="font-medium text-[var(--text-secondary)] text-sm/5">Inspector</h3>
+    <div className="flex h-9 shrink-0 items-center gap-2 border-(--panel-border) border-b bg-(--panel-header-bg) px-3">
+      <AdjustmentsHorizontalIcon className="size-4 shrink-0 fill-(--text-tertiary)" />
+      <h3 className="font-medium text-(--text-secondary) text-sm/5">Inspector</h3>
     </div>
   )
 }
@@ -34,7 +34,7 @@ function PanelHeader() {
 function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="grid gap-1.5">
-      <span className="font-mono text-[0.625rem]/4 text-[var(--text-tertiary)] uppercase tracking-wide">{label}</span>
+      <span className="font-mono text-(--text-tertiary) text-[0.625rem]/4 uppercase tracking-wide">{label}</span>
       {children}
     </label>
   )
@@ -43,7 +43,7 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
 function InputBase({ children, className = '' }: { children?: ReactNode; className?: string }) {
   return (
     <span
-      className={`flex h-8 items-center rounded-[var(--radius-sm)] bg-[var(--input-bg)] ring-1 ring-[var(--input-border)] has-focus-visible:outline-2 has-focus-visible:outline-[var(--accent)] has-focus-visible:-outline-offset-1 ${className}`}
+      className={`flex h-8 items-center rounded-sm bg-(--input-bg) ring-(--input-border) ring-1 has-focus-visible:outline-(--accent) has-focus-visible:outline-2 has-focus-visible:-outline-offset-1 ${className}`}
     >
       {children}
     </span>
@@ -170,7 +170,7 @@ export function Inspector() {
       <section className="flex min-h-0 flex-1 select-none flex-col">
         <PanelHeader />
         <div className="flex flex-1 items-center justify-center px-5 py-8 text-center">
-          <p className="max-w-[22ch] text-[var(--text-tertiary)] text-sm/5">
+          <p className="max-w-[22ch] text-(--text-tertiary) text-sm/5">
             Select a layer to edit position, style, and opacity.
           </p>
         </div>

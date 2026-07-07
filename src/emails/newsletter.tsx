@@ -117,12 +117,12 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
               </Text>
 
               <Heading className="mt-[18px] mb-0 font-medium text-[40px] text-body tracking-[-0.03em]">
-                New from the site
+                My latest work
               </Heading>
 
-              <Text className="mt-[22px] mb-0 text-secondary text-sm leading-7">
-                Hey, I recently published <span className="font-semibold text-body">{contentLabel}</span>. Here&apos;s
-                the short version, with links if you want to read more.
+              <Text className="mt-[22px] mb-0 text-secondary text-sm/7">
+                Hey, I recently published <span className="font-semibold text-body">{contentLabel}</span>. Here’s the
+                short version, with links if you want to read more.
               </Text>
             </Section>
 
@@ -139,9 +139,7 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
                   >
                     <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
 
-                    {entry.summary ? (
-                      <Text className="mt-3 mb-0 text-secondary text-sm leading-7">{entry.summary}</Text>
-                    ) : null}
+                    {entry.summary ? <Text className="mt-3 mb-0 text-secondary text-sm/7">{entry.summary}</Text> : null}
 
                     <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
                       Read more
@@ -181,9 +179,7 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
                     ) : null}
                     <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
 
-                    {entry.summary ? (
-                      <Text className="mt-3 mb-0 text-secondary text-sm leading-7">{entry.summary}</Text>
-                    ) : null}
+                    {entry.summary ? <Text className="mt-3 mb-0 text-secondary text-sm/7">{entry.summary}</Text> : null}
 
                     <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
                       Read more
