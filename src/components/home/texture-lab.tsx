@@ -5,7 +5,7 @@ import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { clsx } from 'clsx'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
-import { PLYLoader, TeapotGeometry } from 'three-stdlib'
+import { OBJLoader, TeapotGeometry } from 'three-stdlib'
 import { Tabs } from '@/components/tabs'
 
 // ============ Types ============
@@ -195,14 +195,27 @@ function GLTFModel({
   return <primitive object={cloned} scale={scale} position={position} />
 }
 
-function PLYModel({ url, previewMap, scale }: { url: string; previewMap: TextureAsset['previewMap']; scale: number }) {
-  const geometry = useLoader(PLYLoader, url)
+function OBJModel({ url, previewMap, scale }: { url: string; previewMap: TextureAsset['previewMap']; scale: number }) {
+  const obj = useLoader(OBJLoader, url)
+  const urls = [previewMap.color, previewMap.normal, previewMap.roughness, previewMap.ao].filter(Boolean) as string[]
+  const loadedTextures = useTexture(urls)
 
-  return (
-    <mesh geometry={geometry} scale={scale} castShadow receiveShadow>
-      <PBRMaterial previewMap={previewMap} />
-    </mesh>
-  )
+  const cloned = useMemo(() => {
+    const copy = obj.clone(true)
+    const mat = createPBRMaterial(previewMap)
+    applyMaps(mat, previewMap, loadedTextures)
+    copy.traverse((child) => {
+      if ((child as THREE.Mesh).isMesh) {
+        const mesh = child as THREE.Mesh
+        mesh.material = mat
+        mesh.castShadow = true
+        mesh.receiveShadow = true
+      }
+    })
+    return copy
+  }, [obj, previewMap, loadedTextures])
+
+  return <primitive object={cloned} scale={scale} />
 }
 
 function TeapotModel({ previewMap }: { previewMap: TextureAsset['previewMap'] }) {
@@ -249,7 +262,7 @@ function SceneObject({
           <GLTFModel url="/models/suzanne/Suzanne.gltf" previewMap={previewMap} scale={0.7} position={[0, -0.3, 0]} />
         )
       case 'bunny':
-        return <PLYModel url="/models/bunny/bunny.ply" previewMap={previewMap} scale={5} />
+        return <OBJModel url="/models/bunny/bunny.obj" previewMap={previewMap} scale={5} />
       default:
         return <SimpleGeometryModel type={geometryType} previewMap={previewMap} />
     }
@@ -351,9 +364,9 @@ function PreviewGLTF({ url, scale }: { url: string; scale: number }) {
   )
 }
 
-function PreviewPLY({ url, scale }: { url: string; scale: number }) {
-  const geometry = useLoader(PLYLoader, url)
-  const meshRef = useRef<THREE.Mesh>(null)
+function PreviewOBJ({ url, scale }: { url: string; scale: number }) {
+  const obj = useLoader(OBJLoader, url)
+  const meshRef = useRef<THREE.Group>(null)
 
   useFrame((_, delta) => {
     if (meshRef.current) {
@@ -363,9 +376,9 @@ function PreviewPLY({ url, scale }: { url: string; scale: number }) {
   })
 
   return (
-    <mesh ref={meshRef} geometry={geometry} scale={scale}>
-      <meshStandardMaterial color="#a1a1aa" roughness={0.3} metalness={0.6} />
-    </mesh>
+    <group ref={meshRef} scale={scale}>
+      <primitive object={obj.clone(true)} />
+    </group>
   )
 }
 
@@ -401,7 +414,7 @@ function ObjectPreview({
           ) : type === 'suzanne' ? (
             <PreviewGLTF url="/models/suzanne/Suzanne.gltf" scale={0.45} />
           ) : type === 'bunny' ? (
-            <PreviewPLY url="/models/bunny/bunny.ply" scale={3.2} />
+            <PreviewOBJ url="/models/bunny/bunny.obj" scale={3.2} />
           ) : null}
         </Suspense>
         <OrbitControls enableZoom={false} enablePan={false} enableRotate={false} />
@@ -564,11 +577,11 @@ export function TextureLab({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        'aspect-16/10 w-full rounded-2xl bg-zinc-900 not-dark:shadow-sm ring ring-zinc-950/10 dark:ring-white/10',
+        'aspect-16/10 w-full rounded-2xl bg-white not-dark:shadow-sm not-dark:ring not-dark:ring-zinc-950/10 dark:bg-zinc-900',
         className
       )}
     >
-      <div className="flex h-full flex-col p-1">
+      <div className="flex h-full flex-col">
         <div className="grid min-h-0 flex-1 grid-cols-1 grid-rows-[1fr_200px] gap-0 overflow-hidden rounded-xl md:grid-cols-[1fr_300px] md:grid-rows-[1fr]">
           {/* 3D Scene */}
           <div className="relative min-h-0">
@@ -595,7 +608,7 @@ export function TextureLab({ className }: { className?: string }) {
           </div>
 
           {/* Side Panel */}
-          <div className="flex max-h-[200px] flex-col md:max-h-none">
+          <div className="flex max-h-50 flex-col md:max-h-none">
             {/* Tabs */}
             <div className="px-2 pt-2">
               <Tabs
@@ -618,14 +631,6 @@ export function TextureLab({ className }: { className?: string }) {
                 <ObjectGrid selectedType={selectedGeometry} onSelect={setSelectedGeometry} />
               )}
             </div>
-
-            {/* Status bar */}
-            {selectedTexture && !loading && (
-              <div className="flex items-center gap-2 border-zinc-800 border-t px-3 py-2">
-                <div className="size-2 shrink-0 rounded-full bg-green-500" />
-                <span className="truncate text-[11px] text-zinc-500">{selectedTexture.name}</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
