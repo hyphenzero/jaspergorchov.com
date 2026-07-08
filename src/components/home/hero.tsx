@@ -1,7 +1,9 @@
 'use client'
 
+import { ArrowUpRightIcon } from '@heroicons/react/16/solid'
 import { motion } from 'motion/react'
 import Image from 'next/image'
+import Link from 'next/link'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SerializableProject } from '@/types/post'
 
@@ -229,6 +231,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   isPortraitRef.current = isPortrait
   const tileHeightRef = useRef(tileHeight)
   tileHeightRef.current = tileHeight
+  const hoverRef = useRef(false)
 
   useEffect(() => {
     if (imageProjects.length === 0 || order.length === 0) return
@@ -262,6 +265,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
 
     function tick() {
       if (!running) return
+      if (hoverRef.current) {
+        tickTimeoutId = setTimeout(tick, 200)
+        return
+      }
 
       const o = orderRef.current
       const pos = layoutRef.current.positions
@@ -386,7 +393,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
             return (
               <motion.div
                 key={project.slug}
-                className="absolute overflow-hidden rounded-2xl bg-zinc-500"
+                className="group absolute overflow-hidden rounded-2xl bg-zinc-500"
                 style={{
                   width: pos.width,
                   height: pos.height,
@@ -430,6 +437,16 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     sizes={`${Math.ceil(pos.width)}px`}
                   />
                 )}
+                  <Link
+                    href={`/projects/${project.slug}`}
+                    data-active={idx === activeIdx ? 'true' : undefined}
+                    onMouseEnter={() => { hoverRef.current = true }}
+                    onMouseLeave={() => { hoverRef.current = false }}
+                    className="opacity-0 not-data-active:opacity-0 data-active:pointer-fine:group-hover:opacity-100 transition-opacity duration-500 absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.75 rounded-full border border-zinc-950/60 bg-zinc-950/50 py-0.5 pr-2 pb-1 pl-3 text-center text-sm/6 font-medium text-white inset-ring inset-ring-white/10 backdrop-blur-2xl truncate"
+                  >
+                    {project.meta.title}
+                    <ArrowUpRightIcon className="size-4 not-group-hover/title:translate-y-px duration-200 group-hover/title:-translate-y-px group-hover/title:translate-x-px transition-all" />
+                  </Link>
               </motion.div>
             )
           })}
@@ -437,7 +454,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
       </motion.div>
 
       <motion.div
-        className="pointer-events-none absolute inset-0 z-20 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"
+        className="pointer-events-none absolute inset-0 ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10"
         animate={{
           opacity: progress,
           top: progress * 8,

@@ -88,7 +88,7 @@ export function HeroSection({ projects }: Props) {
 
   return (
     <>
-      <div className="absolute inset-x-0 top-0 isolate -z-10 h-dvh">
+      <div className="absolute inset-x-0 top-0 isolate h-dvh">
         <Hero projects={projects} imageHeight={imageHeight} focusCenterY={focusCenterY} />
       </div>
 
