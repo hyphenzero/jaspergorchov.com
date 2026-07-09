@@ -518,7 +518,11 @@ export function TextureLab({ className }: { className?: string }) {
   useEffect(() => {
     const warn = console.warn
     console.warn = (...args) => {
-      if (typeof args[0] === 'string' && args[0].includes('THREE.Clock')) return
+      if (
+        typeof args[0] === 'string' &&
+        (args[0].includes('THREE.Clock') || args[0].includes('Matrix3') || args[0].includes('Unknown color'))
+      )
+        return
       warn.apply(console, args)
     }
     return () => {

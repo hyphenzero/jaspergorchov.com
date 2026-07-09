@@ -53,7 +53,7 @@ function ExtrudedLogo({ src }: { src: string }) {
       const cx = (bb.max.x + bb.min.x) / 2
       const cy = (bb.max.y + bb.min.y) / 2
       // Don't center Z — bottom stays at z=0 so scaling Z stretches the top upward from the ground
-      geo.translate(-cx, -cy, 0)
+      geo.applyMatrix4(new THREE.Matrix4().makeTranslation(-cx, -cy, 0))
 
       const span = Math.max(bb.max.x - bb.min.x, bb.max.y - bb.min.y)
       if (span <= 0) continue
