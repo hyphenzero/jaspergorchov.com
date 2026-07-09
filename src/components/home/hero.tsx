@@ -5,6 +5,7 @@ import { motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { ProjectVideoOverlay } from '@/components/project-video'
 import type { SerializableProject } from '@/types/post'
 
 type Props = {
@@ -48,12 +49,9 @@ type GridLayout = {
   positions: Position[]
 }
 
-function getTileSize(project: ProjectWithImage, tileHeight: number) {
-  const ratio =
-    project.meta.image.width && project.meta.image.height ? project.meta.image.width / project.meta.image.height : 1
-
+function getTileSize(tileHeight: number) {
   return {
-    width: Math.round(tileHeight * ratio),
+    width: Math.round(tileHeight * 1.6),
     height: tileHeight,
   }
 }
@@ -62,33 +60,23 @@ function getRowWidth(widths: number[], start: number, end: number, gap: number) 
   return widths.slice(start, end).reduce((total, width) => total + width, 0) + Math.max(0, end - start - 1) * gap
 }
 
-function getGridColumns(widths: number[], tileHeight: number, gap: number) {
-  const count = widths.length
-  const targetRatio = 1
+function getGridColumns(count: number) {
+  if (count <= 1) return 1
+
   let bestColumns = 1
-  let bestScore = Number.POSITIVE_INFINITY
+  let bestDiff = Number.POSITIVE_INFINITY
 
   for (let columns = 1; columns <= count; columns++) {
     const rows = Math.ceil(count / columns)
-    const width = Math.max(
-      ...Array.from({ length: rows }, (_, row) =>
-        getRowWidth(widths, row * columns, Math.min((row + 1) * columns, count), gap)
-      )
-    )
-    const height = rows * tileHeight + (rows - 1) * gap
-    const score = Math.abs(width / height - targetRatio)
+    const diff = Math.abs(columns - rows)
 
-    if (score < bestScore) {
+    if (diff < bestDiff || (diff === bestDiff && columns > bestColumns)) {
       bestColumns = columns
-      bestScore = score
+      bestDiff = diff
     }
   }
 
-  if (bestColumns === 1 && count >= 2) {
-    bestColumns = 2
-  }
-
-  return bestColumns
+  return Math.max(2, bestColumns)
 }
 
 function getGridLayout(projects: ProjectWithImage[], tileHeight: number): GridLayout {
@@ -97,10 +85,10 @@ function getGridLayout(projects: ProjectWithImage[], tileHeight: number): GridLa
   }
 
   const gap = Math.round(GAP_FACTOR * tileHeight)
-  const tileSizes = projects.map((p) => getTileSize(p, tileHeight))
+  const tileSizes = projects.map(() => getTileSize(tileHeight))
   const widths = tileSizes.map((size) => size.width)
   const count = projects.length
-  const columns = getGridColumns(widths, tileHeight, gap)
+  const columns = getGridColumns(count)
   const rows = Math.ceil(count / columns)
   const width = Math.max(
     ...Array.from({ length: rows }, (_, row) =>
@@ -139,32 +127,13 @@ function getGridLayout(projects: ProjectWithImage[], tileHeight: number): GridLa
   }
 }
 
-function getDistantOrder(positions: Position[]) {
-  if (positions.length <= 1) return positions.map((_, index) => index)
-
-  const order = [0]
-  const unused = new Set(positions.slice(1).map((_, index) => index + 1))
-
-  while (unused.size > 0) {
-    const current = positions[order[order.length - 1]]
-    let next = unused.values().next().value as number
-    let nextDistance = -1
-
-    for (const index of unused) {
-      const candidate = positions[index]
-      const distance = Math.hypot(candidate.centerX - current.centerX, candidate.centerY - current.centerY)
-
-      if (distance > nextDistance) {
-        next = index
-        nextDistance = distance
-      }
-    }
-
-    order.push(next)
-    unused.delete(next)
+function randomPermutation(length: number): number[] {
+  const arr = Array.from({ length }, (_, i) => i)
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]]
   }
-
-  return order
+  return arr
 }
 
 function getFocusedTransform(centerX: number, centerY: number, targetX: number, targetY: number, scale = 1) {
@@ -172,11 +141,13 @@ function getFocusedTransform(centerX: number, centerY: number, targetX: number, 
 }
 
 export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
-  const imageProjects = useMemo(() => projects.filter(hasImage), [projects])
+  const filteredProjects = useMemo(() => projects.filter(hasImage), [projects])
+  const [imageProjects, setImageProjects] = useState(filteredProjects)
   const [vw, setVw] = useState(0)
   const [vh, setVh] = useState(0)
   const [scrollY, setScrollY] = useState(0)
   const [activeIdx, setActiveIdx] = useState(0)
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
 
   const viewportRef = useRef<HTMLDivElement>(null)
   const [wrapperTarget, setWrapperTarget] = useState({ x: 0, y: 0 })
@@ -205,15 +176,11 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const tileHeight = imageHeight || 512
   const isPortrait = useMemo(() => {
     if (imageProjects.length === 0) return false
-    const h = tileHeight
-    return imageProjects.some((p) => {
-      const ratio = p.meta.image.width && p.meta.image.height ? p.meta.image.width / p.meta.image.height : 1
-      return h * ratio > (displayVw || 1200)
-    })
-  }, [imageProjects, tileHeight, displayVw])
+    return tileHeight * 1.6 > (displayVw || 1200)
+  }, [imageProjects.length, tileHeight, displayVw])
 
   const layout = useMemo(() => getGridLayout(imageProjects, tileHeight), [imageProjects, tileHeight])
-  const order = useMemo(() => getDistantOrder(layout.positions), [layout.positions])
+  const [order, setOrder] = useState<number[]>(() => filteredProjects.map((_, i) => i))
 
   const orderRef = useRef(order)
   orderRef.current = order
@@ -231,25 +198,27 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   isPortraitRef.current = isPortrait
   const tileHeightRef = useRef(tileHeight)
   tileHeightRef.current = tileHeight
-  const hoverRef = useRef(false)
-
   useEffect(() => {
-    if (imageProjects.length === 0 || order.length === 0) return
+    if (filteredProjects.length === 0) return
 
-    const currentOrder = orderRef.current
+    const shuffled = [...filteredProjects]
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
+    }
+    const newOrder = randomPermutation(shuffled.length)
+    setImageProjects(shuffled)
+    setOrder(newOrder)
+
     const positions = layoutRef.current.positions
 
-    setActiveIdx(currentOrder[0])
-    currentIdxRef.current = currentOrder[0]
+    setActiveIdx(newOrder[0])
+    currentIdxRef.current = newOrder[0]
 
     const targetY = focusCenterYRef.current || displayVhRef.current / 2 - 60
-    const firstPos = positions[currentOrder[0]]
+    const firstPos = positions[newOrder[0]]
     if (firstPos) {
-      const firstProject = imageProjectsRef.current[currentOrder[0]]
-      const firstRatio =
-        firstProject?.meta.image.width && firstProject?.meta.image.height
-          ? firstProject.meta.image.width / firstProject.meta.image.height
-          : 1.6
+      const firstRatio = 1.6
       const firstScale = isPortraitRef.current
         ? (displayVwRef.current - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * firstRatio)
         : 1
@@ -265,7 +234,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
 
     function tick() {
       if (!running) return
-      if (hoverRef.current) {
+      if (document.querySelector('[data-active="true"]')?.matches(':hover')) {
         tickTimeoutId = setTimeout(tick, 200)
         return
       }
@@ -279,7 +248,24 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
       const currentIdx = currentIdxRef.current
       const currentOrderIdx = o.indexOf(currentIdx)
       const nextOrderIdx = (currentOrderIdx + 1) % o.length
-      const nextProjectIdx = o[nextOrderIdx]
+
+      let nextProjectIdx
+      if (nextOrderIdx === 0) {
+        const lastThree = o.slice(-3)
+        let newOrder = randomPermutation(o.length)
+        while (
+          (newOrder[0] === currentIdx && o.length > 1) ||
+          (o.length >= 6 && lastThree.some(idx => newOrder.slice(0, 3).includes(idx)))
+        ) {
+          newOrder = randomPermutation(o.length)
+        }
+        setOrder(newOrder)
+        orderRef.current = newOrder
+        nextProjectIdx = newOrder[0]
+      } else {
+        nextProjectIdx = o[nextOrderIdx]
+      }
+
       const nextPos = pos[nextProjectIdx]
 
       if (!nextPos) {
@@ -289,11 +275,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
       }
 
       const currentPos = pos[o[currentOrderIdx]]
-      const nextProject = imageProjectsRef.current[nextProjectIdx]
-      const nextRatio =
-        nextProject?.meta.image.width && nextProject?.meta.image.height
-          ? nextProject.meta.image.width / nextProject.meta.image.height
-          : 1.6
+      const nextRatio = 1.6
       const nextScale = isPortraitRef.current ? (w - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * nextRatio) : 1
       const to = getFocusedTransform(nextPos.centerX, nextPos.centerY, w / 2, targetY, nextScale)
 
@@ -326,7 +308,8 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
       if (tickTimeoutId) clearTimeout(tickTimeoutId)
       if (fadeTimeoutId) clearTimeout(fadeTimeoutId)
     }
-  }, [imageProjects.length])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredProjects.length])
 
   useLayoutEffect(() => {
     const idx = Math.min(currentIdxRef.current, layout.positions.length - 1)
@@ -334,11 +317,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     if (!pos) return
     const h = displayVh || 800
     const targetY = focusCenterY || h / 2 - 60
-    const currentProject = imageProjects[idx]
-    const curRatio =
-      currentProject?.meta.image.width && currentProject?.meta.image.height
-        ? currentProject.meta.image.width / currentProject.meta.image.height
-        : 1.6
+    const curRatio = 1.6
     const resizeScale = isPortrait
       ? ((displayVw || 1200) - 2 * PORTRAIT_PADDING) / ((imageHeight || 512) * curRatio)
       : 1
@@ -358,11 +337,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const progress = Math.min(scrollY / 500, 1)
 
   const effectiveIdx = activeIdx >= 0 ? activeIdx : currentIdxRef.current
-  const activeProject = imageProjects[effectiveIdx]
-  const activeRatio =
-    activeProject?.meta.image.width && activeProject?.meta.image.height
-      ? activeProject.meta.image.width / activeProject.meta.image.height
-      : 1.6
+  const activeRatio = 1.6
   const portraitScale = isPortrait ? (displayVw - 2 * PORTRAIT_PADDING) / (tileHeight * activeRatio) : 1
 
   if (imageProjects.length === 0) return null
@@ -402,9 +377,9 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                 }}
                 animate={{ opacity: idx === activeIdx ? 1 : FADED_OPACITY }}
                 transition={{ duration: 1.2, ease: [0.42, 0, 0.58, 1] }}
+                onMouseEnter={() => setHoveredIdx(idx)}
+                onMouseLeave={() => setHoveredIdx(null)}
               >
-                <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
-
                 {darkSrc ? (
                   <>
                     <Image
@@ -437,16 +412,25 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     sizes={`${Math.ceil(pos.width)}px`}
                   />
                 )}
-                  <Link
-                    href={`/projects/${project.slug}`}
-                    data-active={idx === activeIdx ? 'true' : undefined}
-                    onMouseEnter={() => { hoverRef.current = true }}
-                    onMouseLeave={() => { hoverRef.current = false }}
-                    className="opacity-0 not-data-active:opacity-0 data-active:pointer-fine:group-hover:opacity-100 transition-opacity duration-500 absolute bottom-2 left-1/2 -translate-x-1/2 z-30 flex items-center gap-1.75 rounded-full border border-zinc-950/60 bg-zinc-950/50 py-0.5 pr-2 pb-1 pl-3 text-center text-sm/6 font-medium text-white inset-ring inset-ring-white/10 backdrop-blur-2xl truncate"
-                  >
-                    {project.meta.title}
-                    <ArrowUpRightIcon className="size-4 not-group-hover/title:translate-y-px duration-200 group-hover/title:-translate-y-px group-hover/title:translate-x-px transition-all" />
-                  </Link>
+
+                {project.meta.video ? (
+                  <ProjectVideoOverlay
+                    src={project.meta.video}
+                    isActive={hoveredIdx === idx || idx === activeIdx}
+                    className="absolute inset-0 z-[5]"
+                  />
+                ) : null}
+
+                <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
+
+                <Link
+                  href={`/projects/${project.slug}`}
+                  data-active={idx === activeIdx ? 'true' : undefined}
+                  className="group/title absolute inset-ring inset-ring-white/10 bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.75 truncate rounded-full border border-zinc-950/60 bg-zinc-950/50 py-0.5 pr-2 pb-1 pl-3 text-center font-medium text-sm/6 text-white not-data-active:opacity-0 opacity-0 backdrop-blur-2xl transition-opacity duration-500 data-active:pointer-fine:group-hover:opacity-100"
+                >
+                  {project.meta.title}
+                  <ArrowUpRightIcon className="size-4 not-group-hover/title:translate-y-px transition-all duration-200 group-hover/title:translate-x-px group-hover/title:-translate-y-px" />
+                </Link>
               </motion.div>
             )
           })}
