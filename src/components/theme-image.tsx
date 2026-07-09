@@ -3,9 +3,16 @@ import NextImage from 'next/image'
 
 type NextImageProps = React.ComponentProps<typeof NextImage>
 
-export function ThemeImage({ src, darkSrc, alt, className, ...props }: NextImageProps & { darkSrc?: string }) {
+export function ThemeImage({
+  src,
+  darkSrc,
+  alt,
+  className,
+  imgClassName,
+  ...props
+}: NextImageProps & { darkSrc?: string; imgClassName?: string }) {
   if (!darkSrc) {
-    return <NextImage src={src} alt={alt} className={className} {...props} />
+    return <NextImage src={src} alt={alt} className={clsx(className, imgClassName)} {...props} />
   }
 
   // For fill mode, the parent container provides explicit sizing.
@@ -13,11 +20,16 @@ export function ThemeImage({ src, darkSrc, alt, className, ...props }: NextImage
   if (props.fill) {
     return (
       <div className={clsx('relative size-full', className)}>
-        <NextImage src={src} alt={alt} className="dark:hidden! size-full object-cover" {...props} />
+        <NextImage
+          src={src}
+          alt={alt}
+          className={clsx('dark:hidden! size-full object-cover', imgClassName)}
+          {...props}
+        />
         <NextImage
           src={darkSrc}
           alt={alt}
-          className="not-dark:hidden! absolute inset-0 size-full object-cover"
+          className={clsx('not-dark:hidden! absolute inset-0 size-full object-cover', imgClassName)}
           {...props}
         />
       </div>
@@ -29,8 +41,13 @@ export function ThemeImage({ src, darkSrc, alt, className, ...props }: NextImage
   // so the container always has the correct intrinsic height.
   return (
     <div className={clsx('grid grid-cols-1 grid-rows-1', className)}>
-      <NextImage src={src} alt={alt} className="col-start-1 row-start-1 dark:hidden" {...props} />
-      <NextImage src={darkSrc} alt={alt} className="col-start-1 row-start-1 not-dark:hidden" {...props} />
+      <NextImage src={src} alt={alt} className={clsx('col-start-1 row-start-1 dark:hidden', imgClassName)} {...props} />
+      <NextImage
+        src={darkSrc}
+        alt={alt}
+        className={clsx('col-start-1 row-start-1 not-dark:hidden', imgClassName)}
+        {...props}
+      />
     </div>
   )
 }
