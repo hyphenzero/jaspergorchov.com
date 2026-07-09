@@ -2,7 +2,7 @@
 
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
-import { JSX, SVGProps, useCallback, useEffect, useRef, useState } from 'react'
+import { JSX, SVGProps, useCallback, useLayoutEffect, useRef, useState } from 'react'
 import { Button } from '@/components/button'
 import type { SerializableProject } from '@/types/post'
 import { Hero } from './hero'
@@ -55,8 +55,8 @@ type Props = {
 
 export function HeroSection({ projects }: Props) {
   const contentRef = useRef<HTMLDivElement>(null)
-  const [imageHeight, setImageHeight] = useState(400)
-  const [focusCenterY, setFocusCenterY] = useState(0)
+  const [imageHeight, setImageHeight] = useState(800)
+  const [focusCenterY, setFocusCenterY] = useState(460)
 
   const measure = useCallback(() => {
     const header = document.querySelector('header')
@@ -73,7 +73,7 @@ export function HeroSection({ projects }: Props) {
     }
   }, [])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     measure()
     const observer = new ResizeObserver(measure)
     const header = document.querySelector('header')
