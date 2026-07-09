@@ -1,9 +1,24 @@
 import clsx from 'clsx'
 
 const colors = [
-  'red', 'orange', 'amber', 'yellow', 'lime', 'green', 'emerald',
-  'teal', 'cyan', 'sky', 'blue', 'indigo', 'violet', 'purple',
-  'fuchsia', 'pink', 'rose', 'zinc',
+  'red',
+  'orange',
+  'amber',
+  'yellow',
+  'lime',
+  'green',
+  'emerald',
+  'teal',
+  'cyan',
+  'sky',
+  'blue',
+  'indigo',
+  'violet',
+  'purple',
+  'fuchsia',
+  'pink',
+  'rose',
+  'zinc',
 ] as const
 
 export type EyebrowColor = (typeof colors)[number]

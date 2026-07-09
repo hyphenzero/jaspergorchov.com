@@ -1,8 +1,15 @@
 import type { Metadata } from 'next'
+import { Fira_Code } from 'next/font/google'
 import type React from 'react'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import './globals.css'
+
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  variable: '--font-fira-code',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   title: {
@@ -18,7 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={firaCode.variable}>
       <head>
         <link rel="preconnect" href="https://rsms.me/" />
         <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />

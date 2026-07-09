@@ -195,7 +195,7 @@
 
   code:where(:not(.not-prose, .not-prose *)) {
     font-variant-ligatures: none;
-    font-family: var(--font-mono);
+    font-family: var(--font-fira-code);
     font-weight: var(--font-weight-medium);
     color: var(--prose-code-color);
     background-color: color-mix(in oklab, var(--color-zinc-200) 55%, transparent);
@@ -227,7 +227,7 @@
 
   pre code:where(:not(.not-prose, .not-prose *)) {
     font-variant-ligatures: none;
-    font-family: var(--font-mono);
+    font-family: var(--font-fira-code);
     font-size: var(--text-sm);
     line-height: 2;
   }
