@@ -56,7 +56,7 @@ export function ProjectCard({
       }}
     >
       <Link href={`/projects/${slug}`} className="absolute inset-0 z-10" />
-      <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl">
+      <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl bg-zinc-200 dark:bg-zinc-800">
         {meta.image?.src ? (
           <ThemeImage
             priority
@@ -66,6 +66,7 @@ export function ProjectCard({
             darkSrc={meta.imageDark?.src}
             alt={meta.title ?? ''}
             className="size-full object-cover"
+            imgClassName="size-full object-cover"
           />
         ) : null}
         {meta.video ? (
