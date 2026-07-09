@@ -1,0 +1,35 @@
+import cover from './cover.png'
+import { Video } from '@/components/markdown/media'
+
+export const meta = {
+  title: 'Procedural Motion',
+  lead: `Three procedurally generated animations created in Blender using Geometry Nodes, exploring how noise-driven movement can bring simple geometric forms to life.`,
+  date: '2024-06-03T17:00:00.000Z',
+  image: cover,
+  video: 'https://nsitize5xjipsbbp.public.blob.vercel-storage.com/video-thumbnail.mp4',
+  tags: ['3D Art'],
+}
+
+For this project, I created a series of three procedurally generated animations in Blender using Geometry Nodes — a tool that lets you modify and duplicate geometry through a visual node-based system. Each animation starts with a simple base shape, instanced across a point cloud and brought to life through noise-driven movement.
+
+<Video src="https://nsitize5xjipsbbp.public.blob.vercel-storage.com/geonodes-1.mp4" />
+
+The first animation features a ring of long cylinders rotating in sync, their overlapping forms creating constantly shifting moiré patterns. The second uses a grid of hexagons whose heights are driven by a noise texture, producing a wave-like surface that ripples and flows.
+
+<Video src="https://nsitize5xjipsbbp.public.blob.vercel-storage.com/geonodes-2.mp4" />
+
+The third starts with a flat pill-shaped profile, extruded into 3D and arranged in a grid, with each instance rotating in a direction determined by the same noise texture — creating a twisting, organic field of forms.
+
+<Video src="https://nsitize5xjipsbbp.public.blob.vercel-storage.com/geonodes-3.mp4" />
+
+## Process
+
+To keep render times manageable, I used Eevee, Blender's realtime physically-based render engine. It produces final frames in a fraction of the time Cycles would take, and while it doesn't match Cycles' photorealistic quality, it's more than capable for stylized geometric work like this.
+
+A key discovery was how naturally Geometry Nodes lends itself to animation. Since everything in the node graph is driven by numeric values, introducing motion is as simple as animating the W property of a 4D noise texture. This produces smooth, organic movement with no manual keyframing required.
+
+The lighting was carefully considered to create strong contrast between highlights and shadows, using a glossy metal material paired with directional lighting and a bloom effect — the same optical phenomenon that makes streetlights appear soft at night. Getting the lighting right was one of the most satisfying parts of the process.
+
+## Next steps
+
+If I were to take this further, I'd love to create a longer motion graphic combining multiple Geometry Nodes setups to tell a visual story. Motion graphics blend procedural animation with narrative — the kind of thing you see in explainer videos and brand advertisements — and this technique would be a compelling medium to explore next.
