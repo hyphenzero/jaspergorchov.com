@@ -117,6 +117,7 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
       lead: meta.lead ?? meta.excerpt ?? meta.description,
       image: normalizedImage,
       imageDark: normalizeImage(meta.imageDark),
+      video: meta.video ? String(meta.video) : undefined,
     }
 
     return {

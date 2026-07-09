@@ -3,6 +3,7 @@
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useState } from 'react'
+import { ProjectVideoOverlay } from '@/components/project-video'
 import { ThemeImage } from '@/components/theme-image'
 import { formatDate } from '@/lib/api-utils'
 
@@ -16,6 +17,7 @@ export function ProjectCard({
     tags: string[]
     image?: { src: string }
     imageDark?: { src: string }
+    video?: string
     releaseDate?: string
     date?: string
     updatedDate?: string
@@ -55,7 +57,6 @@ export function ProjectCard({
     >
       <Link href={`/projects/${slug}`} className="absolute inset-0 z-10" />
       <div className="relative aspect-16/10 h-auto w-full overflow-hidden rounded-xl">
-        <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
         {meta.image?.src ? (
           <ThemeImage
             priority
@@ -67,6 +68,10 @@ export function ProjectCard({
             className="size-full object-cover"
           />
         ) : null}
+        {meta.video ? (
+          <ProjectVideoOverlay src={meta.video} isActive={rowHovered} className="absolute inset-0" />
+        ) : null}
+        <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-zinc-950/10 ring-inset max-lg:hidden dark:ring-white/10" />
       </div>
       <div className="mt-8 flex flex-col rounded-xl">
         <div className="flex h-4 items-center">

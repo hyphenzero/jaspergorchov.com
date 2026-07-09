@@ -6,6 +6,7 @@ import { type HTMLMotionProps, MotionValue, motion, useMotionValueEvent, useScro
 import Link from 'next/link'
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import useMeasure, { type RectReadOnly } from 'react-use-measure'
+import { ProjectVideoOverlay } from '@/components/project-video'
 import { ThemeImage } from '@/components/theme-image'
 import { SerializableProject } from '@/types/post'
 import { Button } from '../button'
@@ -15,6 +16,7 @@ function ProjectCard({
   title,
   img,
   imgDark,
+  video,
   children,
   bounds,
   scrollX,
@@ -23,6 +25,7 @@ function ProjectCard({
 }: {
   img?: string
   imgDark?: string
+  video?: string
   name?: string
   title?: string
   href?: string
@@ -31,6 +34,7 @@ function ProjectCard({
   scrollX: MotionValue<number>
 } & HTMLMotionProps<'div'>) {
   let ref = useRef<HTMLDivElement | null>(null)
+  let [isHovered, setIsHovered] = useState(false)
 
   let computeOpacity = useCallback(() => {
     let element = ref.current
@@ -68,12 +72,13 @@ function ProjectCard({
     <motion.div
       ref={ref}
       style={{ opacity }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       {...props}
       className="group relative isolate flex aspect-16/10 h-auto w-[calc(100vw-1.5rem)] max-w-[calc((var(--container-7xl)-2rem)/1.25)] shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-2xl lg:w-[calc(100vw-2rem)]"
     >
       {img ? (
         <div className="relative aspect-16/10 h-auto overflow-hidden rounded-2xl">
-          <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
           <ThemeImage
             priority
             unoptimized
@@ -83,6 +88,8 @@ function ProjectCard({
             alt={title ?? name ?? ''}
             className="inset-0 aspect-16/10 object-cover"
           />
+          {video ? <ProjectVideoOverlay src={video} isActive={isHovered} className="absolute inset-0" /> : null}
+          <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl ring-1 ring-zinc-950/10 ring-inset dark:ring-white/10" />
         </div>
       ) : null}
       <div
@@ -143,6 +150,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
             title={project.meta.title}
             img={project.meta.image?.src}
             imgDark={project.meta.imageDark?.src}
+            video={project.meta.video}
             bounds={bounds}
             scrollX={scrollX}
             href={`/projects/${project.slug}`}

@@ -37,6 +37,7 @@ export interface Project {
     tags: string[]
     image?: { src: string; width?: number; height?: number }
     imageDark?: { src: string; width?: number; height?: number }
+    video?: string
     private?: boolean
   }
   slug: string
