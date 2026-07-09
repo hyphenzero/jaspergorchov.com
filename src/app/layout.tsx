@@ -3,6 +3,7 @@ import { Fira_Code } from 'next/font/google'
 import type React from 'react'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
+import { VideoCacheProvider } from '@/components/video-cache-context'
 import './globals.css'
 
 const firaCode = Fira_Code({
@@ -37,9 +38,11 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-dvh bg-white antialiased dark:bg-zinc-950">
-        <Header />
-        {children}
-        <Footer />
+        <VideoCacheProvider>
+          <Header />
+          {children}
+          <Footer />
+        </VideoCacheProvider>
       </body>
     </html>
   )
