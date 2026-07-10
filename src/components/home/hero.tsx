@@ -15,8 +15,6 @@ type Props = {
   focusCenterY: number
 }
 
-const MIN_LOADING_MS = 500
-
 type ProjectWithImage = SerializableProject & { meta: { image: NonNullable<SerializableProject['meta']['image']> } }
 
 function hasImage(project: SerializableProject): project is ProjectWithImage {
@@ -36,8 +34,6 @@ const DURATION = 2
 const FADE_LEAD_MS = 600
 const FADED_OPACITY = 0.25
 const PORTRAIT_PADDING = 12
-const LOGO_PATH =
-  'M478.791 0C511.852 0 542.042 6.53358 569.362 19.5996C596.682 32.4677 619.152 50.4829 636.771 73.6455C654.589 96.6101 665.676 123.336 670.031 153.823H590.149C584.606 128.879 572.036 108.785 552.437 93.541C533.035 78.0994 509.18 70.379 480.87 70.3789C454.342 70.3789 431.377 76.9115 411.976 89.9775C392.574 103.044 377.529 121.455 366.839 145.212C356.346 168.77 351.1 196.585 351.1 228.656C351.1 260.53 356.445 288.345 367.136 312.102C377.826 335.66 392.872 353.972 412.272 367.038C431.872 379.906 454.936 386.34 481.464 386.34C503.241 386.34 522.642 381.985 539.667 373.274C556.89 364.366 570.452 351.992 580.351 336.154C588.762 322.697 593.67 307.452 595.077 290.421H492.748V228.359H673.001V272.606C673.001 308.439 664.586 340.213 647.759 367.929C631.129 395.645 608.264 417.422 579.162 433.26C550.06 448.899 516.9 456.719 479.682 456.719C438.9 456.719 402.869 447.117 371.59 427.914C340.31 408.711 315.861 381.985 298.241 347.736C291.595 334.671 286.219 320.812 282.108 306.162V319.525C282.108 363.277 269.24 396.933 243.504 420.491C217.966 444.049 183.518 455.828 140.163 455.828C97.4015 455.828 63.351 443.95 38.0107 420.193C12.6705 396.437 2.69093e-05 362.485 0 318.338V290.424H75.4268V318.635C75.4268 341.401 81.1681 358.823 92.6504 370.899C104.331 382.778 119.871 388.717 139.272 388.717C158.871 388.717 174.412 382.777 185.895 370.899C197.575 358.823 203.415 341.401 203.415 318.635V7.12793H282.108V150.432C286.341 135.309 291.916 121.096 298.836 107.795C316.851 73.5462 341.399 47.0181 372.48 28.2109C403.76 9.4037 439.197 0 478.791 0Z'
 
 type Position = {
   x: number
@@ -153,7 +149,6 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const [scrollY, setScrollY] = useState(0)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const [shuffled, setShuffled] = useState(false)
-  const [loadingPhase, setLoadingPhase] = useState<'loading' | 'revealing' | 'done'>('loading')
 
   const centerIdx = Math.floor(imageProjects.length / 2)
 
@@ -165,6 +160,9 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const [wrapperTarget, setWrapperTarget] = useState({ x: 0, y: 0 })
   const [instantTransition, setInstantTransition] = useState(true)
   const currentIdxRef = useRef(centerIdx)
+  const loadedCountRef = useRef(0)
+  const [imagesReady, setImagesReady] = useState(false)
+  const gridReady = shuffled && imagesReady
   const { preload } = useVideoCache()
 
   useEffect(() => {
@@ -191,6 +189,12 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     if (imageProjects.length === 0) return false
     return tileHeight * 1.6 > (displayVw || 1200)
   }, [imageProjects.length, tileHeight, displayVw])
+
+  const totalImages = useMemo(() => {
+    return imageProjects.reduce((count, p) => {
+      return count + 1 + (p.meta.imageDark?.src ? 1 : 0)
+    }, 0)
+  }, [imageProjects])
 
   const layout = useMemo(() => getGridLayout(imageProjects, tileHeight), [imageProjects, tileHeight])
   const activeRatio = 1.6
@@ -256,13 +260,8 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     }
 
     setShuffled(true)
-
-    const loadedAt = Date.now()
-    const finishLoading = () => {
-      const elapsed = Date.now() - loadedAt
-      const remaining = Math.max(0, MIN_LOADING_MS - elapsed)
-      setTimeout(() => setLoadingPhase('revealing'), remaining)
-    }
+    loadedCountRef.current = 0
+    setImagesReady(false)
 
     let running = true
     let fadeTimeoutId: ReturnType<typeof setTimeout> | null = null
@@ -356,8 +355,6 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
 
     tickTimeoutId = setTimeout(tick, 3000 + DURATION * 1000)
 
-    finishLoading()
-
     return () => {
       running = false
       if (tickTimeoutId) clearTimeout(tickTimeoutId)
@@ -391,12 +388,6 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
 
   const progress = Math.min(scrollY / 500, 1)
 
-  useEffect(() => {
-    if (loadingPhase !== 'revealing') return
-    const id = setTimeout(() => setLoadingPhase('done'), 1200)
-    return () => clearTimeout(id)
-  }, [loadingPhase])
-
   if (imageProjects.length === 0) return null
 
   return (
@@ -408,31 +399,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
         }}
       >
         <div
-          className="absolute inset-0 z-10 flex items-center justify-center bg-zinc-500"
-          style={{ pointerEvents: 'none' }}
-        >
-          <div className="relative size-32 sm:size-40">
-            <svg viewBox="0 0 673 457" className="size-full fill-zinc-400">
-              <path d={LOGO_PATH} />
-            </svg>
-            <motion.div
-              className="absolute inset-0 overflow-hidden"
-              initial={{ clipPath: 'inset(100% 0% 0% 0%)' }}
-              animate={{ clipPath: 'inset(0% 0% 0% 0%)' }}
-              transition={{ duration: MIN_LOADING_MS / 1000, ease: 'linear' }}
-            >
-              <svg viewBox="0 0 673 457" className="size-full fill-white">
-                <path d={LOGO_PATH} />
-              </svg>
-            </motion.div>
-          </div>
-        </div>
-
-        <motion.div
           className="absolute inset-0 z-20 bg-zinc-200 dark:bg-zinc-800"
-          initial={{ opacity: 0, scale: 2 }}
-          animate={loadingPhase === 'done' ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 2 }}
-          transition={{ duration: 0.75, ease: 'easeInOut' }}
         >
           <motion.div
             className="absolute top-0 left-0"
@@ -441,14 +408,22 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
               height: layout.height,
               transformOrigin: '0 0',
             }}
-            initial={shuffled ? false : { x: centerTarget.x, y: centerTarget.y }}
+            initial={gridReady ? false : { opacity: 0, x: centerTarget.x, y: centerTarget.y }}
             animate={{
-              x: shuffled ? wrapperTarget.x : centerTarget.x,
-              y: shuffled ? wrapperTarget.y : centerTarget.y,
+              opacity: gridReady ? 1 : 0,
+              x: gridReady ? wrapperTarget.x : centerTarget.x,
+              y: gridReady ? wrapperTarget.y : centerTarget.y,
               scale: portraitScale,
             }}
             transition={
-              !shuffled || instantTransition ? { duration: 0 } : { duration: DURATION, ease: [0.42, 0, 0.58, 1] }
+              !gridReady
+                ? { duration: 0 }
+                : {
+                    opacity: { duration: 0.25, ease: 'easeInOut' },
+                    default: instantTransition
+                      ? { duration: 0 }
+                      : { duration: DURATION, ease: [0.42, 0, 0.58, 1] },
+                  }
             }
           >
             {imageProjects.map((project, idx) => {
@@ -457,7 +432,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
               const src = getImageSrc(project)
               const darkSrc = getImageDarkSrc(project)
               return (
-                <motion.div
+                <div
                   key={project.slug}
                   className="group absolute overflow-hidden rounded-2xl bg-zinc-500"
                   style={{
@@ -465,9 +440,9 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     height: pos.height,
                     left: pos.x,
                     top: pos.y,
+                    opacity: idx === activeIdx ? 1 : FADED_OPACITY,
+                    transition: 'opacity 1.2s cubic-bezier(0.42, 0, 0.58, 1)',
                   }}
-                  animate={{ opacity: idx === activeIdx ? 1 : FADED_OPACITY }}
-                  transition={{ duration: 1.2, ease: [0.42, 0, 0.58, 1] }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   onMouseLeave={() => setHoveredIdx(null)}
                 >
@@ -482,6 +457,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                           unoptimized
                           className="dark:hidden! object-cover"
                           sizes={`${Math.ceil(pos.width)}px`}
+                          onLoad={() => {
+                            loadedCountRef.current++
+                            if (loadedCountRef.current >= totalImages) setImagesReady(true)
+                          }}
                         />
                         <Image
                           src={darkSrc}
@@ -491,6 +470,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                           unoptimized
                           className="not-dark:hidden! absolute inset-0 object-cover"
                           sizes={`${Math.ceil(pos.width)}px`}
+                          onLoad={() => {
+                            loadedCountRef.current++
+                            if (loadedCountRef.current >= totalImages) setImagesReady(true)
+                          }}
                         />
                       </>
                     ) : (
@@ -502,6 +485,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                         unoptimized
                         className="object-cover"
                         sizes={`${Math.ceil(pos.width)}px`}
+                        onLoad={() => {
+                          loadedCountRef.current++
+                          if (loadedCountRef.current >= totalImages) setImagesReady(true)
+                        }}
                       />
                     )
                   ) : null}
@@ -510,7 +497,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     <ProjectVideoOverlay
                       src={project.meta.video}
                       isActive={hoveredIdx === idx || idx === videoActiveIdx || idx === lingeringVideoIdx}
-                      className="absolute inset-0 z-[5]"
+                      className="absolute inset-0 z-5"
                     />
                   ) : null}
 
@@ -524,11 +511,11 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     {project.meta.title}
                     <ArrowUpRightIcon className="size-4 not-group-hover/title:translate-y-px transition-all duration-200 group-hover/title:translate-x-px group-hover/title:-translate-y-px" />
                   </Link>
-                </motion.div>
+                </div>
               )
             })}
           </motion.div>
-        </motion.div>
+        </div>
       </motion.div>
 
       <motion.div
