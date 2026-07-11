@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Fira_Code } from 'next/font/google'
 import type React from 'react'
+import Script from 'next/script'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { VideoCacheProvider } from '@/components/video-cache-context'
@@ -36,6 +37,7 @@ export default async function RootLayout({
           href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
+        <meta name="apple-mobile-web-app-title" content="Jasper G" />
       </head>
       <body className="min-h-dvh bg-white antialiased dark:bg-zinc-950">
         <VideoCacheProvider>
@@ -43,6 +45,7 @@ export default async function RootLayout({
           {children}
           <Footer />
         </VideoCacheProvider>
+        <Script src="https://ui.sh/ui-picker.js" />
       </body>
     </html>
   )
