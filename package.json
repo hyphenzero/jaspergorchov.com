@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "biome check .",
-    "format": "biome check . --write --unsafe",
-    "screenshot": "node scripts/screenshot.mjs"
+    "format": "biome check . --write --unsafe"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.10",
@@ -16,6 +15,7 @@
     "@next/mdx": "16.2.10",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
+    "@ridemountainpig/svgl-react": "^1.0.17",
     "@shikijs/transformers": "^4.3.1",
     "@tailwindcss/postcss": "^4.3.2",
     "@types/mdx": "^2.0.14",
@@ -44,6 +44,7 @@
     "@types/react-dom": "19.2.3",
     "@types/three": "^0.185.0",
     "postcss": "^8.5.16",
+    "sharp": "^0.35.3",
     "typescript": "^6.0.3"
   },
   "postcss": {
