@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import { Fragment } from 'react'
 import type { ThemeId } from './types'
 
-// ─── JG theme (exact replica of src/components/listbox.tsx) ───────────────────
+// ─── Jasper Gorchov theme (exact replica of src/components/listbox.tsx) ───────────
 
 function JgButton({
   children,

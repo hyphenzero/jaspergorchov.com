@@ -1,12 +1,11 @@
 'use client'
 
-import { Field, Label } from '@/components/fieldset'
 import { useEditor } from './store'
 import { ThemedListbox, ThemedListboxOption } from './themed-listbox'
 import { THEME_IDS, type ThemeId } from './types'
 
 const themeNames: Record<ThemeId, string> = {
-  jg: 'JG',
+  jg: 'Jasper Gorchov',
   terminal: 'Terminal',
   retro: 'Retro',
   tactile: 'Tactile',
@@ -16,8 +15,8 @@ export function ThemeSwitcher() {
   const { state, dispatch } = useEditor()
 
   return (
-    <Field className="flex items-center gap-2 [&>[data-slot=label]+[data-slot=control]]:mt-0">
-      <Label>Theme</Label>
+    <div className="flex items-center gap-2">
+      <span className="select-none text-base/6 text-zinc-950 dark:text-white sm:text-sm/6">Theme</span>
       <ThemedListbox
         theme={state.theme}
         value={state.theme}
@@ -30,6 +29,6 @@ export function ThemeSwitcher() {
           </ThemedListboxOption>
         ))}
       </ThemedListbox>
-    </Field>
+    </div>
   )
 }

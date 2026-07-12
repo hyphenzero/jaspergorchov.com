@@ -23,6 +23,8 @@ export interface BaseLayer {
   rotation: number
   opacity: number
   visible: boolean
+  flippedX?: boolean
+  flippedY?: boolean
 }
 
 export interface RectangleLayer extends BaseLayer {
@@ -84,6 +86,7 @@ export type EditorAction =
   | { type: 'SET_BRUSH_COLOR'; color: string }
   | { type: 'SET_FILL_COLOR'; color: string }
   | { type: 'LOAD_DEFAULT_COMPOSITION' }
+  | { type: 'SET_LAYERS'; layers: Layer[] }
 
 export interface EditorState {
   layers: Layer[]

@@ -1,10 +1,18 @@
 'use client'
 
-import { type CSSProperties, type PointerEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useEditor } from './store'
 import {
-  ARTBOARD_HEIGHT,
-  ARTBOARD_WIDTH,
+  type CSSProperties,
+  type KeyboardEvent,
+  type PointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { type Command, createLayer as createLayerCmd } from './commands'
+import { useEditor } from './store'
+import { getToolForId, getResizeCursor, type ToolContext } from './tools'
+import {
   type BrushLayer,
   type EllipseLayer,
   isBrushLayer,
@@ -15,15 +23,14 @@ import {
   type ThemeId,
 } from './types'
 
-const MIN_LAYER_SIZE = 8
-const DEFAULT_VIEWPORT = { width: ARTBOARD_WIDTH, height: ARTBOARD_HEIGHT }
-
-function generateId() {
-  return `layer-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max)
+function brushCursorUrl(size: number): string {
+  const d = Math.max(size, 8)
+  if (d > 128) return 'none'
+  const r = d / 2
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${d}" height="${d}" viewBox="0 0 ${d} ${d}">
+    <circle cx="${r}" cy="${r}" r="${r - 0.5}" fill="none" stroke="rgba(161,161,170,0.6)" stroke-width="1"/>
+  </svg>`
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}") ${r} ${r}, none`
 }
 
 function hitTest(layers: Layer[], point: Point): Layer | null {
@@ -39,36 +46,8 @@ function hitTest(layers: Layer[], point: Point): Layer | null {
       return layer
     }
   }
-
   return null
 }
-
-function getArtboardPoint(event: PointerEvent, artboard: HTMLDivElement, scale: number): Point {
-  const rect = artboard.getBoundingClientRect()
-
-  return {
-    x: (event.clientX - rect.left) / scale,
-    y: (event.clientY - rect.top) / scale,
-  }
-}
-
-type Interaction =
-  | { type: 'idle' }
-  | { type: 'dragging'; layerId: string; offsetX: number; offsetY: number; changed: boolean }
-  | {
-      type: 'resizing'
-      layerId: string
-      handle: string
-      startX: number
-      startY: number
-      origX: number
-      origY: number
-      origW: number
-      origH: number
-      changed: boolean
-    }
-  | { type: 'drawing'; layerId: string; changed: boolean }
-  | { type: 'creating'; layerId: string; startX: number; startY: number; changed: boolean }
 
 function renderRectangle(layer: RectangleLayer) {
   const fill =
@@ -118,72 +97,74 @@ function renderText(layer: TextLayer) {
   )
 }
 
-function renderBrush(layer: BrushLayer) {
+function renderBrush(layer: BrushLayer, zIndex: number) {
   if (layer.points.length === 1) {
     const [point] = layer.points
     return (
-      <circle cx={point.x} cy={point.y} r={layer.strokeWidth / 2} fill={layer.strokeColor} opacity={layer.opacity} />
+      <svg className="pointer-events-none absolute inset-0 overflow-visible" style={{ zIndex }}>
+        <circle cx={point.x} cy={point.y} r={layer.strokeWidth / 2} fill={layer.strokeColor} opacity={layer.opacity} />
+      </svg>
     )
   }
 
-  const points = layer.points.map((point) => `${point.x},${point.y}`).join(' ')
+  const d = pointsToSmoothPath(layer.points)
 
   return (
-    <polyline
-      points={points}
-      stroke={layer.strokeColor}
-      strokeWidth={layer.strokeWidth}
-      fill="none"
-      opacity={layer.opacity}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
+    <svg className="pointer-events-none absolute inset-0 overflow-visible" style={{ zIndex }}>
+      <path
+        d={d}
+        stroke={layer.strokeColor}
+        strokeWidth={layer.strokeWidth}
+        fill="none"
+        opacity={layer.opacity}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   )
 }
 
-function getHandlePosition(handle: string): CSSProperties {
-  switch (handle) {
-    case 'top-left':
-      return { left: -5, top: -5, cursor: 'nwse-resize' }
-    case 'top':
-      return { left: '50%', top: -5, cursor: 'ns-resize', transform: 'translateX(-50%)' }
-    case 'top-right':
-      return { right: -5, top: -5, cursor: 'nesw-resize' }
-    case 'right':
-      return { right: -5, top: '50%', cursor: 'ew-resize', transform: 'translateY(-50%)' }
-    case 'bottom-right':
-      return { right: -5, bottom: -5, cursor: 'nwse-resize' }
-    case 'bottom':
-      return { left: '50%', bottom: -5, cursor: 'ns-resize', transform: 'translateX(-50%)' }
-    case 'bottom-left':
-      return { left: -5, bottom: -5, cursor: 'nesw-resize' }
-    case 'left':
-      return { left: -5, top: '50%', cursor: 'ew-resize', transform: 'translateY(-50%)' }
-    default:
-      return { left: -5, top: -5 }
+function pointsToSmoothPath(points: Point[]): string {
+  let d = `M ${points[0].x},${points[0].y}`
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const curr = points[i]
+    const next = points[i + 1]
+    const midX = (curr.x + next.x) / 2
+    const midY = (curr.y + next.y) / 2
+
+    if (i < points.length - 2) {
+      d += ` Q ${curr.x},${curr.y} ${midX},${midY}`
+    } else {
+      d += ` Q ${curr.x},${curr.y} ${next.x},${next.y}`
+    }
   }
+
+  return d
 }
 
-function viewportClassName(theme: ThemeId) {
-  if (theme === 'terminal') return 'relative size-full min-w-0 overflow-hidden bg-zinc-950'
-  if (theme === 'retro') return 'relative size-full min-w-0 overflow-hidden bg-zinc-300 dark:bg-zinc-700'
-  if (theme === 'tactile') {
-    return 'relative size-full min-w-0 overflow-hidden bg-gradient-to-b from-zinc-800 to-zinc-950 dark:from-zinc-800 dark:to-zinc-950'
+function getHandlePosition(handle: string, width: number, height: number): CSSProperties {
+  const positions: Record<string, { left?: number | string; top?: number | string; cursor: string }> = {
+    'top-left':     { left: 0.5,          top: 0.5,          cursor: 'nwse-resize' },
+    'top-right':    { left: width - 0.5,  top: 0.5,          cursor: 'nesw-resize' },
+    'bottom-right': { left: width - 0.5,  top: height - 0.5, cursor: 'nwse-resize' },
+    'bottom-left':  { left: 0.5,          top: height - 0.5, cursor: 'nesw-resize' },
   }
-  return 'relative size-full min-w-0 overflow-hidden bg-zinc-100 dark:bg-zinc-900'
+  const pos = positions[handle] ?? { left: 0, top: 0, cursor: 'default' }
+  return { ...pos, transform: 'translate(-50%, -50%)' }
 }
 
-function artboardClassName(theme: ThemeId, cursorClass: string) {
+function viewportClassName(theme: ThemeId, cursorClass: string) {
   if (theme === 'terminal') {
-    return `absolute top-0 left-0 overflow-hidden border border-green-500 bg-zinc-950 ${cursorClass}`
+    return `relative size-full min-w-0 overflow-hidden border border-green-500 bg-zinc-950 ${cursorClass}`
   }
   if (theme === 'retro') {
-    return `absolute top-0 left-0 overflow-hidden border border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
+    return `relative size-full min-w-0 overflow-hidden border border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
   }
   if (theme === 'tactile') {
-    return `absolute top-0 left-0 overflow-hidden border border-white/10 bg-gradient-to-b from-zinc-700 to-zinc-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] dark:border-white/10 dark:from-zinc-700 dark:to-zinc-900 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] ${cursorClass}`
+    return `relative size-full min-w-0 overflow-hidden border border-white/10 bg-gradient-to-b from-zinc-700 to-zinc-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] dark:border-white/10 dark:from-zinc-700 dark:to-zinc-900 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] ${cursorClass}`
   }
-  return `absolute top-0 left-0 overflow-hidden border border-transparent overflow-clip rounded-2xl bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline ${cursorClass}`
+  return `relative size-full min-w-0 rounded-3xl bg-zinc-100 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900/50 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-3xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline ${cursorClass}`
 }
 
 function edgeRingClassName(theme: ThemeId) {
@@ -204,13 +185,13 @@ function selectionBorderClassName(theme: ThemeId) {
 }
 
 function selectionHandleClassName(theme: ThemeId) {
-  if (theme === 'terminal') return 'pointer-events-auto absolute size-2 bg-zinc-950 ring-2 ring-green-400'
+  if (theme === 'terminal') return 'pointer-events-auto absolute size-[9px] border-2 border-green-400 bg-zinc-950'
   if (theme === 'retro')
-    return 'pointer-events-auto absolute size-2 bg-white ring-2 ring-black dark:bg-zinc-500 dark:ring-zinc-200'
+    return 'pointer-events-auto absolute size-[9px] border-2 border-black bg-white dark:bg-zinc-500 dark:border-zinc-200'
   if (theme === 'tactile') {
-    return 'pointer-events-auto absolute size-2 rounded-full bg-gradient-to-b from-white to-sky-200 ring-2 ring-sky-500 shadow-[inset_0_1px_0_rgb(255_255_255/0.8),0_1px_4px_rgb(0_0_0/0.4)] dark:ring-sky-400'
+    return 'pointer-events-auto absolute size-[9px] rounded-full border-2 border-sky-500 bg-gradient-to-b from-white to-sky-200 shadow-[inset_0_1px_0_rgb(255_255_255/0.8),0_1px_4px_rgb(0_0_0/0.4)] dark:border-sky-400'
   }
-  return 'pointer-events-auto absolute size-1.5 bg-white ring ring-sky-500 dark:ring-sky-400'
+  return 'pointer-events-auto absolute size-[9px] border border-sky-500 bg-white dark:border-sky-400'
 }
 
 function SelectionHandles({
@@ -227,7 +208,7 @@ function SelectionHandles({
   return (
     <div
       className="pointer-events-none absolute"
-      style={{ left: layer.x - 1, top: layer.y - 2, width: layer.width + 4, height: layer.height + 4 }}
+      style={{ left: layer.x, top: layer.y, width: layer.width, height: layer.height, zIndex: 10 }}
     >
       <div className={selectionBorderClassName(theme)} />
       {handles.map((handle) => (
@@ -236,7 +217,7 @@ function SelectionHandles({
           type="button"
           aria-label={`Resize from ${handle.replace('-', ' ')}`}
           className={selectionHandleClassName(theme)}
-          style={getHandlePosition(handle)}
+          style={getHandlePosition(handle, layer.width, layer.height)}
           onPointerDown={(event) => {
             event.stopPropagation()
             onResizePointerDown(event, handle)
@@ -247,15 +228,72 @@ function SelectionHandles({
   )
 }
 
-function CanvasLayer({ layer, zIndex }: { layer: Layer; zIndex: number }) {
+function CanvasLayer({
+  layer,
+  zIndex,
+  editingTextId,
+  onFinishEdit,
+}: {
+  layer: Layer
+  zIndex: number
+  editingTextId: string | null
+  onFinishEdit: (id: string, text: string) => void
+}) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const isEditing = layer.id === editingTextId && layer.type === 'text'
+
+  useEffect(() => {
+    if (!isEditing) return
+    inputRef.current?.focus()
+  }, [isEditing])
+
   if (!layer.visible) return null
 
-  if (isBrushLayer(layer)) {
+  if (isEditing) {
+    const textLayer = layer as TextLayer
     return (
-      <svg className="pointer-events-none absolute inset-0 overflow-visible" style={{ zIndex }}>
-        {renderBrush(layer)}
-      </svg>
+      <div
+        className="absolute"
+        style={{
+          left: layer.x,
+          top: layer.y,
+          width: layer.width,
+          height: layer.height,
+          zIndex,
+        }}
+      >
+        <input
+          ref={inputRef}
+          type="text"
+          defaultValue={textLayer.text}
+          className="size-full cursor-text bg-transparent outline-none"
+          style={{
+            color: textLayer.fill,
+            fontSize: textLayer.fontSize,
+            fontWeight: 600,
+            lineHeight: 1.04,
+            opacity: textLayer.opacity,
+            border: 'none',
+            padding: 0,
+          }}
+          onBlur={(e) => onFinishEdit(layer.id, e.currentTarget.value)}
+          onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+            if (e.key === 'Enter') {
+              e.preventDefault()
+              e.currentTarget.blur()
+            }
+            if (e.key === 'Escape') {
+              e.currentTarget.value = textLayer.text
+              e.currentTarget.blur()
+            }
+          }}
+        />
+      </div>
     )
+  }
+
+  if (isBrushLayer(layer)) {
+    return renderBrush(layer, zIndex)
   }
 
   const content =
@@ -282,18 +320,19 @@ function CanvasLayer({ layer, zIndex }: { layer: Layer; zIndex: number }) {
 }
 
 export function Canvas() {
-  const { state, dispatch } = useEditor()
+  const { state, dispatch, history } = useEditor()
   const viewportRef = useRef<HTMLDivElement>(null)
-  const artboardRef = useRef<HTMLDivElement>(null)
-  const interactionRef = useRef<Interaction>({ type: 'idle' })
-  const [viewport, setViewport] = useState(DEFAULT_VIEWPORT)
+  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 })
+  const [editingTextId, setEditingTextId] = useState<string | null>(null)
+  const pointerCapturedRef = useRef(false)
+
   useEffect(() => {
     const viewportNode = viewportRef.current
     if (!viewportNode) return
 
     const update = () => {
       const rect = viewportNode.getBoundingClientRect()
-      setViewport({ width: rect.width, height: rect.height })
+      setViewportSize({ width: rect.width, height: rect.height })
     }
 
     update()
@@ -303,289 +342,216 @@ export function Canvas() {
     return () => observer.disconnect()
   }, [])
 
-  const scale = useMemo(() => {
-    if (viewport.width === 0 || viewport.height === 0) return 1
-    return Math.max(viewport.width / ARTBOARD_WIDTH, viewport.height / ARTBOARD_HEIGHT)
-  }, [viewport])
+  const layersRef = useRef(state.layers)
+  layersRef.current = state.layers
 
-  const commit = useCallback(() => {
-    const interaction = interactionRef.current
-    if (interaction.type !== 'idle' && interaction.changed) {
-      dispatch({ type: 'PUSH_HISTORY' })
+  const getPoint = useCallback((clientX: number, clientY: number): Point => {
+    const el = viewportRef.current
+    const rect = el?.getBoundingClientRect()
+    if (!rect) return { x: 0, y: 0 }
+    return {
+      x: clientX - rect.left,
+      y: clientY - rect.top,
     }
+  }, [])
 
-    interactionRef.current = { type: 'idle' }
-  }, [dispatch])
-
-  const getPoint = useCallback(
-    (event: PointerEvent) => {
-      const artboard = artboardRef.current
-      if (!artboard) return null
-
-      const point = getArtboardPoint(event, artboard, scale || 1)
-      return {
-        x: clamp(point.x, 0, ARTBOARD_WIDTH),
-        y: clamp(point.y, 0, ARTBOARD_HEIGHT),
-      }
+  const recordCommand = useCallback(
+    (cmd: Command) => {
+      history.record(cmd)
     },
-    [scale]
+    [history]
   )
 
-  const handlePointerDown = useCallback(
-    (event: PointerEvent) => {
-      if (interactionRef.current.type !== 'idle') return
+  const startEditingText = useCallback((id: string, _text: string, _x: number, _y: number) => {
+    requestAnimationFrame(() => setEditingTextId(id))
+  }, [])
 
-      const point = getPoint(event)
-      if (!point) return
+  const stopEditingText = useCallback(() => {
+    setEditingTextId(null)
+  }, [])
 
-      switch (state.activeTool) {
-        case 'move': {
-          const hit = hitTest(state.layers, point)
-          if (!hit) {
-            dispatch({ type: 'DESELECT' })
-            break
-          }
-
-          dispatch({ type: 'SELECT_LAYER', id: hit.id })
-          interactionRef.current = {
-            type: 'dragging',
-            layerId: hit.id,
-            offsetX: point.x - hit.x,
-            offsetY: point.y - hit.y,
-            changed: false,
-          }
-          break
-        }
-
-        case 'brush': {
-          const id = generateId()
-          dispatch({
-            type: 'START_BRUSH_STROKE',
-            id,
-            point,
-            color: state.brushColor,
-            size: state.brushSize,
-          })
-          interactionRef.current = { type: 'drawing', layerId: id, changed: true }
-          break
-        }
-
-        case 'rectangle':
-        case 'ellipse': {
-          const id = generateId()
-          dispatch({
-            type: 'START_CREATE',
-            id,
-            shapeType: state.activeTool,
-            point,
-            fill: state.fillColor,
-          })
-          interactionRef.current = {
-            type: 'creating',
-            layerId: id,
-            startX: point.x,
-            startY: point.y,
-            changed: true,
-          }
-          break
-        }
-
-        case 'text': {
-          const id = generateId()
-          const textLayer: TextLayer = {
-            id,
-            type: 'text',
-            name: 'Text',
-            x: clamp(point.x - 54, 0, ARTBOARD_WIDTH - 108),
-            y: clamp(point.y - 18, 0, ARTBOARD_HEIGHT - 36),
-            width: 108,
-            height: 36,
-            rotation: 0,
-            opacity: 1,
-            visible: true,
-            text: 'Text',
-            fontSize: 22,
-            fill: state.fillColor,
-          }
-          dispatch({ type: 'CREATE_LAYER', layer: textLayer })
-          break
-        }
+  const handleFinishEdit = useCallback(
+    (id: string, text: string) => {
+      const layer = layersRef.current.find((l) => l.id === id)
+      if (layer) {
+        const finalLayer = { ...layer, text }
+        history.record(createLayerCmd(finalLayer))
       }
-
-      artboardRef.current?.setPointerCapture(event.pointerId)
+      dispatch({ type: 'SET_LAYER_PROPERTY', id, property: 'text', value: text })
+      setEditingTextId(null)
     },
-    [dispatch, getPoint, state.activeTool, state.brushColor, state.brushSize, state.fillColor, state.layers]
+    [dispatch, history]
+  )
+
+  const buildToolContext = useCallback(
+    (): ToolContext => ({
+      layers: state.layers,
+      selectedLayerId: state.selectedLayerId,
+      fillColor: state.fillColor,
+      brushColor: state.brushColor,
+      brushSize: state.brushSize,
+      dispatch,
+      recordCommand,
+      editingTextId,
+      startEditingText,
+      stopEditingText,
+      getCanvasPoint: getPoint,
+    }),
+    [
+      state.layers,
+      state.selectedLayerId,
+      state.fillColor,
+      state.brushColor,
+      state.brushSize,
+      dispatch,
+      recordCommand,
+      editingTextId,
+      startEditingText,
+      stopEditingText,
+      getPoint,
+    ]
+  )
+
+  const cursorRef = useRef('default')
+  const selectedLayerRef = useRef(state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null)
+  selectedLayerRef.current = state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null
+
+  const handlePointerDown = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const tool = getToolForId(state.activeTool)
+      const ctx = buildToolContext()
+      tool.onPointerDown(event, ctx)
+
+      if (state.activeTool !== 'text') {
+        viewportRef.current?.setPointerCapture(event.pointerId)
+        pointerCapturedRef.current = true
+      }
+    },
+    [state.activeTool, buildToolContext]
   )
 
   const handlePointerMove = useCallback(
-    (event: PointerEvent) => {
-      const interaction = interactionRef.current
-      if (interaction.type === 'idle') return
+    (event: PointerEvent<HTMLDivElement>) => {
+      const tool = getToolForId(state.activeTool)
+      const ctx = buildToolContext()
+      tool.onPointerMove(event, ctx)
 
-      const point = getPoint(event)
-      if (!point) return
+      if (state.activeTool === 'brush') return
 
-      switch (interaction.type) {
-        case 'dragging': {
-          const layer = state.layers.find((candidate) => candidate.id === interaction.layerId)
-          if (!layer) return
-
-          const nextX = clamp(
-            point.x - interaction.offsetX,
-            -layer.width + MIN_LAYER_SIZE,
-            ARTBOARD_WIDTH - MIN_LAYER_SIZE
-          )
-          const nextY = clamp(
-            point.y - interaction.offsetY,
-            -layer.height + MIN_LAYER_SIZE,
-            ARTBOARD_HEIGHT - MIN_LAYER_SIZE
-          )
-
-          interactionRef.current = { ...interaction, changed: true }
-          dispatch({
-            type: 'MOVE_LAYER',
-            id: interaction.layerId,
-            x: nextX,
-            y: nextY,
-          })
-          break
-        }
-
-        case 'resizing': {
-          const dx = point.x - interaction.startX
-          const dy = point.y - interaction.startY
-          let nextX = interaction.origX
-          let nextY = interaction.origY
-          let nextWidth = interaction.origW
-          let nextHeight = interaction.origH
-
-          if (interaction.handle.includes('left')) {
-            nextX = interaction.origX + dx
-            nextWidth = interaction.origW - dx
-          }
-          if (interaction.handle.includes('right')) nextWidth = interaction.origW + dx
-          if (interaction.handle.includes('top')) {
-            nextY = interaction.origY + dy
-            nextHeight = interaction.origH - dy
-          }
-          if (interaction.handle.includes('bottom')) nextHeight = interaction.origH + dy
-
-          if (nextWidth < MIN_LAYER_SIZE) {
-            if (interaction.handle.includes('left')) nextX = interaction.origX + interaction.origW - MIN_LAYER_SIZE
-            nextWidth = MIN_LAYER_SIZE
-          }
-          if (nextHeight < MIN_LAYER_SIZE) {
-            if (interaction.handle.includes('top')) nextY = interaction.origY + interaction.origH - MIN_LAYER_SIZE
-            nextHeight = MIN_LAYER_SIZE
-          }
-
-          interactionRef.current = { ...interaction, changed: true }
-          dispatch({
-            type: 'RESIZE_LAYER',
-            id: interaction.layerId,
-            x: nextX,
-            y: nextY,
-            width: nextWidth,
-            height: nextHeight,
-          })
-          break
-        }
-
-        case 'drawing':
-          dispatch({ type: 'ADD_BRUSH_POINT', id: interaction.layerId, point })
-          interactionRef.current = { ...interaction, changed: true }
-          break
-
-        case 'creating': {
-          const x = Math.min(interaction.startX, point.x)
-          const y = Math.min(interaction.startY, point.y)
-          const width = Math.max(Math.abs(point.x - interaction.startX), MIN_LAYER_SIZE)
-          const height = Math.max(Math.abs(point.y - interaction.startY), MIN_LAYER_SIZE)
-
-          dispatch({
-            type: 'UPDATE_CREATING',
-            id: interaction.layerId,
-            x,
-            y,
-            width,
-            height,
-          })
-          interactionRef.current = { ...interaction, changed: true }
-          break
+      const layer = selectedLayerRef.current
+      if (state.activeTool === 'move' && layer && viewportRef.current) {
+        const pt = getPoint(event.clientX, event.clientY)
+        const handle = getResizeCursor(layer, pt)
+        const newCursor = handle ?? 'default'
+        if (newCursor !== cursorRef.current) {
+          cursorRef.current = newCursor
+          viewportRef.current.style.cursor = newCursor
         }
       }
     },
-    [dispatch, getPoint, state.layers]
+    [state.activeTool, buildToolContext, getPoint]
   )
 
-  const handleResizePointerDown = useCallback(
-    (event: PointerEvent, handle: string) => {
-      const layer = state.layers.find((candidate) => candidate.id === state.selectedLayerId)
-      const point = getPoint(event)
-      if (!layer || !point) return
+  const handlePointerUp = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const tool = getToolForId(state.activeTool)
+      const ctx = buildToolContext()
+      tool.onPointerUp(event, ctx)
 
-      interactionRef.current = {
-        type: 'resizing',
-        layerId: layer.id,
-        handle,
-        startX: point.x,
-        startY: point.y,
-        origX: layer.x,
-        origY: layer.y,
-        origW: layer.width,
-        origH: layer.height,
-        changed: false,
+      if (pointerCapturedRef.current) {
+        viewportRef.current?.releasePointerCapture(event.pointerId)
+        pointerCapturedRef.current = false
       }
 
-      artboardRef.current?.setPointerCapture(event.pointerId)
+      if (viewportRef.current && state.activeTool !== 'brush') {
+        const resetCursor = 'default'
+        cursorRef.current = resetCursor
+        viewportRef.current.style.cursor = resetCursor
+      }
     },
-    [getPoint, state.layers, state.selectedLayerId]
+    [state.activeTool, buildToolContext]
+  )
+
+  const handlePointerCancel = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const tool = getToolForId(state.activeTool)
+      const ctx = buildToolContext()
+      tool.onCancel(ctx)
+
+      if (pointerCapturedRef.current) {
+        viewportRef.current?.releasePointerCapture(event.pointerId)
+        pointerCapturedRef.current = false
+      }
+    },
+    [state.activeTool, buildToolContext]
+  )
+
+  const handleDoubleClick = useCallback(
+    (event: React.MouseEvent) => {
+      const point = getPoint(event.clientX, event.clientY)
+
+      const hit = hitTest(state.layers, point)
+      if (hit && hit.type === 'text') {
+        setEditingTextId(hit.id)
+      }
+    },
+    [getPoint, state.layers]
   )
 
   const selectedLayer = state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null
   const showSelection = selectedLayer && state.activeTool === 'move' && selectedLayer.visible
-  const cursorClass =
-    state.activeTool === 'move' ? 'cursor-default' : state.activeTool === 'text' ? 'cursor-text' : 'cursor-crosshair'
+  const cursorClass = getToolForId(state.activeTool).cursor
+  const brushCursor = state.activeTool === 'brush' ? brushCursorUrl(state.brushSize) : undefined
 
   return (
-    <div ref={viewportRef} className={viewportClassName(state.theme)}>
+    <div
+      ref={viewportRef}
+      className={viewportClassName(state.theme, cursorClass) + ' isolate'}
+      style={{ touchAction: 'none', cursor: brushCursor }}
+      onPointerDown={handlePointerDown}
+      onPointerMove={handlePointerMove}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerCancel}
+      onDoubleClick={handleDoubleClick}
+    >
       <div className={edgeRingClassName(state.theme)} />
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div
-          className="relative"
-          style={{
-            width: ARTBOARD_WIDTH * scale,
-            height: ARTBOARD_HEIGHT * scale,
-          }}
-        >
-          <div
-            ref={artboardRef}
-            className={artboardClassName(state.theme, cursorClass)}
-            style={{
-              width: ARTBOARD_WIDTH,
-              height: ARTBOARD_HEIGHT,
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-              touchAction: 'none',
-            }}
-            onPointerDown={handlePointerDown}
-            onPointerMove={handlePointerMove}
-            onPointerUp={commit}
-            onPointerCancel={commit}
-          >
-            {state.layers.map((layer, index) => (
-              <CanvasLayer key={layer.id} layer={layer} zIndex={index + 1} />
-            ))}
+      <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
+        {state.layers.map((layer, index) => (
+          <CanvasLayer
+            key={layer.id}
+            layer={layer}
+            zIndex={index + 1}
+            editingTextId={editingTextId}
+            onFinishEdit={handleFinishEdit}
+          />
+        ))}
 
-            {showSelection && (
-              <SelectionHandles
-                layer={selectedLayer}
-                theme={state.theme}
-                onResizePointerDown={handleResizePointerDown}
-              />
-            )}
-          </div>
-        </div>
+        {showSelection && (
+          <SelectionHandles
+            layer={selectedLayer}
+            theme={state.theme}
+            onResizePointerDown={(event, handle) => {
+              const ctx = buildToolContext()
+              ctx.dispatch({ type: 'SELECT_LAYER', id: selectedLayer.id })
+              const pt = ctx.getCanvasPoint(event.clientX, event.clientY)
+              if (!pt) return
+              const tool = getToolForId('move')
+              ;(tool as any)._resizeState = {
+                layerId: selectedLayer.id,
+                handle,
+                startX: pt.x,
+                startY: pt.y,
+                layerStartX: selectedLayer.x,
+                layerStartY: selectedLayer.y,
+                layerStartW: selectedLayer.width,
+                layerStartH: selectedLayer.height,
+                oldPoints: selectedLayer.type === 'brush' ? [...selectedLayer.points] : undefined,
+              }
+              viewportRef.current?.setPointerCapture(event.pointerId)
+              pointerCapturedRef.current = true
+            }}
+          />
+        )}
       </div>
     </div>
   )

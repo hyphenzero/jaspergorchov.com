@@ -55,13 +55,17 @@ function EditorInner() {
   }
 
   return (
-    <div tabIndex={0} onKeyDown={handleKeyDown} className="relative h-full overflow-hidden outline-none">
-      <Canvas />
+    <div tabIndex={0} onKeyDown={handleKeyDown} className="relative overflow-visible outline-none">
+      <div className="w-full flex flex-col justify-end" style={{ aspectRatio: '16/10' }}>
+        <div className="absolute inset-0">
+          <Canvas />
+        </div>
+        <div className="sticky bottom-4 z-10 flex justify-center pb-4">
+          <BottomToolbar />
+        </div>
+      </div>
       <div className="absolute top-3 left-1/2 z-10 -translate-x-1/2">
         <ThemeSwitcher />
-      </div>
-      <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2">
-        <BottomToolbar />
       </div>
     </div>
   )

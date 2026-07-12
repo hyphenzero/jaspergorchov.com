@@ -44,7 +44,7 @@ function toolbarClassName(theme: ThemeId) {
     return 'pointer-events-auto flex items-center gap-1.5 rounded-full border border-white/15 bg-gradient-to-b from-white/12 to-white/5 px-3 py-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.15),inset_0_-1px_0_rgb(0_0_0/0.4),0_12px_28px_rgb(0_0_0/0.5)] backdrop-blur-md dark:border-white/15 dark:from-white/10 dark:to-white/5'
   }
 
-  return 'pointer-events-auto flex items-center gap-1.5 rounded-full bg-white p-1 shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/5'
+  return 'pointer-events-auto relative flex items-center gap-1.5 rounded-full p-2 bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-full dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline'
 }
 
 function popoverClassName(theme: ThemeId) {
@@ -60,7 +60,7 @@ function popoverClassName(theme: ThemeId) {
     return 'mb-3 flex items-center gap-3 rounded-full border border-white/15 bg-gradient-to-b from-white/12 to-white/5 px-4 py-2 shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_10px_24px_rgb(0_0_0/0.5)] backdrop-blur-md dark:border-white/15 dark:from-white/10 dark:to-white/5'
   }
 
-  return 'mb-3 flex items-center gap-3 rounded-full bg-white/90 px-4 py-2 shadow-sm ring-1 ring-zinc-200 backdrop-blur-md dark:bg-zinc-900/90 dark:ring-zinc-700'
+  return 'mb-3 relative flex items-center gap-3 rounded-full p-2 bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-full dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline'
 }
 
 function toolButtonClassName(theme: ThemeId, isActive: boolean) {
@@ -194,10 +194,10 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
 }
 
 export function BottomToolbar() {
-  const { state, dispatch } = useEditor()
+  const { state, dispatch, history } = useEditor()
 
-  const canUndo = state.historyIndex > 0
-  const canRedo = state.historyIndex < state.history.length - 1
+  const canUndo = history.canUndo
+  const canRedo = history.canRedo
 
   return (
     <div className="pointer-events-none flex justify-center px-4">

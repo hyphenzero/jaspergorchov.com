@@ -63,7 +63,7 @@ export default async function Home() {
       {/*<div className="absolute inset-x-0 z-10 h-px bg-zinc-950/10 dark:bg-white/10" />*/}
       <Container className="mt-24">
         {/*<div className="absolute -inset-y-12 z-10 w-px bg-zinc-950/10 dark:bg-white/10" />*/}
-        <div className="relative aspect-16/10">
+        <div className="relative">
           <MiniEditor />
         </div>
         {/*<div className="absolute -inset-y-12 right-6 z-10 w-px bg-zinc-950/10 lg:right-8 dark:bg-white/10" />*/}

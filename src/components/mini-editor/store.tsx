@@ -1,26 +1,22 @@
 'use client'
 
-import { createContext, type ReactNode, useContext, useReducer } from 'react'
-import type {
-  BrushLayer,
-  EditorAction,
-  EditorState,
-  EllipseLayer,
-  Layer,
-  Point,
-  RectangleLayer,
-  TextLayer,
-} from './types'
-import { ARTBOARD_HEIGHT, ARTBOARD_WIDTH } from './types'
-
-const HISTORY_MAX = 20
+import { createContext, type ReactNode, useCallback, useContext, useReducer, useRef } from 'react'
+import type { Command } from './commands'
+import {
+  CommandHistory,
+  createLayer as createLayerCmd,
+  deleteLayer,
+  reorderLayer,
+  toggleVisibility,
+  updateLayerProperty,
+} from './commands'
+import type { BrushLayer, EditorAction, EditorState, EllipseLayer, Layer, RectangleLayer } from './types'
 
 function createInitialLayers(): Layer[] {
   return []
 }
 
 const initialLayers = createInitialLayers()
-const initialHistory = [JSON.stringify(initialLayers)]
 
 export const initialState: EditorState = {
   layers: initialLayers,
@@ -30,26 +26,8 @@ export const initialState: EditorState = {
   brushSize: 4,
   brushColor: '#1d1d1f',
   fillColor: '#60a5fa',
-  history: initialHistory,
+  history: [],
   historyIndex: 0,
-}
-
-function pushHistory(state: EditorState): EditorState {
-  const snapshot = JSON.stringify(state.layers)
-  if (state.history[state.historyIndex] === snapshot) {
-    return state
-  }
-
-  const newHistory = state.history.slice(0, state.historyIndex + 1)
-  newHistory.push(snapshot)
-  while (newHistory.length > HISTORY_MAX) {
-    newHistory.shift()
-  }
-  return {
-    ...state,
-    history: newHistory,
-    historyIndex: newHistory.length - 1,
-  }
 }
 
 function editorReducer(state: EditorState, action: EditorAction): EditorState {
@@ -75,19 +53,21 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     case 'SET_FILL_COLOR':
       return { ...state, fillColor: action.color }
 
+    case 'SET_LAYERS':
+      return { ...state, layers: action.layers }
+
     case 'CREATE_LAYER': {
-      const newState = {
+      return {
         ...state,
         layers: [...state.layers, action.layer],
         selectedLayerId: action.layer.id,
       }
-      return pushHistory(newState)
     }
 
     case 'DELETE_LAYER': {
       const filtered = state.layers.filter((l) => l.id !== action.id)
       const newSelected = state.selectedLayerId === action.id ? null : state.selectedLayerId
-      return pushHistory({ ...state, layers: filtered, selectedLayerId: newSelected })
+      return { ...state, layers: filtered, selectedLayerId: newSelected }
     }
 
     case 'REORDER_LAYER': {
@@ -96,17 +76,17 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       if (idx === -1) return state
       const [layer] = layers.splice(idx, 1)
       layers.splice(action.index, 0, layer)
-      return pushHistory({ ...state, layers })
+      return { ...state, layers }
     }
 
     case 'RENAME_LAYER': {
       const layers = state.layers.map((l) => (l.id === action.id ? { ...l, name: action.name } : l))
-      return pushHistory({ ...state, layers })
+      return { ...state, layers }
     }
 
     case 'TOGGLE_VISIBILITY': {
       const layers = state.layers.map((l) => (l.id === action.id ? { ...l, visible: !l.visible } : l))
-      return pushHistory({ ...state, layers })
+      return { ...state, layers }
     }
 
     case 'SET_LAYER_PROPERTY': {
@@ -114,7 +94,7 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         if (l.id !== action.id) return l
         return { ...l, [action.property]: action.value }
       })
-      return pushHistory({ ...state, layers })
+      return { ...state, layers }
     }
 
     case 'MOVE_LAYER': {
@@ -136,9 +116,31 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     }
 
     case 'RESIZE_LAYER': {
-      const layers = state.layers.map((l) =>
-        l.id === action.id ? { ...l, x: action.x, y: action.y, width: action.width, height: action.height } : l
-      )
+      const layers = state.layers.map((l) => {
+        if (l.id !== action.id) return l
+        const flipX = action.width < 0
+        const flipY = action.height < 0
+        const nx = flipX ? action.x + action.width : action.x
+        const ny = flipY ? action.y + action.height : action.y
+        const nw = Math.abs(action.width)
+        const nh = Math.abs(action.height)
+        if (l.type !== 'brush') return { ...l, x: nx, y: ny, width: nw, height: nh, flippedX: flipX, flippedY: flipY }
+        const scaleX = l.width > 0 ? nw / l.width : 1
+        const scaleY = l.height > 0 ? nh / l.height : 1
+        return {
+          ...l,
+          x: nx,
+          y: ny,
+          width: nw,
+          height: nh,
+          flippedX: flipX,
+          flippedY: flipY,
+          points: l.points.map((p) => ({
+            x: flipX !== !!l.flippedX ? nx + nw - (p.x - l.x) * scaleX : nx + (p.x - l.x) * scaleX,
+            y: flipY !== !!l.flippedY ? ny + nh - (p.y - l.y) * scaleY : ny + (p.y - l.y) * scaleY,
+          })),
+        } as BrushLayer
+      })
       return { ...state, layers }
     }
 
@@ -193,10 +195,10 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       const base = {
         id: action.id,
         name: action.shapeType === 'rectangle' ? 'Rectangle' : 'Ellipse',
-        x: Math.max(0, Math.min(ARTBOARD_WIDTH - defaultWidth, action.point.x - defaultWidth / 2)),
-        y: Math.max(0, Math.min(ARTBOARD_HEIGHT - defaultHeight, action.point.y - defaultHeight / 2)),
-        width: defaultWidth,
-        height: defaultHeight,
+        x: action.point.x - defaultWidth / 2,
+        y: action.point.y - defaultHeight / 2,
+        width: 0,
+        height: 0,
         rotation: 0,
         opacity: 1,
         visible: true,
@@ -222,44 +224,15 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     }
 
     case 'PUSH_HISTORY':
-      return pushHistory(state)
-
-    case 'UNDO': {
-      if (state.historyIndex <= 0) return state
-      const newIndex = state.historyIndex - 1
-      const layers = JSON.parse(state.history[newIndex])
-      return {
-        ...state,
-        layers,
-        selectedLayerId: layers.some((layer: Layer) => layer.id === state.selectedLayerId)
-          ? state.selectedLayerId
-          : null,
-        historyIndex: newIndex,
-      }
-    }
-
-    case 'REDO': {
-      if (state.historyIndex >= state.history.length - 1) return state
-      const newIndex = state.historyIndex + 1
-      const layers = JSON.parse(state.history[newIndex])
-      return {
-        ...state,
-        layers,
-        selectedLayerId: layers.some((layer: Layer) => layer.id === state.selectedLayerId)
-          ? state.selectedLayerId
-          : null,
-        historyIndex: newIndex,
-      }
-    }
+    case 'UNDO':
+    case 'REDO':
+      return state
 
     case 'LOAD_DEFAULT_COMPOSITION': {
       const layers = createInitialLayers()
-      const history = [JSON.stringify(layers)]
       return {
         ...initialState,
         layers,
-        history,
-        historyIndex: 0,
         selectedLayerId: null,
         activeTool: state.activeTool,
         theme: state.theme,
@@ -277,17 +250,86 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
 interface EditorContextValue {
   state: EditorState
   dispatch: React.Dispatch<EditorAction>
+  history: CommandHistory
 }
 
 const EditorContext = createContext<EditorContextValue | null>(null)
 
 export function EditorProvider({ children, initialTheme }: { children: ReactNode; initialTheme?: string }) {
-  const [state, dispatch] = useReducer(
+  const [state, baseDispatch] = useReducer(
     editorReducer,
     initialTheme ? { ...initialState, theme: initialTheme as EditorState['theme'] } : initialState
   )
+  const stateRef = useRef(state)
+  stateRef.current = state
+  const historyRef = useRef<CommandHistory>(new CommandHistory())
 
-  return <EditorContext.Provider value={{ state, dispatch }}>{children}</EditorContext.Provider>
+  const dispatch = useCallback((action: EditorAction) => {
+    const current = stateRef.current
+
+    if (action.type === 'UNDO') {
+      const newLayers = historyRef.current.undo(current.layers)
+      if (newLayers) {
+        baseDispatch({ type: 'SET_LAYERS', layers: newLayers })
+      }
+      return
+    }
+
+    if (action.type === 'REDO') {
+      const newLayers = historyRef.current.redo(current.layers)
+      if (newLayers) {
+        baseDispatch({ type: 'SET_LAYERS', layers: newLayers })
+      }
+      return
+    }
+
+    if (action.type === 'DELETE_LAYER') {
+      const layer = current.layers.find((l) => l.id === action.id)
+      if (layer) {
+        const index = current.layers.indexOf(layer)
+        historyRef.current.record(deleteLayer(action.id, index, layer))
+      }
+      baseDispatch(action)
+      return
+    }
+
+    if (action.type === 'REORDER_LAYER') {
+      const oldIndex = current.layers.findIndex((l) => l.id === action.id)
+      if (oldIndex !== -1) {
+        historyRef.current.record(reorderLayer(action.id, oldIndex, action.index))
+      }
+      baseDispatch(action)
+      return
+    }
+
+    if (action.type === 'TOGGLE_VISIBILITY') {
+      historyRef.current.record(toggleVisibility(action.id))
+      baseDispatch(action)
+      return
+    }
+
+    if (action.type === 'SET_LAYER_PROPERTY') {
+      const layer = current.layers.find((l) => l.id === action.id)
+      if (layer && action.property in layer) {
+        const oldValue = (layer as any)[action.property]
+        historyRef.current.record(updateLayerProperty(action.id, action.property, oldValue, action.value))
+      }
+      baseDispatch(action)
+      return
+    }
+
+    if (action.type === 'LOAD_DEFAULT_COMPOSITION') {
+      historyRef.current.reset()
+      baseDispatch(action)
+      return
+    }
+
+    baseDispatch(action)
+  }, [])
+
+  return (
+    <EditorContext.Provider value={{ state, dispatch, history: historyRef.current }}>{children}</EditorContext.Provider>
+  )
 }
 
 export function useEditor() {
