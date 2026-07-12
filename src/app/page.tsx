@@ -38,7 +38,7 @@ export default async function Home() {
       <RecentProjects projects={serializableProjects} />
 
       <Container className="mt-56">
-        <SectionEyebrow color="violet">Blog</SectionEyebrow>
+        <SectionEyebrow color="emerald">Blog</SectionEyebrow>
         <SectionHeading>Thoughts on the craft.</SectionHeading>
         <div className="mt-16 divide-y divide-zinc-100 dark:divide-zinc-800">
           {recentPosts.map((post) => (
@@ -100,7 +100,7 @@ export default async function Home() {
 
       <Container className="mt-56">
         <NewsletterSection>
-          <SectionEyebrow color="pink">Newsletter</SectionEyebrow>
+          <SectionEyebrow color="rose">Newsletter</SectionEyebrow>
           <SectionHeading className="max-w-2xl!">Get notified when I publish something new.</SectionHeading>
         </NewsletterSection>
       </Container>

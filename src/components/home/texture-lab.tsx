@@ -520,7 +520,7 @@ export function TextureLab({ className }: { className?: string }) {
     console.warn = (...args) => {
       if (
         typeof args[0] === 'string' &&
-        (args[0].includes('THREE.Clock') || args[0].includes('Matrix3') || args[0].includes('Unknown color'))
+        (args[0].includes('Clock: This module') || args[0].includes('Matrix3') || args[0].includes('Unknown color'))
       )
         return
       warn.apply(console, args)
