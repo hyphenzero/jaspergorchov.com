@@ -5,6 +5,7 @@ import {
   Figma,
   Ghostty,
   Nextjs,
+  Paper,
   PnpmLight,
   TailwindCSS,
   TypeScript,
@@ -22,10 +23,13 @@ const categories = [
     title: 'Editor & Terminal',
     items: [
       {
+        name: 'Zed',
+        description: 'What I reach for first: fast, focused, and collaborative.',
+      },
+      {
         name: 'VS Code',
         description: 'Still installed for when I need something Zed can\'t do — extensions, debugging configs, or pair programming.',
       },
-      { name: 'Zed', description: 'What I reach for first: fast, focused, and collaborative.' },
       { name: 'Ghostty', description: 'A fast, GPU-accelerated terminal emulator with native UI.' },
     ],
   },
@@ -33,6 +37,10 @@ const categories = [
     title: 'Design & 3D',
     items: [
       { name: 'Figma', description: 'My go-to for UI/UX design, prototyping, and collaborating on design systems.' },
+      {
+        name: 'Paper',
+        description: 'Design and prototyping tool for creating polished UI mockups and design systems.',
+      },
       { name: 'Blender', description: 'Open-source 3D creation suite for modeling, sculpting, and rendering.' },
       {
         name: 'DaVinci Resolve',
@@ -128,6 +136,7 @@ const svglComponents: Record<string, React.ComponentType<{ className?: string }>
   'VS Code': VisualStudioCode,
   Figma: Figma,
   Blender: Blender,
+  Paper: Paper,
   'Next.js': Nextjs,
   'Tailwind CSS': TailwindCSS,
   TypeScript: TypeScript,
