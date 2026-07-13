@@ -52,7 +52,7 @@ type EyebrowProps = {
 
 export function Eyebrow({ color = 'zinc', className, children, ...props }: EyebrowProps) {
   return (
-    <span className={clsx('font-mono uppercase tracking-widest', colorClasses[color], className)} {...props}>
+    <span className={clsx('font-mono tracking-widest uppercase', colorClasses[color], className)} {...props}>
       {children}
     </span>
   )

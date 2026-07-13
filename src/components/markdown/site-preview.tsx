@@ -1,9 +1,9 @@
 'use client'
 
+import { trackEvent } from '@/actions/analytics'
 import { ArrowPathIcon, ArrowUpRightIcon } from '@heroicons/react/16/solid'
 import { usePathname } from 'next/navigation'
 import { useCallback, useRef, useState } from 'react'
-import { trackEvent } from '@/actions/analytics'
 
 export function SitePreview({ siteUrl }: { siteUrl: string }) {
   let url: URL
@@ -91,7 +91,7 @@ export function SitePreview({ siteUrl }: { siteUrl: string }) {
         </div>
         <div className="px-1.25 pb-1.25 dark:px-1 dark:pb-1">
           <div className="relative overflow-hidden rounded-xl not-dark:shadow-sm not-dark:ring-1 not-dark:ring-zinc-950/7.5">
-            <div className="pointer-events-none absolute inset-0 z-10 not-dark:hidden rounded-xl ring-1 ring-inset dark:ring-white/10" />
+            <div className="pointer-events-none absolute inset-0 z-10 rounded-xl ring-1 ring-inset not-dark:hidden dark:ring-white/10" />
             <iframe
               ref={iframeRef}
               src={siteUrl}

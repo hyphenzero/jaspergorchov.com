@@ -76,9 +76,9 @@ export function Combobox<T>({
             // Hide default focus styles
             'focus:outline-hidden',
             // Invalid state
-            'data-invalid:data-hover:border-red-500 data-invalid:border-red-500 dark:data-invalid:data-hover:border-red-500 dark:data-invalid:border-red-500',
+            'data-invalid:border-red-500 data-invalid:data-hover:border-red-500 dark:data-invalid:border-red-500 dark:data-invalid:data-hover:border-red-500',
             // Disabled state
-            'data-disabled:border-zinc-950/20 dark:data-hover:data-disabled:border-white/15 dark:data-disabled:border-white/15 dark:data-disabled:bg-white/2.5',
+            'data-disabled:border-zinc-950/20 dark:data-disabled:border-white/15 dark:data-disabled:bg-white/2.5 dark:data-hover:data-disabled:border-white/15',
             // System icons
             'dark:scheme-dark',
           ])}
@@ -102,7 +102,7 @@ export function Combobox<T>({
           // Anchor positioning
           '[--anchor-gap:--spacing(2)] [--anchor-padding:--spacing(4)] sm:data-[anchor~=start]:[--anchor-offset:-4px]',
           // Base styles,
-          'isolate min-w-[calc(var(--input-width)+8px)] select-none scroll-py-1 rounded-xl p-1 empty:invisible',
+          'isolate min-w-[calc(var(--input-width)+8px)] scroll-py-1 rounded-xl p-1 select-none empty:invisible',
           // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
           'outline outline-transparent focus:outline-hidden',
           // Handle scrolling when menu won't fit in viewport
@@ -179,7 +179,7 @@ export function ComboboxDescription({ className, children, ...props }: React.Com
       {...props}
       className={clsx(
         className,
-        'flex flex-1 overflow-hidden text-zinc-500 before:w-2 before:min-w-0 before:shrink group-data-focus/option:text-white dark:text-zinc-400'
+        'flex flex-1 overflow-hidden text-zinc-500 group-data-focus/option:text-white before:w-2 before:min-w-0 before:shrink dark:text-zinc-400'
       )}
     >
       <span className="flex-1 truncate">{children}</span>

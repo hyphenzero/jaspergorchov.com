@@ -1,6 +1,6 @@
+import { formatDate } from '@/lib/api'
 import clsx from 'clsx'
 import React from 'react'
-import { formatDate } from '@/lib/api'
 
 export function TimelineItem({
   date,
@@ -15,7 +15,7 @@ export function TimelineItem({
 }) {
   return (
     <div className={clsx('relative', className)}>
-      <div className="font-mono text-xs text-zinc-400 uppercase tracking-wider">{formatDate(date)}</div>
+      <div className="font-mono text-xs tracking-wider text-zinc-400 uppercase">{formatDate(date)}</div>
       {title ? (
         <h3 className="relative mt-3!">
           <span className="absolute inset-y-1 -left-[--spacing(8.125)] w-0.5 rounded-full bg-sky-500 ring-5 ring-white max-md:-left-[--spacing(6.125)] dark:bg-sky-400 dark:ring-zinc-950" />

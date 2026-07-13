@@ -137,19 +137,19 @@ export const moveTool: Tool = {
     if (ctx.selectedLayerId) {
       const layer = ctx.layers.find((l) => l.id === ctx.selectedLayerId)
       if (layer) {
-          const handle = isOnResizeHandle(layer, pt, 6)
-          if (handle) {
-            ;(moveTool as any)._resizeState = {
-              layerId: layer.id,
-              handle,
-              startX: pt.x,
-              startY: pt.y,
-              layerStartX: layer.x,
-              layerStartY: layer.y,
-              layerStartW: layer.width,
-              layerStartH: layer.height,
-              oldPoints: layer.type === 'brush' ? [...layer.points] : undefined,
-            } as ResizeState
+        const handle = isOnResizeHandle(layer, pt, 6)
+        if (handle) {
+          ;(moveTool as any)._resizeState = {
+            layerId: layer.id,
+            handle,
+            startX: pt.x,
+            startY: pt.y,
+            layerStartX: layer.x,
+            layerStartY: layer.y,
+            layerStartW: layer.width,
+            layerStartH: layer.height,
+            oldPoints: layer.type === 'brush' ? [...layer.points] : undefined,
+          } as ResizeState
           return
         }
       }

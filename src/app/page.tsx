@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import { BlogPostRow } from '@/app/blog/blog-post-row'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
@@ -16,6 +15,7 @@ import { MiniEditor } from '@/components/mini-editor/mini-editor'
 import { NewsletterSection } from '@/components/newsletter-section'
 import { NoteCard } from '@/components/note-card'
 import { getAllBlogPosts, getAllNotes, getAllProjects } from '@/lib/api'
+import { ChevronRightIcon } from '@heroicons/react/16/solid'
 
 export default async function Home() {
   const projects = await getAllProjects()

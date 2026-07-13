@@ -1,7 +1,7 @@
 'use server'
 
-import { headers } from 'next/headers'
 import { getPageViewsTimeSeries, insertEvent } from '@/lib/db-analytics'
+import { headers } from 'next/headers'
 
 export async function trackEvent(event: {
   event_type: string

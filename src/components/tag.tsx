@@ -69,7 +69,7 @@ export function Tag({
       {...props}
       className={clsx(
         className,
-        'inline-flex items-center gap-x-1.5 rounded-full px-2 py-0.5 font-medium text-sm/5 sm:text-xs/5 forced-colors:outline',
+        'inline-flex items-center gap-x-1.5 rounded-full px-2 py-0.5 text-sm/5 font-medium sm:text-xs/5 forced-colors:outline',
         colors[resolvedColor]
       )}
     >
@@ -85,8 +85,7 @@ export const TagButton = forwardRef(function TagButton(
     children,
     ...props
   }: TagProps & { className?: string; children: React.ReactNode } & (
-      | Omit<Headless.ButtonProps, 'as' | 'className'>
-      | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
+      Omit<Headless.ButtonProps, 'as' | 'className'> | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
     ),
   ref: React.ForwardedRef<HTMLElement>
 ) {
@@ -97,7 +96,7 @@ export const TagButton = forwardRef(function TagButton(
 
   const classes = clsx(
     className,
-    'group relative inline-flex rounded-md focus:outline-hidden data-focus:outline-2 data-focus:outline-blue-500 data-focus:outline-offset-2'
+    'group relative inline-flex rounded-md focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500'
   )
 
   return 'href' in props ? (

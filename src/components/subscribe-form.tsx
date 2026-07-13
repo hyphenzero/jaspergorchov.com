@@ -1,13 +1,13 @@
 'use client'
 
-import { EnvelopeIcon } from '@heroicons/react/16/solid'
-import clsx from 'clsx'
-import { motion } from 'motion/react'
-import { useActionState, useEffect, useRef, useState } from 'react'
 import { type SubscribeState, subscribeToNewsletter } from '@/actions/subscribe'
 import { Button } from '@/components/button'
 import { ErrorMessage, Field, Label } from '@/components/fieldset'
 import { Input, InputGroup } from '@/components/input'
+import { EnvelopeIcon } from '@heroicons/react/16/solid'
+import clsx from 'clsx'
+import { motion } from 'motion/react'
+import { useActionState, useEffect, useRef, useState } from 'react'
 
 const IDLE_WIDTH = 99
 const SUCCESS_SIZE = 36

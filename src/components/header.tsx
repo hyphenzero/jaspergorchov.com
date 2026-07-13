@@ -137,7 +137,7 @@ export function Header() {
                 transition
                 onClick={() => setMenuOpen(false)}
                 className={clsx(
-                  'fixed inset-x-0 not-dark:top-0 bottom-0 z-50 h-screen w-screen bg-linear-to-b to-20% to-zinc-950/10 transition duration-200 ease-out data-closed:opacity-0 dark:top-17.5 dark:to-zinc-950/50 dark:sm:top-15.5',
+                  'fixed inset-x-0 bottom-0 z-50 h-screen w-screen bg-linear-to-b to-zinc-950/10 to-20% transition duration-200 ease-out not-dark:top-0 data-closed:opacity-0 dark:top-17.5 dark:to-zinc-950/50 dark:sm:top-15.5',
                   scrolled && 'from-zinc-950/90'
                 )}
               />
@@ -152,7 +152,7 @@ export function Header() {
                       key={item.name}
                       href={item.href}
                       onClick={() => setMenuOpen(false)}
-                      className="not-first:mt-1 block rounded-lg px-4 py-3 font-semibold text-lg text-zinc-900 transition hover:bg-zinc-950/5 dark:text-white dark:hover:bg-white/5"
+                      className="block rounded-lg px-4 py-3 text-lg font-semibold text-zinc-900 transition not-first:mt-1 hover:bg-zinc-950/5 dark:text-white dark:hover:bg-white/5"
                     >
                       {item.name}
                     </Link>

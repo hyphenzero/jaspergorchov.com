@@ -1,7 +1,7 @@
 'use client'
 
-import { useEffect } from 'react'
 import { trackEvent } from '@/actions/analytics'
+import { useEffect } from 'react'
 
 export function ClickTracker() {
   useEffect(() => {

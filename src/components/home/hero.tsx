@@ -1,13 +1,13 @@
 'use client'
 
+import { ProjectVideoOverlay } from '@/components/project-video'
+import { useVideoCache } from '@/components/video-cache-context'
+import type { SerializableProject } from '@/types/post'
 import { ArrowUpRightIcon } from '@heroicons/react/16/solid'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { ProjectVideoOverlay } from '@/components/project-video'
-import { useVideoCache } from '@/components/video-cache-context'
-import type { SerializableProject } from '@/types/post'
 
 type Props = {
   projects: SerializableProject[]
@@ -343,10 +343,13 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
         }, fadeDelay)
       }
 
-      lingeringTimeoutId = setTimeout(() => {
-        lingeringTimeoutId = null
-        if (running) setLingeringVideoIdx(null)
-      }, fadeDelay + FADE_LEAD_MS + DURATION * 1000)
+      lingeringTimeoutId = setTimeout(
+        () => {
+          lingeringTimeoutId = null
+          if (running) setLingeringVideoIdx(null)
+        },
+        fadeDelay + FADE_LEAD_MS + DURATION * 1000
+      )
 
       currentIdxRef.current = nextProjectIdx
 
@@ -398,9 +401,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
           clipPath: `inset(${progress * 8}px round ${progress * 30}px)`,
         }}
       >
-        <div
-          className="absolute inset-0 z-20 bg-zinc-200 dark:bg-zinc-800"
-        >
+        <div className="absolute inset-0 z-20 bg-zinc-200 dark:bg-zinc-800">
           <motion.div
             className="absolute top-0 left-0"
             style={{
@@ -420,9 +421,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                 ? { duration: 0 }
                 : {
                     opacity: { duration: 0.25, ease: 'easeInOut' },
-                    default: instantTransition
-                      ? { duration: 0 }
-                      : { duration: DURATION, ease: [0.42, 0, 0.58, 1] },
+                    default: instantTransition ? { duration: 0 } : { duration: DURATION, ease: [0.42, 0, 0.58, 1] },
                   }
             }
           >
@@ -455,7 +454,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                           fill
                           priority
                           unoptimized
-                          className="dark:hidden! object-cover"
+                          className="object-cover dark:hidden!"
                           sizes={`${Math.ceil(pos.width)}px`}
                           onLoad={() => {
                             loadedCountRef.current++
@@ -468,7 +467,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                           fill
                           priority
                           unoptimized
-                          className="not-dark:hidden! absolute inset-0 object-cover"
+                          className="absolute inset-0 object-cover not-dark:hidden!"
                           sizes={`${Math.ceil(pos.width)}px`}
                           onLoad={() => {
                             loadedCountRef.current++
@@ -506,10 +505,10 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                   <Link
                     href={`/projects/${project.slug}`}
                     data-active={idx === activeIdx ? 'true' : undefined}
-                    className="group/title absolute inset-ring inset-ring-white/10 bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.75 truncate rounded-full border border-zinc-950/60 bg-zinc-950/50 py-0.5 pr-2 pb-1 pl-3 text-center font-medium text-sm/6 text-white not-data-active:opacity-0 opacity-0 backdrop-blur-2xl transition-opacity duration-500 data-active:pointer-fine:group-hover:opacity-100"
+                    className="group/title absolute bottom-2 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1.75 truncate rounded-full border border-zinc-950/60 bg-zinc-950/50 py-0.5 pr-2 pb-1 pl-3 text-center text-sm/6 font-medium text-white opacity-0 inset-ring inset-ring-white/10 backdrop-blur-2xl transition-opacity duration-500 not-data-active:opacity-0 data-active:pointer-fine:group-hover:opacity-100"
                   >
                     {project.meta.title}
-                    <ArrowUpRightIcon className="size-4 not-group-hover/title:translate-y-px transition-all duration-200 group-hover/title:translate-x-px group-hover/title:-translate-y-px" />
+                    <ArrowUpRightIcon className="size-4 transition-all duration-200 not-group-hover/title:translate-y-px group-hover/title:translate-x-px group-hover/title:-translate-y-px" />
                   </Link>
                 </div>
               )

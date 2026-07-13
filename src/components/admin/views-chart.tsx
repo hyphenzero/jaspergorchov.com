@@ -1,10 +1,10 @@
 'use client'
 
+import { getPageViewsTimeSeriesAction } from '@/actions/analytics'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import { clsx } from 'clsx'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { getPageViewsTimeSeriesAction } from '@/actions/analytics'
 
 type TimeRange = 'all' | 'year' | 'month' | 'week' | 'day'
 
@@ -255,7 +255,7 @@ export function ViewsChart({ totalViews }: Props) {
               type="button"
               onClick={() => handleRangeChange(opt.value)}
               className={clsx(
-                'rounded-full px-2.5 pt-0.75 pb-1 font-medium text-sm transition',
+                'rounded-full px-2.5 pt-0.75 pb-1 text-sm font-medium transition',
                 range === opt.value
                   ? 'bg-zinc-200 text-zinc-950 dark:bg-zinc-700 dark:text-white'
                   : 'text-zinc-500 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white'
@@ -274,7 +274,7 @@ export function ViewsChart({ totalViews }: Props) {
             >
               <ChevronLeftIcon className="size-4" />
             </button>
-            <span className="min-w-35 text-center font-medium text-sm text-zinc-700 tabular-nums dark:text-zinc-300">
+            <span className="min-w-35 text-center text-sm font-medium text-zinc-700 tabular-nums dark:text-zinc-300">
               {currentPeriod}
             </span>
             <button

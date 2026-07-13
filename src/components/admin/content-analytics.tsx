@@ -36,7 +36,7 @@ function ContentSection({ title, rows }: { title: string; rows: PageViewRow[] })
 
   return (
     <div className={cardClass}>
-      <h3 className="font-semibold text-sm text-zinc-950 dark:text-white">{title}</h3>
+      <h3 className="text-sm font-semibold text-zinc-950 dark:text-white">{title}</h3>
       {rows.length === 0 ? (
         <div className="flex items-center justify-center py-16 text-zinc-400 dark:text-zinc-500">
           No page views recorded yet.
@@ -48,7 +48,7 @@ function ContentSection({ title, rows }: { title: string; rows: PageViewRow[] })
             return (
               <div
                 key={row.slug}
-                className="relative border-zinc-100 border-b px-1 py-2.5 last:border-b-0 dark:border-zinc-800/50"
+                className="relative border-b border-zinc-100 px-1 py-2.5 last:border-b-0 dark:border-zinc-800/50"
               >
                 <div
                   className="absolute inset-y-0 left-0 rounded bg-sky-400/8 dark:bg-sky-400/5"

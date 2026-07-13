@@ -53,8 +53,8 @@ export async function CodeExample({
 
 export function CodeExampleWrapper({ className, children }: { className?: string; children: React.ReactNode }) {
   return (
-    <div className="in-[figure]:-mx-1 in-data-stack:mt-0 in-[figure]:-mb-1 in-data-stack:rounded-none rounded-xl not-dark:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-in-data-stack:bg-zinc-100 not-dark:p-px dark:not-in-data-stack:bg-zinc-900/50">
-      <div className={clsx('in-data-stack:rounded-none rounded-xl text-sm', className)}>{children}</div>
+    <div className="rounded-xl not-in-data-stack:bg-zinc-100 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:p-px not-dark:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-data-stack:mt-0 in-data-stack:rounded-none in-[figure]:-mx-1 in-[figure]:-mb-1 dark:not-in-data-stack:bg-zinc-900/50">
+      <div className={clsx('rounded-xl text-sm in-data-stack:rounded-none', className)}>{children}</div>
     </div>
   )
 }
@@ -62,7 +62,7 @@ export function CodeExampleWrapper({ className, children }: { className?: string
 export function CodeExampleStack({ children }: { children: React.ReactNode }) {
   return (
     <div data-stack>
-      <div className="not-prose in-[figure]:mt-1 rounded-xl in-[figure]:rounded-b-lg not-dark:rounded-b-[calc(var(--radius-xl)+1px)] bg-zinc-100 in-[figure]:px-0.5 in-[figure]:pb-0.5 *:not-has-data-filename:mt-3 not-dark:first:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] dark:bg-zinc-900/50">
+      <div className="not-prose rounded-xl bg-zinc-100 *:not-has-data-filename:mt-3 not-dark:rounded-b-[calc(var(--radius-xl)+1px)] not-dark:first:not-has-data-filename:rounded-t-[calc(var(--radius-xl)+1px)] in-[figure]:mt-1 in-[figure]:rounded-b-lg in-[figure]:px-0.5 in-[figure]:pb-0.5 dark:bg-zinc-900/50">
         {children}
       </div>
     </div>
@@ -81,7 +81,7 @@ export function CodeExampleGroup({
   return (
     <div>
       <TabGroup className="not-prose">
-        <div className="in-[figure]:-mx-1 in-[figure]:-mb-1 rounded-xl bg-zinc-950">
+        <div className="rounded-xl bg-zinc-950 in-[figure]:-mx-1 in-[figure]:-mb-1">
           <div className={clsx('rounded-xl p-1 text-sm', className)}>
             <TabList>
               {filenames.map((filename) => (
@@ -120,7 +120,7 @@ export function HighlightedCode({
     <RawHighlightedCode
       example={example}
       className={clsx(
-        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 not-dark:*:shadow-sm *:ring *:ring-zinc-950/5 dark:*:border-t dark:*:bg-zinc-900!',
+        '*:flex *:*:max-w-none *:*:shrink-0 *:*:grow *:overflow-auto *:rounded-xl *:border-white/5 *:bg-white! *:p-5 *:ring *:ring-zinc-950/5 not-dark:*:shadow-sm dark:*:border-t dark:*:bg-zinc-900!',
         '**:[.line]:isolate **:[.line]:not-last:min-h-lh',
         className
       )}

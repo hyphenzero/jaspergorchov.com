@@ -1,8 +1,8 @@
-import { render } from 'react-email'
-import { Resend } from 'resend'
 import { NewsletterDigest } from '@/emails/newsletter'
 import { getAllBlogPosts, getAllProjects } from '@/lib/api'
-import { acquireAdvisoryLock, getSentSlugs, insertSendRecords } from '@/lib/db'
+import { getSentSlugs, insertSendRecords } from '@/lib/db'
+import { render } from 'react-email'
+import { Resend } from 'resend'
 
 const SITE_URL = process.env.SITE_URL ?? 'https://jaspergorchov.com'
 const FROM_EMAIL = process.env.FROM_EMAIL ?? 'Jasper Gorchov <jasper@updates.jaspergorchov.com>'

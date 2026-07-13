@@ -1,6 +1,6 @@
+import { ThemeImage } from '@/components/theme-image'
 import { clsx } from 'clsx'
 import NextImage from 'next/image'
-import { ThemeImage } from '@/components/theme-image'
 
 export function Video({ className, ...props }: React.VideoHTMLAttributes<HTMLVideoElement>) {
   return (
@@ -90,7 +90,7 @@ export function Image({
 
 export function ImageGrid({ children, className = '' }: { children: React.ReactNode; className?: string }) {
   return (
-    <div data-media data-image-grid className={clsx('grid grid-cols-1 gap-6 md:grid-cols-2 lg:gap-8_', className)}>
+    <div data-media data-image-grid className={clsx('lg:gap-8_ grid grid-cols-1 gap-6 md:grid-cols-2', className)}>
       {children}
     </div>
   )

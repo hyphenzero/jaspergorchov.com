@@ -1,15 +1,7 @@
 'use client'
 
 import { createContext, type ReactNode, useCallback, useContext, useReducer, useRef } from 'react'
-import type { Command } from './commands'
-import {
-  CommandHistory,
-  createLayer as createLayerCmd,
-  deleteLayer,
-  reorderLayer,
-  toggleVisibility,
-  updateLayerProperty,
-} from './commands'
+import { CommandHistory, deleteLayer, reorderLayer, toggleVisibility, updateLayerProperty } from './commands'
 import type { BrushLayer, EditorAction, EditorState, EllipseLayer, Layer, RectangleLayer } from './types'
 
 function createInitialLayers(): Layer[] {

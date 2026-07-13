@@ -238,7 +238,7 @@ export function ToolCard({
   className?: string
 }) {
   return (
-    <div className={clsx(cardClass, 'overflow-hidden not-last:pr-8 not-first:pl-8', className)}>
+    <div className={clsx(cardClass, 'overflow-hidden not-first:pl-8 not-last:pr-8', className)}>
       <div className="aspect-2/1 w-full">
         <Canvas
           orthographic
@@ -250,7 +250,7 @@ export function ToolCard({
           <Scene logos={logos} />
         </Canvas>
       </div>
-      <h3 className="font-semibold text-sm text-zinc-950 dark:text-white">{title}</h3>
+      <h3 className="text-sm font-semibold text-zinc-950 dark:text-white">{title}</h3>
       <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
     </div>
   )

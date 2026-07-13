@@ -1,9 +1,9 @@
-import type { Metadata } from 'next'
-import type React from 'react'
 import { Container } from '@/components/container'
 import { SubscribeForm } from '@/components/subscribe-form'
 import { Tabs } from '@/components/tabs'
 import { getAllBlogPosts, getAllNotes } from '@/lib/api'
+import type { Metadata } from 'next'
+import type React from 'react'
 import { BlogPostRow } from './blog-post-row'
 import { NoteRow } from './note-row'
 import { NotesToggle } from './notes-toggle'
@@ -66,15 +66,15 @@ export default async function Blog(props: { searchParams?: Promise<{ category?: 
 
   return (
     <Container className="relative mt-28">
-      <span className="absolute -z-10 -mt-3 -ml-3 text-balance font-semibold text-7xl text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
+      <span className="absolute -z-10 -mt-3 -ml-3 text-7xl font-semibold text-balance text-zinc-200 sm:-mt-4 sm:-ml-4 sm:text-8xl lg:-mt-6 lg:-ml-4 lg:text-9xl dark:text-zinc-800">
         /
       </span>
       <div className="flex w-full flex-col justify-between gap-6 sm:flex-row sm:items-end">
         <div className="w-full">
-          <h1 className="text-balance text-6xl text-zinc-950 tracking-tighter sm:text-7xl lg:text-8xl dark:text-white">
+          <h1 className="text-6xl tracking-tighter text-balance text-zinc-950 sm:text-7xl lg:text-8xl dark:text-white">
             Blog
           </h1>
-          <p className="mt-8 max-w-2xl text-pretty font-medium text-lg/9 text-zinc-600 dark:text-zinc-400">
+          <p className="mt-8 max-w-2xl text-lg/9 font-medium text-pretty text-zinc-600 dark:text-zinc-400">
             My latest updates, as well as things I find interesting in the worlds of programming, design, 3D art, and
             digital creativity.
           </p>

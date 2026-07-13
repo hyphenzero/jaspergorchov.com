@@ -1,11 +1,11 @@
 'use client'
 
-import clsx from 'clsx'
-import Link from 'next/link'
-import { useState } from 'react'
 import { ProjectVideoOverlay } from '@/components/project-video'
 import { ThemeImage } from '@/components/theme-image'
 import { formatDate } from '@/lib/api-utils'
+import clsx from 'clsx'
+import Link from 'next/link'
+import { useState } from 'react'
 
 export function ProjectCard({
   meta,
@@ -78,18 +78,18 @@ export function ProjectCard({
         <div className="flex h-4 items-center">
           <div className="flex items-center">
             {isRecent(updatedDate) ? (
-              <span className="mr-4 whitespace-nowrap rounded-lg bg-sky-400/20 px-2 font-semibold text-sky-700 text-xs/6 dark:bg-sky-400/10 dark:text-sky-300">
+              <span className="mr-4 rounded-lg bg-sky-400/20 px-2 text-xs/6 font-semibold whitespace-nowrap text-sky-700 dark:bg-sky-400/10 dark:text-sky-300">
                 Updated
               </span>
             ) : isRecent(releaseOrDate) ? (
               <>
-                <span className="mr-4 whitespace-nowrap rounded-lg bg-lime-400/20 px-2 font-semibold text-lime-700 text-xs/6 dark:bg-lime-400/10 dark:text-lime-300">
+                <span className="mr-4 rounded-lg bg-lime-400/20 px-2 text-xs/6 font-semibold whitespace-nowrap text-lime-700 dark:bg-lime-400/10 dark:text-lime-300">
                   New
                 </span>
               </>
             ) : null}
 
-            <div className="flex items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
+            <div className="flex items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
               {updatedDate ? (
                 <time dateTime={updatedDate}>{formatDate(updatedDate)}</time>
               ) : releaseOrDate ? (
@@ -98,13 +98,13 @@ export function ProjectCard({
             </div>
           </div>
 
-          <ul className="m-0 flex list-none items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
+          <ul className="m-0 flex list-none items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
             {meta.tags.map((tag, i) => (
               <li key={i} className="inline-flex items-center">
                 <span className="mx-4 inline-block size-0.75 rounded-full bg-zinc-500" />
                 <Link
                   href={`?category=${encodeURIComponent(tag.toLowerCase())}`}
-                  className="relative z-20 text-zinc-500 leading-none transition hover:text-zinc-950 dark:hover:text-white"
+                  className="relative z-20 leading-none text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
                   onMouseEnter={() => setTagHovered(true)}
                   onMouseLeave={() => setTagHovered(false)}
                 >
@@ -118,7 +118,7 @@ export function ProjectCard({
         <div className="mt-4 flex items-center gap-4">
           <h2
             className={clsx(
-              'text-pretty font-medium text-xl tracking-tight transition-colors',
+              'text-xl font-medium tracking-tight text-pretty transition-colors',
               showHover ? 'text-sky-500 dark:text-sky-400' : 'text-zinc-950 dark:text-white'
             )}
           >

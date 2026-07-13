@@ -6,13 +6,12 @@ import {
   Hr,
   Html,
   Link,
-  Preview,
   pixelBasedPreset,
+  Preview,
   Section,
   Tailwind,
   Text,
 } from 'react-email'
-import { formatDate } from '@/lib/api-utils'
 
 interface DigestEntry {
   title: string
@@ -108,40 +107,40 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
             fontFeatureSettings: '"cv02", "cv03", "cv04", "cv11"',
             fontOpticalSizing: 'auto',
           }}
-          className="m-0 bg-default p-0 font-sans"
+          className="bg-default m-0 p-0 font-sans"
         >
-          <Container className="mx-auto max-w-[660px] bg-default px-9 pt-16 pb-10">
+          <Container className="bg-default mx-auto max-w-[660px] px-9 pt-16 pb-10">
             <Section className="mb-12">
-              <Text className="m-0 font-mono font-semibold text-link text-sm uppercase tracking-widest">
+              <Text className="text-link m-0 font-mono text-sm font-semibold tracking-widest uppercase">
                 Jasper Gorchov
               </Text>
 
-              <Heading className="mt-[18px] mb-0 font-medium text-[40px] text-body tracking-[-0.03em]">
+              <Heading className="text-body mt-[18px] mb-0 text-[40px] font-medium tracking-[-0.03em]">
                 My latest work
               </Heading>
 
-              <Text className="mt-[22px] mb-0 text-secondary text-sm/7">
-                Hey, I recently published <span className="font-semibold text-body">{contentLabel}</span>. Here’s the
+              <Text className="text-secondary mt-[22px] mb-0 text-sm/7">
+                Hey, I recently published <span className="text-body font-semibold">{contentLabel}</span>. Here’s the
                 short version, with links if you want to read more.
               </Text>
             </Section>
 
             {blogEntries.length > 0 && (
               <Section>
-                <Text className="m-0 mb-6 font-mono font-semibold text-muted text-sm uppercase tracking-widest">
+                <Text className="text-muted m-0 mb-6 font-mono text-sm font-semibold tracking-widest uppercase">
                   Blog Posts
                 </Text>
 
                 {blogEntries.map((entry, i) => (
                   <Section
                     key={entry.postUrl}
-                    className={i > 0 ? 'mt-10 border-default border-t border-solid pt-10' : ''}
+                    className={i > 0 ? 'border-default mt-10 border-t border-solid pt-10' : ''}
                   >
-                    <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
+                    <Heading className="text-body m-0 text-base font-semibold">{entry.title}</Heading>
 
-                    {entry.summary ? <Text className="mt-3 mb-0 text-secondary text-sm/7">{entry.summary}</Text> : null}
+                    {entry.summary ? <Text className="text-secondary mt-3 mb-0 text-sm/7">{entry.summary}</Text> : null}
 
-                    <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
+                    <Link href={entry.postUrl} className="text-link mt-3 block text-sm font-semibold no-underline">
                       Read more
                     </Link>
                   </Section>
@@ -149,18 +148,18 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
               </Section>
             )}
 
-            {projectEntries.length > 0 && blogEntries.length > 0 && <Hr className="my-12 border-default" />}
+            {projectEntries.length > 0 && blogEntries.length > 0 && <Hr className="border-default my-12" />}
 
             {projectEntries.length > 0 && (
               <Section>
-                <Text className="m-0 mb-6 font-mono font-semibold text-muted text-sm uppercase tracking-widest">
+                <Text className="text-muted m-0 mb-6 font-mono text-sm font-semibold tracking-widest uppercase">
                   Projects
                 </Text>
 
                 {projectEntries.map((entry, i) => (
                   <Section
                     key={entry.postUrl}
-                    className={i > 0 ? 'mt-10 border-default border-t border-solid pt-10' : ''}
+                    className={i > 0 ? 'border-default mt-10 border-t border-solid pt-10' : ''}
                   >
                     {entry.image ? (
                       <picture>
@@ -177,11 +176,11 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
                         />
                       </picture>
                     ) : null}
-                    <Heading className="m-0 font-semibold text-base text-body">{entry.title}</Heading>
+                    <Heading className="text-body m-0 text-base font-semibold">{entry.title}</Heading>
 
-                    {entry.summary ? <Text className="mt-3 mb-0 text-secondary text-sm/7">{entry.summary}</Text> : null}
+                    {entry.summary ? <Text className="text-secondary mt-3 mb-0 text-sm/7">{entry.summary}</Text> : null}
 
-                    <Link href={entry.postUrl} className="mt-3 block font-semibold text-link text-sm no-underline">
+                    <Link href={entry.postUrl} className="text-link mt-3 block text-sm font-semibold no-underline">
                       Read more
                     </Link>
                   </Section>
@@ -189,10 +188,10 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
               </Section>
             )}
 
-            <Hr className="mt-12 mb-7 border-default" />
+            <Hr className="border-default mt-12 mb-7" />
 
             <Section>
-              <Text className="m-0 text-muted text-xs">
+              <Text className="text-muted m-0 text-xs">
                 You received this because you subscribed to updates from jaspergorchov.com. If you no longer wish to
                 receive these emails, you can{' '}
                 <Link href={`${siteUrl}/api/unsubscribe`} className="text-muted underline">

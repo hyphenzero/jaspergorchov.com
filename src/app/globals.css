@@ -1,9 +1,9 @@
-@import "tailwindcss";
-@import "./typography.css";
+@import 'tailwindcss';
+@import './typography.css';
 
 @theme {
   --font-sans: Inter var, sans-serif;
-  --font-sans--font-feature-settings: "cv02", "cv03", "cv04", "cv11";
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Segoe UI Mono", monospace;
+  --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
   --font-weight-book: 450;
 }

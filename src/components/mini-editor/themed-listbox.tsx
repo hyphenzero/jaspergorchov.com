@@ -69,7 +69,7 @@ function JgPanel({ children }: { children?: React.ReactNode }) {
       anchor="selection start"
       className={clsx(
         '[--anchor-offset:-1.625rem] [--anchor-padding:--spacing(4)] sm:[--anchor-offset:-1.375rem]',
-        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] select-none scroll-py-1 rounded-xl p-1',
+        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-xl p-1 select-none',
         'outline outline-transparent focus:outline-hidden',
         'overflow-y-scroll overscroll-contain',
         'bg-white/75 backdrop-blur-xl dark:bg-zinc-800/75',
@@ -198,7 +198,7 @@ function TerminalPanel({ children }: { children?: React.ReactNode }) {
       anchor="selection start"
       className={clsx(
         '[--anchor-offset:-1.625rem] [--anchor-padding:--spacing(4)] sm:[--anchor-offset:-1.375rem]',
-        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] select-none scroll-py-1 rounded-none p-0.5 font-mono',
+        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-none p-0.5 font-mono select-none',
         'outline outline-transparent focus:outline-hidden',
         'overflow-y-scroll overscroll-contain',
         'bg-zinc-950',
@@ -285,7 +285,7 @@ function RetroSelectedOption({ placeholder, options }: { placeholder?: React.Rea
         'relative block w-full appearance-none rounded-none py-[calc(--spacing(2.5)-1px)] sm:py-[calc(--spacing(1.5)-1px)]',
         'min-h-11 sm:min-h-9',
         'pr-[calc(--spacing(7)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
-        'text-left font-bold font-mono text-base/6 text-black sm:text-sm/6 dark:text-zinc-100',
+        'text-left font-mono text-base/6 font-bold text-black sm:text-sm/6 dark:text-zinc-100',
         'border-2 border-black group-data-active:border-black group-data-hover:border-black dark:border-zinc-300 dark:group-data-active:border-zinc-300 dark:group-data-hover:border-zinc-300',
         'bg-white dark:bg-zinc-500',
         'group-data-disabled:border-zinc-400 group-data-disabled:opacity-50 dark:group-data-disabled:border-zinc-600'
@@ -315,7 +315,7 @@ function RetroPanel({ children }: { children?: React.ReactNode }) {
       anchor="selection start"
       className={clsx(
         '[--anchor-offset:-1.625rem] [--anchor-padding:--spacing(4)] sm:[--anchor-offset:-1.375rem]',
-        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] select-none scroll-py-1 rounded-none p-0.5 font-mono',
+        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-none p-0.5 font-mono select-none',
         'outline outline-transparent focus:outline-hidden',
         'overflow-y-scroll overscroll-contain',
         'bg-white dark:bg-zinc-500',
@@ -346,7 +346,7 @@ function RetroOption<T>({
           <div
             className={clsx(
               'group/option grid cursor-default grid-cols-[--spacing(5)_1fr] items-baseline gap-x-2 rounded-none py-2.5 pr-3.5 pl-2 sm:grid-cols-[--spacing(4)_1fr] sm:py-1.5 sm:pr-3 sm:pl-1.5',
-              'font-bold font-mono text-base/6 text-black sm:text-sm/6 dark:text-zinc-100',
+              'font-mono text-base/6 font-bold text-black sm:text-sm/6 dark:text-zinc-100',
               'outline-hidden data-focus:bg-zinc-100 dark:data-focus:bg-zinc-400',
               'data-disabled:opacity-50',
               'data-selected:bg-black data-selected:text-white dark:data-selected:bg-zinc-200 dark:data-selected:text-zinc-900'
@@ -431,7 +431,7 @@ function TactilePanel({ children }: { children?: React.ReactNode }) {
       anchor="selection start"
       className={clsx(
         '[--anchor-offset:-1.625rem] [--anchor-padding:--spacing(4)] sm:[--anchor-offset:-1.375rem]',
-        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] select-none scroll-py-1 rounded-b-xl p-0.5',
+        'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-b-xl p-0.5 select-none',
         'outline outline-transparent focus:outline-hidden',
         'overflow-y-scroll overscroll-contain',
         'bg-gradient-to-b from-white/12 to-white/5 backdrop-blur-md dark:from-white/10 dark:to-white/5',

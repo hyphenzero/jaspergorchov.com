@@ -11,7 +11,7 @@ import {
 } from 'react'
 import { type Command, createLayer as createLayerCmd } from './commands'
 import { useEditor } from './store'
-import { getToolForId, getResizeCursor, type ToolContext } from './tools'
+import { getResizeCursor, getToolForId, type ToolContext } from './tools'
 import {
   type BrushLayer,
   type EllipseLayer,
@@ -83,7 +83,7 @@ function renderEllipse(layer: EllipseLayer) {
 function renderText(layer: TextLayer) {
   return (
     <div
-      className="pointer-events-none flex size-full select-none items-center text-pretty"
+      className="pointer-events-none flex size-full items-center text-pretty select-none"
       style={{
         color: layer.fill,
         fontSize: layer.fontSize,
@@ -145,10 +145,10 @@ function pointsToSmoothPath(points: Point[]): string {
 
 function getHandlePosition(handle: string, width: number, height: number): CSSProperties {
   const positions: Record<string, { left?: number | string; top?: number | string; cursor: string }> = {
-    'top-left':     { left: 0.5,          top: 0.5,          cursor: 'nwse-resize' },
-    'top-right':    { left: width - 0.5,  top: 0.5,          cursor: 'nesw-resize' },
-    'bottom-right': { left: width - 0.5,  top: height - 0.5, cursor: 'nwse-resize' },
-    'bottom-left':  { left: 0.5,          top: height - 0.5, cursor: 'nesw-resize' },
+    'top-left': { left: 0.5, top: 0.5, cursor: 'nwse-resize' },
+    'top-right': { left: width - 0.5, top: 0.5, cursor: 'nesw-resize' },
+    'bottom-right': { left: width - 0.5, top: height - 0.5, cursor: 'nwse-resize' },
+    'bottom-left': { left: 0.5, top: height - 0.5, cursor: 'nesw-resize' },
   }
   const pos = positions[handle] ?? { left: 0, top: 0, cursor: 'default' }
   return { ...pos, transform: 'translate(-50%, -50%)' }

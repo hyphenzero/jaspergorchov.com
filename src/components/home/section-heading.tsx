@@ -1,7 +1,7 @@
+import { Eyebrow, type EyebrowColor } from '@/components/eyebrow'
 import clsx from 'clsx'
 import type { ComponentProps } from 'react'
 import React from 'react'
-import { Eyebrow, type EyebrowColor } from '@/components/eyebrow'
 
 export function SectionEyebrow({
   color,
@@ -13,7 +13,7 @@ export function SectionEyebrow({
   children: React.ReactNode
 }) {
   return (
-    <Eyebrow color={color} className={clsx('font-semibold text-sm', className)}>
+    <Eyebrow color={color} className={clsx('text-sm font-semibold', className)}>
       {children}
     </Eyebrow>
   )
@@ -27,7 +27,7 @@ export function SectionHeading({
   return (
     <h2
       className={clsx(
-        'mt-5 max-w-[40ch] text-pretty font-book text-2xl text-zinc-950 tracking-tight sm:text-4xl md:text-5xl/15 dark:text-white',
+        'font-book mt-5 max-w-[40ch] text-2xl tracking-tight text-pretty text-zinc-950 sm:text-4xl md:text-5xl/15 dark:text-white',
         className
       )}
       {...props}
@@ -45,7 +45,7 @@ export function SectionDescription({ className, children }: { className?: string
   return (
     <p
       className={clsx(
-        'mt-6 max-w-[40ch] text-pretty font-book text-2xl tracking-tight sm:text-4xl md:text-5xl/15',
+        'font-book mt-6 max-w-[40ch] text-2xl tracking-tight text-pretty sm:text-4xl md:text-5xl/15',
         className
       )}
     >

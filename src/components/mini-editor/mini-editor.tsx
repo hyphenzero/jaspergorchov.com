@@ -56,7 +56,7 @@ function EditorInner() {
 
   return (
     <div tabIndex={0} onKeyDown={handleKeyDown} className="relative overflow-visible outline-none">
-      <div className="w-full flex flex-col justify-end" style={{ aspectRatio: '16/10' }}>
+      <div className="flex w-full flex-col justify-end" style={{ aspectRatio: '16/10' }}>
         <div className="absolute inset-0">
           <Canvas />
         </div>

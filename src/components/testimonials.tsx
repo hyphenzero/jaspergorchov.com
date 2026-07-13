@@ -116,7 +116,7 @@ function CallToAction() {
         Join the best sellers in the business and start using Radiant to hit your targets today.
       </p>
       <div className="mt-2">
-        <Link href="#" className="inline-flex items-center gap-2 font-medium text-pink-600 text-sm/6">
+        <Link href="#" className="inline-flex items-center gap-2 text-sm/6 font-medium text-pink-600">
           Get started
           <ArrowLongRightIcon className="size-5" />
         </Link>

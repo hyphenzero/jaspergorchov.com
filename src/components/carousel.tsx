@@ -107,11 +107,11 @@ function TestimonialCard({
       <img alt="" src={img} className="absolute inset-x-0 top-0 aspect-square w-full object-cover" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 rounded-3xl bg-linear-to-t from-[calc(7/16*100%)] from-black ring-1 ring-zinc-950/10 ring-inset sm:from-25%"
+        className="absolute inset-0 rounded-3xl bg-linear-to-t from-black from-[calc(7/16*100%)] ring-1 ring-zinc-950/10 ring-inset sm:from-25%"
       />
       <figure className="relative p-10">
         <blockquote>
-          <p className="relative text-white text-xl/7">
+          <p className="relative text-xl/7 text-white">
             <span aria-hidden="true" className="absolute -translate-x-full">
               “
             </span>
@@ -121,10 +121,10 @@ function TestimonialCard({
             </span>
           </p>
         </blockquote>
-        <figcaption className="mt-6 border-white/20 border-t pt-6">
-          <p className="font-medium text-sm/6 text-white">{name}</p>
-          <p className="font-medium text-sm/6">
-            <span className="bg-linear-to-r from-28% from-[#fff1be] via-70% via-[#ee87cb] to-[#b060ff] bg-clip-text text-transparent">
+        <figcaption className="mt-6 border-t border-white/20 pt-6">
+          <p className="text-sm/6 font-medium text-white">{name}</p>
+          <p className="text-sm/6 font-medium">
+            <span className="bg-linear-to-r from-[#fff1be] from-28% via-[#ee87cb] via-70% to-[#b060ff] bg-clip-text text-transparent">
               {title}
             </span>
           </p>
@@ -141,7 +141,7 @@ function CallToAction() {
         Join the best sellers in the business and start using Radiant to hit your targets today.
       </p>
       <div className="mt-2">
-        <Link href="#" className="inline-flex items-center gap-2 font-medium text-pink-600 text-sm/6">
+        <Link href="#" className="inline-flex items-center gap-2 text-sm/6 font-medium text-pink-600">
           Get started
           <ArrowLongRightIcon className="size-5" />
         </Link>
@@ -176,7 +176,7 @@ export function Carousel() {
           'mt-16 flex gap-8',
           'scrollbar-none [&::-webkit-scrollbar]:hidden',
           'snap-x snap-mandatory overflow-x-auto overscroll-x-contain scroll-smooth',
-          '[--scroll-padding:max(--spacing(6),calc((100vw-72rem)/2))] `lg:[--scroll-padding:max(--spacing(8),calc((100vw-72rem)/2))]',
+          '`lg:[--scroll-padding:max(--spacing(8),calc((100vw-72rem)/2))] [--scroll-padding:max(--spacing(6),calc((100vw-72rem)/2))]',
         ])}
       >
         {testimonials.map(({ img, name, title, quote }, testimonialIndex) => (

@@ -1,7 +1,7 @@
-import clsx from 'clsx'
 import { Logo } from '@/components/logo'
 import { ThemeImage } from '@/components/theme-image'
 import { timeAgo } from '@/lib/api-utils'
+import clsx from 'clsx'
 
 type NoteMeta = {
   date: string
@@ -26,8 +26,8 @@ export function NoteCard({ meta, className, children }: NoteCardProps) {
           <Logo className="size-5" />
         </span>
         <div>
-          <p className="font-semibold text-sm text-zinc-950 dark:text-white">Jasper Gorchov</p>
-          <p className="font-mono text-xs/5 text-zinc-500 uppercase tracking-widest">{timeAgo(meta.date)}</p>
+          <p className="text-sm font-semibold text-zinc-950 dark:text-white">Jasper Gorchov</p>
+          <p className="font-mono text-xs/5 tracking-widest text-zinc-500 uppercase">{timeAgo(meta.date)}</p>
         </div>
       </div>
       <div className="prose prose-blog mt-4 max-w-none">{children}</div>

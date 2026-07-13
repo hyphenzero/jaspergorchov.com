@@ -1,8 +1,8 @@
 'use client'
 
-import type React from 'react'
 import { Image } from '@/components/markdown/media'
 import { formatDate, formatTimeLocal } from '@/lib/api-utils'
+import type React from 'react'
 
 export function NoteRow({
   meta,
@@ -14,10 +14,10 @@ export function NoteRow({
   return (
     <div className="group relative grid grid-cols-1 border-b border-b-zinc-100 py-10 first:border-t first:border-t-zinc-200 max-sm:gap-3 sm:grid-cols-3 dark:border-b-zinc-900 dark:first:border-t-zinc-800">
       <div className="flex h-fit">
-        <p className="font-medium font-mono text-sm/6 text-zinc-500 uppercase tracking-widest">
+        <p className="font-mono text-sm/6 font-medium tracking-widest text-zinc-500 uppercase">
           {formatDate(meta.date, 'long')}
         </p>
-        <div className="m-0 flex list-none items-center font-medium font-mono text-sm/6 text-zinc-500 uppercase tracking-widest">
+        <div className="m-0 flex list-none items-center font-mono text-sm/6 font-medium tracking-widest text-zinc-500 uppercase">
           <div className="inline-flex items-center">
             <span className="mx-4 inline-block size-0.75 rounded-full bg-current" />
             <span className="leading-none">{formatTimeLocal(meta.date)}</span>

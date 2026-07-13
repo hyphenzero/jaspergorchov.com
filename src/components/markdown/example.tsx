@@ -60,7 +60,7 @@ export function Example({
           title="Drag to resize"
           className={clsx(
             'pointer-events-auto absolute top-1/2 right-0 z-50 -mt-6 h-12 w-1.5 cursor-ew-resize rounded-full backdrop-blur-xs transition-colors',
-            'bg-zinc-950/20 hover:bg-zinc-950/40 group-data-dragging:bg-zinc-950/40',
+            'bg-zinc-950/20 group-data-dragging:bg-zinc-950/40 hover:bg-zinc-950/40',
             'dark:bg-white/40 dark:group-data-dragging:bg-zinc-300 dark:hover:bg-zinc-300'
           )}
           drag="x"

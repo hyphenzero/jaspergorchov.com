@@ -22,7 +22,7 @@ export function NotesToggle({ defaultValue }: { defaultValue: string }) {
     <button
       type="button"
       onClick={handleToggle}
-      className="font-medium text-sm text-zinc-600 transition-colors duration-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
+      className="text-sm font-medium text-zinc-600 transition-colors duration-100 hover:text-zinc-950 dark:text-zinc-400 dark:hover:text-white"
     >
       {showNotes ? 'Hide notes' : 'Show notes'}
     </button>

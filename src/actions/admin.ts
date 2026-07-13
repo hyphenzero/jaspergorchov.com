@@ -1,7 +1,5 @@
 'use server'
 
-import { cookies, headers } from 'next/headers'
-import { redirect } from 'next/navigation'
 import {
   checkLoginRateLimit,
   constantTimeCompare,
@@ -10,6 +8,8 @@ import {
   resetLoginRateLimit,
   sessionCookieName,
 } from '@/lib/auth'
+import { cookies, headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 export type AdminLoginState = {
   error?: string

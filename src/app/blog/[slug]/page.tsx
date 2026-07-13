@@ -1,12 +1,12 @@
-import { ChevronLeftIcon } from '@heroicons/react/16/solid'
-import Link from 'next/link'
-import { notFound } from 'next/navigation'
-import type { Metadata } from 'next/types'
 import { Button } from '@/components/button'
 import { Container } from '@/components/container'
 import { ThemeImage } from '@/components/theme-image'
 import { TrackPageView } from '@/components/track-page-view'
 import { formatDate, getBlogPostBySlug, getBlogPostSlugs } from '@/lib/api'
+import { ChevronLeftIcon } from '@heroicons/react/16/solid'
+import Link from 'next/link'
+import { notFound } from 'next/navigation'
+import type { Metadata } from 'next/types'
 
 type Props = {
   params: Promise<{
@@ -75,7 +75,7 @@ export default async function ArticlePage(props: Props) {
             <ChevronLeftIcon /> Back to Blog
           </Button>
 
-          <span className="flex items-center font-mono font-semibold text-sky-500 text-sm/7 uppercase tracking-widest dark:text-sky-400">
+          <span className="flex items-center font-mono text-sm/7 font-semibold tracking-widest text-sky-500 uppercase dark:text-sky-400">
             <time dateTime={releaseDate}>{formatDate(releaseDate, 'long')}</time>
 
             {updatedDate && updatedDate !== releaseDate ? (
@@ -91,7 +91,7 @@ export default async function ArticlePage(props: Props) {
       <div hidden />
       <div className="w-full px-6">
         <div className="mx-auto mt-5 flex w-full max-w-3xl flex-col">
-          <h1 className="inline-block max-w-3xl text-pretty font-medium text-5xl text-zinc-950 tracking-tight dark:text-zinc-200">
+          <h1 className="inline-block max-w-3xl text-5xl font-medium tracking-tight text-pretty text-zinc-950 dark:text-zinc-200">
             {post.meta.title}
           </h1>
 
@@ -102,7 +102,7 @@ export default async function ArticlePage(props: Props) {
           <div className="mt-6 flex items-center gap-x-3">
             {post.meta.tags.map((tag: string) => (
               <Link
-                className="rounded-full bg-zinc-200 px-2.5 pt-0.75 pb-1 font-medium text-sm text-zinc-950 transition hover:text-zinc-600 dark:border-white/10 dark:border-t dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
+                className="rounded-full bg-zinc-200 px-2.5 pt-0.75 pb-1 text-sm font-medium text-zinc-950 transition hover:text-zinc-600 dark:border-t dark:border-white/10 dark:bg-zinc-700 dark:text-white dark:hover:bg-zinc-600"
                 key={tag}
                 href={`/blog?category=${tag.toLowerCase().replace(/\s+/g, '+')}`}
               >

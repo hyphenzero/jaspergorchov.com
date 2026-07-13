@@ -1,9 +1,5 @@
 'use client'
 
-import * as Headless from '@headlessui/react'
-import { PaperAirplaneIcon } from '@heroicons/react/16/solid'
-import { useSearchParams } from 'next/navigation'
-import { useEffect, useRef, useState } from 'react'
 import { AnalyticsDashboard } from '@/components/admin/analytics-dashboard'
 import { Button } from '@/components/button'
 import { Checkbox } from '@/components/checkbox'
@@ -16,6 +12,10 @@ import { Tabs } from '@/components/tabs'
 import { Text } from '@/components/text'
 import type { AnalyticsSummary, ButtonClickRow, PageViewRow, PreviewClickRow } from '@/lib/db-analytics'
 import type { NewsletterPayload, UnsentContent } from '@/lib/newsletter'
+import * as Headless from '@headlessui/react'
+import { PaperAirplaneIcon } from '@heroicons/react/16/solid'
+import { useSearchParams } from 'next/navigation'
+import { useEffect, useRef, useState } from 'react'
 
 interface Props {
   unsent: UnsentContent[]
@@ -150,7 +150,7 @@ export function AdminClient({ unsent, payload, analytics }: Props) {
           <button
             type="button"
             onClick={() => handleSelectAll(posts, !allInSet)}
-            className="font-medium text-sky-600 text-sm/6 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300"
+            className="text-sm/6 font-medium text-sky-600 hover:text-sky-500 dark:text-sky-400 dark:hover:text-sky-300"
           >
             {allInSet && !noneInSet ? 'Deselect all' : 'Select all'}
           </button>
@@ -253,7 +253,7 @@ export function AdminClient({ unsent, payload, analytics }: Props) {
                   <Heading level={2} className="text-balance">
                     Send digest
                   </Heading>
-                  <p className="mt-1 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                  <p className="mt-1 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                     {selected.length} of {unsent.length} entries selected for this newsletter.
                   </p>
                 </div>
@@ -346,37 +346,37 @@ export function AdminClient({ unsent, payload, analytics }: Props) {
                     <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl ring-1 ring-black/10 dark:bg-zinc-900 dark:shadow-none dark:ring-white/10">
                       {dryRun ? (
                         <>
-                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                          <h3 className="text-xl font-semibold text-balance text-zinc-900 dark:text-white">
                             Run dry-run preview?
                           </h3>
-                          <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                          <p className="mt-2 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                             This will generate the full digest and log the output, but will <strong>not</strong> send
                             any email or write to the database.
                           </p>
-                          <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                          <p className="mt-3 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                             Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
                           </p>
                         </>
                       ) : testMode ? (
                         <>
-                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                          <h3 className="text-xl font-semibold text-balance text-zinc-900 dark:text-white">
                             Send test email?
                           </h3>
-                          <p className="mt-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                          <p className="mt-2 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                             A test email with the subject below will be sent to{' '}
                             <strong className="text-zinc-700 dark:text-zinc-300">jasper@jaspergorchov.com</strong>. No
                             records will be written to the database.
                           </p>
-                          <p className="mt-3 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                          <p className="mt-3 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                             Subject: <span className="font-medium text-zinc-700 dark:text-zinc-300">{subject}</span>
                           </p>
                         </>
                       ) : (
                         <>
-                          <h3 className="text-balance font-semibold text-xl text-zinc-900 dark:text-white">
+                          <h3 className="text-xl font-semibold text-balance text-zinc-900 dark:text-white">
                             Send newsletter to all subscribers?
                           </h3>
-                          <div className="mt-3 space-y-2 text-pretty text-base/7 text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
+                          <div className="mt-3 space-y-2 text-base/7 text-pretty text-zinc-500 sm:text-sm/6 dark:text-zinc-400">
                             <p>
                               This will send a broadcast to your entire Resend audience with{' '}
                               <strong className="text-zinc-700 dark:text-zinc-300">{selected.length} entries</strong>:

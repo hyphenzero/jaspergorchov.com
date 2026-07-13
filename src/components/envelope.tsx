@@ -45,7 +45,7 @@ export function Envelope({ email, flipped, className }: { email: string; flipped
 
           <div className="absolute inset-0 p-5">
             <div className="absolute inset-0 flex items-center justify-center px-10">
-              <span className="text-center font-medium text-[10px] text-zinc-950 leading-tight dark:text-white">
+              <span className="text-center text-[10px] leading-tight font-medium text-zinc-950 dark:text-white">
                 {email}
               </span>
             </div>

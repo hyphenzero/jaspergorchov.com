@@ -1,6 +1,6 @@
+import { sessionCookieName, validateSession } from '@/lib/auth'
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
-import { sessionCookieName, validateSession } from '@/lib/auth'
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl

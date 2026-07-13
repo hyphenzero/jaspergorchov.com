@@ -1,10 +1,10 @@
 'use client'
 
+import { Button } from '@/components/button'
+import type { SerializableProject } from '@/types/post'
 import { ChevronRightIcon } from '@heroicons/react/16/solid'
 import Link from 'next/link'
 import { JSX, SVGProps, useCallback, useLayoutEffect, useRef, useState } from 'react'
-import { Button } from '@/components/button'
-import type { SerializableProject } from '@/types/post'
 import { Hero } from './hero'
 
 const IMAGE_GAP = 26
@@ -96,7 +96,7 @@ export function HeroSection({ projects }: Props) {
         ref={contentRef}
         className="relative mx-auto mt-[100dvh] flex translate-y-[calc(-100%-70px)] flex-col gap-10 px-6 pb-6 sm:translate-y-[calc(-100%-62px)] md:flex-row md:items-end md:justify-between md:gap-8 md:px-12 md:pb-12 lg:translate-y-[calc(-100%-60px)] lg:px-14 lg:pb-14"
       >
-        <h1 className="max-w-5xl text-balance font-medium text-3xl/11 text-zinc-950 tracking-tight [text-box:trim-both_cap_alphabetic] sm:text-[clamp(2rem,3.4vw,3rem)]/tight dark:text-white">
+        <h1 className="max-w-5xl text-3xl/11 font-medium tracking-tight text-balance text-zinc-950 [text-box:trim-both_cap_alphabetic] sm:text-[clamp(2rem,3.4vw,3rem)]/tight dark:text-white">
           I'm Jasper Gorchov, a software developer, design engineer, and 3D artist.
         </h1>
 

@@ -1,12 +1,12 @@
 'use client'
 
+import { Tabs } from '@/components/tabs'
 import { ContactShadows, Environment, OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { clsx } from 'clsx'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OBJLoader, TeapotGeometry } from 'three-stdlib'
-import { Tabs } from '@/components/tabs'
 
 // ============ Types ============
 
@@ -18,16 +18,7 @@ type TextureAsset = {
 }
 
 type GeometryType =
-  | 'torusKnot'
-  | 'sphere'
-  | 'box'
-  | 'icosahedron'
-  | 'torus'
-  | 'cone'
-  | 'cylinder'
-  | 'teapot'
-  | 'suzanne'
-  | 'bunny'
+  'torusKnot' | 'sphere' | 'box' | 'icosahedron' | 'torus' | 'cone' | 'cylinder' | 'teapot' | 'suzanne' | 'bunny'
 
 const GEOMETRY_OPTIONS: { type: GeometryType; label: string }[] = [
   { type: 'torusKnot', label: 'Torus Knot' },
@@ -445,7 +436,7 @@ function TextureGrid({
         {pageTextures.map((t) => (
           <div key={t.id} className="group flex flex-col items-center gap-1">
             <TexturePreview texture={t} isSelected={t.id === selectedId} onClick={() => onSelect(t.id)} />
-            <span className="min-h-w-full not-group-hover:truncate text-center text-sm text-zinc-500">{t.name}</span>
+            <span className="min-h-w-full text-center text-sm text-zinc-500 not-group-hover:truncate">{t.name}</span>
           </div>
         ))}
       </div>

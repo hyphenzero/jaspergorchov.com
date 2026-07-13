@@ -1,8 +1,8 @@
 'use client'
 
+import { trackEvent } from '@/actions/analytics'
 import { usePathname } from 'next/navigation'
 import { useEffect } from 'react'
-import { trackEvent } from '@/actions/analytics'
 
 function deriveSource(referrer: string): string {
   if (!referrer) return 'direct'

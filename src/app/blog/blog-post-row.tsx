@@ -1,9 +1,9 @@
 'use client'
 
+import { formatDate } from '@/lib/api-utils'
 import clsx from 'clsx'
 import Link from 'next/link'
 import { useState } from 'react'
-import { formatDate } from '@/lib/api-utils'
 
 export function BlogPostRow({
   meta,
@@ -30,16 +30,16 @@ export function BlogPostRow({
     >
       <Link href={`/blog/${slug}`} className="absolute inset-0 z-10" />
       <div className="flex h-fit">
-        <p className="font-medium font-mono text-sm/6 text-zinc-500 uppercase tracking-widest">
+        <p className="font-mono text-sm/6 font-medium tracking-widest text-zinc-500 uppercase">
           {formatDate(meta.date, 'long')}
         </p>
-        <ul className="m-0 flex list-none items-center font-medium font-mono text-xs text-zinc-500 uppercase tracking-widest">
+        <ul className="m-0 flex list-none items-center font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">
           {meta.tags.map((tag, i) => (
             <li key={i} className="inline-flex items-center">
               <span className="mx-4 inline-block size-0.75 rounded-full bg-current" />
               <Link
                 href={`${basePath}?category=${encodeURIComponent(tag.toLowerCase())}`}
-                className="relative z-20 text-zinc-500 leading-none transition hover:text-zinc-950 dark:hover:text-white"
+                className="relative z-20 leading-none text-zinc-500 transition hover:text-zinc-950 dark:hover:text-white"
                 onMouseEnter={() => setTagHovered(true)}
                 onMouseLeave={() => setTagHovered(false)}
               >
@@ -52,7 +52,7 @@ export function BlogPostRow({
       <div className="relative sm:col-span-2 sm:max-w-2xl">
         <h2 className="font-semibold text-zinc-950 dark:text-white">{meta.title}</h2>
         <p className="prose prose-blog mt-4 line-clamp-3">{meta.lead}</p>
-        <p className="mt-4 flex w-fit items-end font-semibold text-sky-500 text-sm dark:text-sky-400">
+        <p className="mt-4 flex w-fit items-end text-sm font-semibold text-sky-500 dark:text-sky-400">
           Read more
           <svg
             viewBox="0 0 10 10"

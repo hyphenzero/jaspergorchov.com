@@ -36,7 +36,7 @@ function IconButton({
       className="relative inline-flex size-7 items-center justify-center rounded-xs fill-(--text-tertiary) hover:bg-(--control-hover) hover:fill-(--text-primary) disabled:cursor-not-allowed disabled:opacity-25"
     >
       <span
-        className="-translate-1/2 absolute top-1/2 left-1/2 pointer-fine:hidden size-[max(100%,3rem)]"
+        className="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
         aria-hidden="true"
       />
       {children}
@@ -49,10 +49,10 @@ export function LayersPanel() {
   const displayLayers = [...state.layers].reverse()
 
   return (
-    <section className="flex min-h-0 flex-1 select-none flex-col border-(--panel-border) border-b">
-      <div className="flex h-9 shrink-0 items-center gap-2 border-(--panel-border) border-b bg-(--panel-header-bg) px-3">
+    <section className="flex min-h-0 flex-1 flex-col border-b border-(--panel-border) select-none">
+      <div className="flex h-9 shrink-0 items-center gap-2 border-b border-(--panel-border) bg-(--panel-header-bg) px-3">
         <QueueListIcon className="size-4 shrink-0 fill-(--text-tertiary)" />
-        <h3 className="font-medium text-(--text-secondary) text-sm/5">Layers</h3>
+        <h3 className="text-sm/5 font-medium text-(--text-secondary)">Layers</h3>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto p-1.5">
@@ -71,10 +71,10 @@ export function LayersPanel() {
                 isSelected ? 'bg-(--layer-selected)' : 'hover:bg-(--layer-hover)'
               }`}
             >
-              <span className="flex size-6 shrink-0 items-center justify-center rounded-xs bg-(--layer-icon-bg) font-mono text-(--text-secondary) text-[0.6875rem]/4">
+              <span className="flex size-6 shrink-0 items-center justify-center rounded-xs bg-(--layer-icon-bg) font-mono text-[0.6875rem]/4 text-(--text-secondary)">
                 {layerGlyphs[layer.type]}
               </span>
-              <span className="min-w-0 flex-1 truncate text-(--text-primary) text-sm/5">{layer.name}</span>
+              <span className="min-w-0 flex-1 truncate text-sm/5 text-(--text-primary)">{layer.name}</span>
               <span className="flex shrink-0 items-center gap-0.5 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100">
                 <IconButton
                   label={layer.visible ? 'Hide layer' : 'Show layer'}

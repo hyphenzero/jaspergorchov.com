@@ -16,7 +16,7 @@ export function ThemeSwitcher() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="select-none text-base/6 text-zinc-950 dark:text-white sm:text-sm/6">Theme</span>
+      <span className="text-base/6 text-zinc-950 select-none sm:text-sm/6 dark:text-white">Theme</span>
       <ThemedListbox
         theme={state.theme}
         value={state.theme}

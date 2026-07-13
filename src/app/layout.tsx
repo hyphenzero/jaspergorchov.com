@@ -1,10 +1,10 @@
-import type { Metadata } from 'next'
-import { Fira_Code } from 'next/font/google'
-import type React from 'react'
-import Script from 'next/script'
 import { Footer } from '@/components/footer'
 import { Header } from '@/components/header'
 import { VideoCacheProvider } from '@/components/video-cache-context'
+import type { Metadata } from 'next'
+import { Fira_Code } from 'next/font/google'
+import Script from 'next/script'
+import type React from 'react'
 import './globals.css'
 
 const firaCode = Fira_Code({

@@ -23,13 +23,13 @@ export function ThemeImage({
         <NextImage
           src={src}
           alt={alt}
-          className={clsx('dark:hidden! size-full object-cover', imgClassName)}
+          className={clsx('size-full object-cover dark:hidden!', imgClassName)}
           {...props}
         />
         <NextImage
           src={darkSrc}
           alt={alt}
-          className={clsx('not-dark:hidden! absolute inset-0 size-full object-cover', imgClassName)}
+          className={clsx('absolute inset-0 size-full object-cover not-dark:hidden!', imgClassName)}
           {...props}
         />
       </div>

@@ -33,7 +33,7 @@ export function ToolsPanel() {
   const { state, dispatch } = useEditor()
 
   return (
-    <div className="editor-tools flex w-18 shrink-0 select-none flex-col items-center gap-3 border-(--panel-border) border-r bg-(--panel-bg) px-2 py-3">
+    <div className="editor-tools flex w-18 shrink-0 flex-col items-center gap-3 border-r border-(--panel-border) bg-(--panel-bg) px-2 py-3 select-none">
       <div className="flex flex-col gap-1.5">
         {TOOL_IDS.map((toolId) => {
           const Icon = toolIcons[toolId]
@@ -53,7 +53,7 @@ export function ToolsPanel() {
               }`}
             >
               <span
-                className="-translate-1/2 absolute top-1/2 left-1/2 pointer-fine:hidden size-[max(100%,3rem)]"
+                className="absolute top-1/2 left-1/2 size-[max(100%,3rem)] -translate-1/2 pointer-fine:hidden"
                 aria-hidden="true"
               />
               <Icon className="size-4 shrink-0" />
@@ -78,7 +78,7 @@ export function ToolsPanel() {
                 dispatch({ type: 'SET_FILL_COLOR', color })
                 dispatch({ type: 'SET_BRUSH_COLOR', color })
               }}
-              className="size-5 rounded-xs ring-(--swatch-ring) ring-1 ring-offset-(--panel-bg) ring-offset-1"
+              className="size-5 rounded-xs ring-1 ring-(--swatch-ring) ring-offset-1 ring-offset-(--panel-bg)"
               style={{
                 background: color,
                 outline: selected ? '2px solid var(--accent)' : undefined,
@@ -90,7 +90,7 @@ export function ToolsPanel() {
       </div>
 
       <label className="mt-auto flex flex-col items-center gap-2">
-        <span className="font-mono text-(--text-tertiary) text-[0.625rem]/4 uppercase tracking-wide">Brush</span>
+        <span className="font-mono text-[0.625rem]/4 tracking-wide text-(--text-tertiary) uppercase">Brush</span>
         <input
           type="range"
           name="brush-size"
@@ -101,7 +101,7 @@ export function ToolsPanel() {
           onChange={(event) => dispatch({ type: 'SET_BRUSH_SIZE', size: Number(event.target.value) })}
           className="editor-vertical-range"
         />
-        <span className="font-mono text-(--text-secondary) text-[0.625rem]/4 tabular-nums">{state.brushSize}px</span>
+        <span className="font-mono text-[0.625rem]/4 text-(--text-secondary) tabular-nums">{state.brushSize}px</span>
       </label>
     </div>
   )

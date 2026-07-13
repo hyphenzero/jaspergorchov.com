@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
 import { sessionCookieName, validateSession } from '@/lib/auth'
 import { buildNewsletterPayload, getUnsentNewsletterContent } from '@/lib/newsletter'
+import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   const sessionToken = request.cookies.get(sessionCookieName())?.value

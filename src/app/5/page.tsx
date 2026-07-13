@@ -44,10 +44,10 @@ export default function Home() {
     <>
       <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
         <div className="flex max-md:flex-col max-md:space-y-6 md:items-end md:justify-between">
-          <h1 className="flex-1 text-pretty pr-6 font-medium text-5xl text-zinc-900 tracking-tight sm:text-6xl lg:text-[5rem] dark:text-white">
+          <h1 className="flex-1 pr-6 text-5xl font-medium tracking-tight text-pretty text-zinc-900 sm:text-6xl lg:text-[5rem] dark:text-white">
             Jasper Gorchov
           </h1>
-          <p className="w-fit font-medium text-[1.75rem]/[1.14] text-zinc-900 md:pb-0.5 lg:pb-1 dark:text-white">
+          <p className="w-fit text-[1.75rem]/[1.14] font-medium text-zinc-900 md:pb-0.5 lg:pb-1 dark:text-white">
             14-year-old <br /> creative developer
           </p>
         </div>
@@ -58,10 +58,10 @@ export default function Home() {
       </div>
 
       <div className="mx-auto mt-12 max-w-304 px-6 sm:mt-20 lg:mt-24 lg:px-8">
-        <p className="text-pretty font-mono font-semibold text-[0.8125rem]/6 text-sky-500 uppercase tracking-widest">
+        <p className="font-mono text-[0.8125rem]/6 font-semibold tracking-widest text-pretty text-sky-500 uppercase">
           Projects
         </p>
-        <h2 className="max-w-3xl text-pretty font-medium text-3xl tracking-tight md:text-[2.5rem]/14">
+        <h2 className="max-w-3xl text-3xl font-medium tracking-tight text-pretty md:text-[2.5rem]/14">
           Creating high-quality websites, web apps, and 3D illustrations.
         </h2>
       </div>
