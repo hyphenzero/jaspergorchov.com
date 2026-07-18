@@ -28,7 +28,7 @@ export function CurrentTime() {
 
   return (
     <>
-      {time} <span className="text-neutral-600">(UTC -07:00)</span>
+      {time} <span className="text-zinc-600">(UTC -07:00)</span>
     </>
   )
 }

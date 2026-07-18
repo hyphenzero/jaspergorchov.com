@@ -13,7 +13,7 @@ import { unifiedConditional } from 'unified-conditional'
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['jsx', 'mdx'],
+	pageExtensions: ['jsx', 'mdx'],
 }
 
 function remarkMDXLayout(source) {

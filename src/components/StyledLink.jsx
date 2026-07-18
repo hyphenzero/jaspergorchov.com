@@ -13,9 +13,9 @@ export function StyledLink({
   return (
     <Link
       className={clsx(
-        'group text-white font-medium transition-colors duration-200',
+        'group font-medium text-white transition-colors duration-200',
         underline
-          ? 'underline decoration-sky-300 underline-offset-[0.15em] hover:decoration-2 [text-decoration-skip-ink:none]'
+          ? 'underline decoration-sky-300 underline-offset-[0.15em] [text-decoration-skip-ink:none] hover:decoration-2'
           : 'hover:text-sky-300',
         className,
       )}
@@ -23,7 +23,7 @@ export function StyledLink({
     >
       {children}
       {arrow && (
-        <ArrowUpRightIcon className="inline ml-1 w-4 h-4 text-white group-hover:text-sky-300 transition-colors duration-200" />
+        <ArrowUpRightIcon className="ml-1 inline h-4 w-4 text-white transition-colors duration-200 group-hover:text-sky-300" />
       )}
     </Link>
   )

@@ -19,7 +19,33 @@ export function FadeIn({ ...props }) {
           opacity: 0,
           y: shouldReduceMotion ? 0 : 24,
         },
-        visible: { opacity: 1, y: 0, scale: 1 },
+        visible: { opacity: 1, y: 0 },
+      }}
+      transition={{ duration: 0.5 }}
+      {...(isInStaggerGroup
+        ? {}
+        : {
+            initial: 'hidden',
+            whileInView: 'visible',
+            viewport,
+          })}
+      {...props}
+    />
+  )
+}
+
+export function FadeInFromSide({ ...props }) {
+  let shouldReduceMotion = useReducedMotion()
+  let isInStaggerGroup = useContext(FadeInStaggerContext)
+
+  return (
+    <motion.div
+      variants={{
+        hidden: {
+          opacity: 0,
+          x: shouldReduceMotion ? 0 : -24,
+        },
+        visible: { opacity: 1, x: 0 },
       }}
       transition={{ duration: 0.5 }}
       {...(isInStaggerGroup

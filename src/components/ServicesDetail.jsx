@@ -55,7 +55,7 @@ function Service({ service, isActive, className, ...props }) {
       <h3 className="mt-6 text-left font-display text-xl font-semibold text-white">
         {service.name}
       </h3>
-      <p className="mt-2 text-left text-sm text-neutral-400">
+      <p className="mt-2 text-left text-sm text-zinc-400">
         {service.description}
       </p>
     </div>
@@ -115,7 +115,7 @@ function ServicesDesktop() {
           </Tab.List>
           <FadeIn
             as="Tab.Panels"
-            className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-neutral-900 bg-primary p-16 shadow-inner shadow-black/25"
+            className="relative mt-20 flex gap-12 overflow-hidden rounded-3xl border-b border-zinc-900 bg-primary p-16 shadow-inner shadow-black/25"
           >
             {services.map((service, serviceIndex) => (
               <Tab.Panel

@@ -37,10 +37,7 @@ export const socialMediaProfiles = [
 
 export function SocialMedia({ className }) {
   return (
-    <ul
-      role="list"
-      className={clsx('flex gap-x-6 text-neutral-400', className)}
-    >
+    <ul role="list" className={clsx('flex gap-x-6 text-zinc-400', className)}>
       {socialMediaProfiles.map((socialMediaProfile) => (
         <li key={socialMediaProfile.title}>
           <Link

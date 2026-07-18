@@ -41,8 +41,8 @@ function Header() {
                 key={item.name}
                 href={item.href}
                 className={clsx(
-                  'px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 hover:text-sky-300 rounded-full target:text-sky-300',
-                  pathname === item.href ? 'bg-neutral-900' : '',
+                  'rounded-full px-4 py-1.5 text-sm font-medium text-white transition-colors duration-200 target:text-sky-300 hover:text-sky-300',
+                  pathname === item.href ? 'bg-zinc-900' : '',
                 )}
               >
                 {item.name}
@@ -69,7 +69,7 @@ function Header() {
         onClose={setMobileMenuOpen}
       >
         <div className="fixed inset-0 z-50" />
-        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-primary/75 px-6 py-8 backdrop-blur-xl sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
+        <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-primary/75 px-6 py-8 backdrop-blur-xl sm:max-w-sm sm:ring-1 sm:ring-zinc-900/10">
           <div className="flex items-center justify-between">
             <Link href="/" aria-label="Home" className="flex rounded-md">
               <Logo />
@@ -119,10 +119,10 @@ function Footer() {
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
-      <div className="mx-auto max-w-7xl border-t border-neutral-800 px-6 py-8 md:flex md:items-center md:justify-between lg:px-8">
+      <div className="mx-auto max-w-7xl border-t border-zinc-800 px-6 py-8 md:flex md:items-center md:justify-between lg:px-8">
         <SocialMedia className="max-md:flex max-md:justify-center md:order-2" />
         <div className="mt-8 md:order-1 md:mt-0">
-          <p className="text-center text-xs leading-5 text-neutral-400">
+          <p className="text-center text-xs leading-5 text-zinc-400">
             &copy; {new Date().getFullYear()} Jasper Gorchov. All rights
             reserved.
           </p>

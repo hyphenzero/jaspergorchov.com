@@ -1,18 +1,18 @@
 .typography {
-  color: theme(colors.neutral.400);
+  color: theme(colors.zinc.400);
   font-size: theme(fontSize.xl);
   line-height: theme(fontSize.xl[1].lineHeight);
 
   --shiki-color-text: theme(colors.white);
-  --shiki-color-background: theme(colors.neutral.800);
-  --shiki-token-constant: theme(colors.neutral.300);
-  --shiki-token-string: theme(colors.neutral.400);
-  --shiki-token-comment: theme(colors.neutral.500);
-  --shiki-token-keyword: theme(colors.neutral.400);
-  --shiki-token-parameter: theme(colors.neutral.400);
-  --shiki-token-function: theme(colors.neutral.300);
-  --shiki-token-string-expression: theme(colors.neutral.300);
-  --shiki-token-punctuation: theme(colors.neutral.400);
+  --shiki-color-background: theme(colors.zinc.800);
+  --shiki-token-constant: theme(colors.zinc.300);
+  --shiki-token-string: theme(colors.zinc.400);
+  --shiki-token-comment: theme(colors.zinc.500);
+  --shiki-token-keyword: theme(colors.zinc.400);
+  --shiki-token-parameter: theme(colors.zinc.400);
+  --shiki-token-function: theme(colors.zinc.300);
+  --shiki-token-string-expression: theme(colors.zinc.300);
+  --shiki-token-punctuation: theme(colors.zinc.400);
 
   :where(.typography > *) {
     margin-top: theme(spacing.6);
@@ -63,7 +63,7 @@
   }
 
   :where(li)::marker {
-    color: theme(colors.neutral.500);
+    color: theme(colors.zinc.500);
   }
 
   :where(li) strong {
@@ -94,14 +94,14 @@
 
   :where(thead th) {
     padding-bottom: theme(spacing.6);
-    border-bottom: 1px solid theme(colors.neutral.950);
+    border-bottom: 1px solid theme(colors.zinc.950);
   }
 
   :where(td) {
     vertical-align: top;
     padding-top: theme(spacing.6);
     padding-bottom: theme(spacing.6);
-    border-bottom: 1px solid theme(colors.neutral.950 / 0.1);
+    border-bottom: 1px solid theme(colors.zinc.950 / 0.1);
   }
 
   :where(:is(th, td):not(:last-child)) {
@@ -111,7 +111,7 @@
   /* Code blocks */
   :where(pre) {
     display: flex;
-    background-color: theme(colors.neutral.800);
+    background-color: theme(colors.zinc.800);
     border-radius: theme(borderRadius.3xl);
     overflow-x: auto;
     margin-top: theme(spacing.10);
@@ -139,7 +139,7 @@
 
   /* <hr> */
   :where(hr) {
-    border-color: theme(colors.neutral.900);
+    border-color: theme(colors.zinc.900);
     margin-top: theme(spacing.12);
     margin-bottom: theme(spacing.12);
   }

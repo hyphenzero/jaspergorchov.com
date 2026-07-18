@@ -5,7 +5,7 @@ export function WavePattern({ className }) {
     <svg
       viewBox="0 0 1440 743"
       fill="none"
-      className={clsx('stroke-neutral-800', className)}
+      className={clsx('stroke-zinc-800', className)}
     >
       <path
         d="M0 22.2185C0 22.2185 209.817 -362.861 720 -108.891C1230.18 145.077 1440 -240 1440 -240"

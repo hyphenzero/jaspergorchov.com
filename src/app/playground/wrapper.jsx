@@ -1,4 +1,3 @@
-import { ContactSection } from '@/components/ContactSection'
 import { Container } from '@/components/Container'
 import { FadeIn } from '@/components/FadeIn'
 import { MDXComponents } from '@/components/MDXComponents'
@@ -55,8 +54,6 @@ export default async function ExperimentLayout({ children, _segments }) {
           projects={moreExperiments}
         />
       )}
-
-      <ContactSection />
     </>
   )
 }

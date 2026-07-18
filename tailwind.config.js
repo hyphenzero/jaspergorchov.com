@@ -17,8 +17,8 @@ module.exports = {
       '5xl': ['2.5rem', { lineHeight: '3rem' }],
       '6xl': ['3rem', { lineHeight: '3.5rem' }],
 			'7xl': ['4rem', { lineHeight: '4.5rem' }],
-			'8xl': ['6rem', { lineHeight: '4.5rem' }],
-			'9xl': ['8rem', { lineHeight: '5rem' }],
+			'8xl': ['5rem', { lineHeight: '5rem' }],
+			'9xl': ['6rem', { lineHeight: '5rem' }],
     },
 		extend: {
 			fontFamily: {
@@ -29,8 +29,8 @@ module.exports = {
 				],
 			},
 			colors: {
-				primary: '#0a0a0a',
-				secondary: '#111111',
+				primary: '#09090b',
+				secondary: '#111113',
       },
 		},
 	},
