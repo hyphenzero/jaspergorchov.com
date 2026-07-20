@@ -402,7 +402,7 @@ function TactileSelectedOption({ placeholder, options }: { placeholder?: React.R
         'pr-[calc(--spacing(7)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
         'text-left text-base/6 text-zinc-300 sm:text-sm/6',
         'border border-white/15 group-data-active:border-white/20 group-data-hover:border-white/20',
-        'bg-gradient-to-b from-white/12 to-white/5 dark:from-white/10 dark:to-white/5',
+        'bg-linear-to-b from-white/12 to-white/5 dark:from-white/10 dark:to-white/5',
         'shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_8px_20px_rgb(0_0_0/0.5)] backdrop-blur-md',
         'group-data-disabled:opacity-50'
       )}
@@ -434,7 +434,7 @@ function TactilePanel({ children }: { children?: React.ReactNode }) {
         'isolate w-max min-w-[calc(var(--button-width)+1.75rem)] scroll-py-1 rounded-b-xl p-0.5 select-none',
         'outline outline-transparent focus:outline-hidden',
         'overflow-y-scroll overscroll-contain',
-        'bg-gradient-to-b from-white/12 to-white/5 backdrop-blur-md dark:from-white/10 dark:to-white/5',
+        'bg-linear-to-b from-white/12 to-white/5 backdrop-blur-md dark:from-white/10 dark:to-white/5',
         'shadow-[inset_0_1px_0_rgb(255_255_255/0.15),0_12px_28px_rgb(0_0_0/0.5)] ring-1 ring-white/15',
         'transition-opacity duration-100 ease-in data-closed:data-leave:opacity-0 data-transition:pointer-events-none'
       )}
@@ -465,7 +465,7 @@ function TactileOption<T>({
               'text-base/6 text-zinc-400 sm:text-sm/6',
               'outline-hidden data-focus:text-white',
               'data-disabled:opacity-50',
-              'data-selected:bg-gradient-to-b data-selected:from-sky-300 data-selected:to-sky-600 data-selected:text-white data-selected:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_0_8px_rgb(56_189_248/0.3)]'
+              'data-selected:bg-linear-to-b data-selected:from-sky-300 data-selected:to-sky-600 data-selected:text-white data-selected:shadow-[inset_0_1px_0_rgb(255_255_255/0.5),0_0_8px_rgb(56_189_248/0.3)]'
             )}
           >
             <svg

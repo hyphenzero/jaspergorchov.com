@@ -48,6 +48,7 @@
     "prettier": "^3.9.5",
     "prettier-plugin-organize-imports": "^4.3.0",
     "prettier-plugin-tailwindcss": "^0.8.0",
+    "prettier-plugin-tailwindcss-canonical-classes": "^0.1.5",
     "sharp": "^0.35.3",
     "typescript": "^6.0.3"
   },
@@ -62,7 +63,8 @@
     ],
     "plugins": [
       "prettier-plugin-organize-imports",
-      "prettier-plugin-tailwindcss"
+      "prettier-plugin-tailwindcss",
+      "prettier-plugin-tailwindcss-canonical-classes"
     ]
   },
   "postcss": {
@@ -70,10 +72,12 @@
       "@tailwindcss/postcss": {}
     }
   },
-  "packageManager": "pnpm@10.28.2",
+  "packageManager": "pnpm@11.15.1+sha512.81350b07e53c9538a02f1f2303b4290fa2d7be04e56e2a970c4cc4b417dc761de196edabd49d55c7dc9580db81007c44143e4e3d7e462b3000d23c255122d065",
   "pnpm": {
     "onlyBuiltDependencies": [
-      "sharp"
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
     ]
   }
 }

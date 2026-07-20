@@ -427,7 +427,7 @@ We've finally added APIs for doing 3D transforms, like `rotate-x-*`, `rotate-y-*
           alt=""
           className="absolute inset-0 -z-10 size-full object-cover"
         />
-        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-zinc-900 via-zinc-900/40"></div>
+        <div className="absolute inset-0 -z-10 bg-linear-to-t from-zinc-900 via-zinc-900/40"></div>
         <div className="absolute inset-0 -z-10 rounded-2xl ring-1 ring-zinc-900/10 ring-inset"></div>
         <div className="flex flex-wrap items-center gap-y-1 overflow-hidden text-sm/6 text-zinc-300">
           <time dateTime="2020-03-16" className="mr-8">
@@ -558,7 +558,7 @@ The new `starting` variant adds support for the new CSS [`@starting-style`](http
 
 <Example className="flex py-0">
   {
-    <Iframe className="h-[340px] w-full">
+    <Iframe className="h-85 w-full">
       <div className="grid h-full items-center justify-center">
         <button
           popoverTarget="my-popover"
@@ -569,7 +569,7 @@ The new `starting` variant adds support for the new CSS [`@starting-style`](http
         <div
           popover="auto"
           id="my-popover"
-          className="relative inset-y-0 mx-auto my-auto transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left opacity-0 shadow-xl ring ring-black/5 transition-all transition-discrete duration-500 sm:w-full sm:max-w-96 sm:p-6 dark:bg-zinc-800 dark:inset-ring dark:inset-ring-white/5 [&:is([open],:popover-open)]:opacity-100 [@starting-style]:[&:is([open],:popover-open)]:opacity-0"
+          className="relative inset-y-0 mx-auto my-auto transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left opacity-0 shadow-xl ring ring-black/5 transition-all transition-discrete duration-500 sm:w-full sm:max-w-96 sm:p-6 dark:bg-zinc-800 dark:inset-ring dark:inset-ring-white/5 [[open],:popover-open]:opacity-100 starting:[[open],:popover-open]:opacity-0"
         >
           <div>
             <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-indigo-50 dark:bg-indigo-600/10">
