@@ -1,10 +1,10 @@
 'use client'
 
 import { ContactShadows, Environment, OrbitControls, useGLTF } from '@react-three/drei'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { clsx } from 'clsx'
 import Image from 'next/image'
-import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
 import { TeapotGeometry } from 'three-stdlib'
 
@@ -44,9 +44,9 @@ function ArtBentoCard({
       </div>
 
       {fullBleed ? (
-        <div className="relative flex-1 overflow-hidden">{children}</div>
+        <div className="relative flex-1 overflow-hidden rounded-2xl">{children}</div>
       ) : (
-        <div className="relative mt-5 flex-1 overflow-hidden">
+        <div className="relative mt-5 flex-1 overflow-hidden rounded-2xl">
           <div
             className={clsx(
               'h-full',
@@ -265,8 +265,7 @@ function GridFloor({ isDark }: { isDark: boolean }) {
   )
 }
 
-function TurntableMesh({ meshId, matId, isDark, isDragging }: { meshId: MeshId; matId: MatId; isDark: boolean; isDragging?: boolean }) {
-  const groupRef = useRef<THREE.Group>(null)
+function TurntableMesh({ meshId, matId }: { meshId: MeshId; matId: MatId }) {
   const mat = useMemo(() => {
     const m = MATERIALS.find((x) => x.id === matId)!
     if (m.id === 'glass') {
@@ -313,14 +312,11 @@ function TurntableMesh({ meshId, matId, isDark, isDragging }: { meshId: MeshId; 
     return g
   }, [meshId])
 
-  useFrame((_, delta) => {
-    if (groupRef.current && !isDragging) {
-      groupRef.current.rotation.y += delta * 0.18
-    }
-  })
-
-return (
-    <group ref={groupRef} position={[0, 0, 0]}>
+  // NOTE: no manual rotation here — turntabling comes solely from
+  // OrbitControls autoRotate so the model and GridFloor stay in sync.
+  // A separate per-mesh spin would make the model orbit faster than the floor.
+  return (
+    <group position={[0, 0, 0]}>
       {meshId === 'suzanne' ? (
         <SuzanneModel material={mat} targetHeight={MESH_TARGET_HEIGHTS['suzanne']} onFloor />
       ) : geometry ? (
@@ -425,9 +421,9 @@ function ThreeJSLab() {
   const bg = isDark ? '#18181b' : '#ffffff'
 
   return (
-    <div className="relative flex h-full min-h-[520px] overflow-hidden" style={{ background: bg }}>
+    <div className="relative flex h-full min-h-130 overflow-hidden" style={{ background: bg }}>
       {/* Left — vertical stack of shapes (transparent, overlaying grid) */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 flex w-[88px] flex-col items-center justify-center gap-2 bg-transparent py-4">
+      <div className="pointer-events-none absolute inset-y-0 left-4 z-10 flex w-22 flex-col items-center justify-center gap-2 bg-transparent py-4">
         {MESHES.map((m) => (
           <StaticShapePreview key={m.id} meshId={m.id} matId={matId} isSelected={meshId === m.id} onClick={() => setMeshId(m.id)} />
         ))}
@@ -435,13 +431,13 @@ function ThreeJSLab() {
 
       {/* Center — turntable (full bleed behind sidebars) */}
       <div className="absolute inset-0 overflow-hidden" style={{ background: bg }}>
-        <Canvas camera={{ position: [0, 0, 5.2], fov: 32 }} dpr={[1, 2]} shadows gl={{ antialias: true }}>
+        <Canvas camera={{ position: [0, 1.6, 4.95], fov: 32 }} dpr={[1, 2]} shadows gl={{ antialias: true }}>
           <color attach="background" args={[bg]} />
           <ambientLight intensity={0.6} />
           <directionalLight position={[4, 6, 4]} intensity={1.6} castShadow />
           <directionalLight position={[-4, 2, -4]} intensity={0.6} />
           <Suspense fallback={null}>
-            <TurntableMesh meshId={meshId} matId={matId} isDark={isDark} isDragging={isDragging} />
+            <TurntableMesh meshId={meshId} matId={matId} />
             <Environment preset="studio" />
             <ContactShadows position={[0, FLOOR_Y + 0.02, 0]} opacity={0.3} scale={5} blur={2.8} far={4} />
             <GridFloor isDark={isDark} />
@@ -451,6 +447,9 @@ function ThreeJSLab() {
             enableZoom={false}
             minDistance={5.2}
             maxDistance={5.2}
+            minPolarAngle={1.26}
+            maxPolarAngle={1.26}
+            target={[0, 0, 0]}
             autoRotate={!isDragging}
             autoRotateSpeed={0.35}
             enableDamping
@@ -462,7 +461,7 @@ function ThreeJSLab() {
       </div>
 
       {/* Right — vertical stack of textures (transparent, overlaying grid) */}
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 flex w-[68px] flex-col items-center justify-center gap-2.5 bg-transparent py-4">
+      <div className="pointer-events-none absolute inset-y-0 right-4 z-10 flex w-17 flex-col items-center justify-center gap-2.5 bg-transparent py-4">
         {MATERIALS.map((m) => (
           <button
             key={m.id}
@@ -564,7 +563,7 @@ export function ThreeDArtGrid() {
         topFade
       />
 
-      <ArtBentoCard title="Three.js" description="Pick a mesh and material — drag to spin, release to keep turntabling." fullBleed className="lg:col-span-12 min-h-[600px]">
+      <ArtBentoCard title="Three.js" description="Pick a mesh and material — drag to spin, release to keep turntabling." fullBleed className="lg:col-span-12 min-h-150">
         <ThreeJSLab />
       </ArtBentoCard>
     </div>

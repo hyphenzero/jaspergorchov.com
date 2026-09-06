@@ -20,7 +20,6 @@ import {
   type Point,
   type RectangleLayer,
   type TextLayer,
-  type ThemeId,
 } from './types'
 
 function brushCursorUrl(size: number): string {
@@ -154,53 +153,11 @@ function getHandlePosition(handle: string, width: number, height: number): CSSPr
   return { ...pos, transform: 'translate(-50%, -50%)' }
 }
 
-function viewportClassName(theme: ThemeId, cursorClass: string) {
-  if (theme === 'terminal') {
-    return `relative size-full min-w-0 overflow-hidden border border-green-500 bg-zinc-950 ${cursorClass}`
-  }
-  if (theme === 'retro') {
-    return `relative size-full min-w-0 overflow-hidden border border-black bg-white dark:border-zinc-300 dark:bg-zinc-500 ${cursorClass}`
-  }
-  if (theme === 'tactile') {
-    return `relative size-full min-w-0 overflow-hidden border border-white/10 bg-gradient-to-b from-zinc-700 to-zinc-900 shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] dark:border-white/10 dark:from-zinc-700 dark:to-zinc-900 dark:shadow-[inset_0_1px_0_rgb(255_255_255/0.12),inset_0_-1px_0_rgb(0_0_0/0.5),0_18px_40px_rgb(0_0_0/0.5)] ${cursorClass}`
-  }
-  return `relative size-full min-w-0 rounded-3xl bg-zinc-100 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900/50 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-3xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline ${cursorClass}`
-}
-
-function edgeRingClassName(theme: ThemeId) {
-  if (theme === 'terminal') return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-green-400 ring-inset'
-  if (theme === 'retro')
-    return 'pointer-events-none absolute inset-0 z-10 ring-2 ring-black ring-inset dark:ring-zinc-300'
-  if (theme === 'tactile')
-    return 'pointer-events-none absolute inset-0 z-10 ring-1 ring-white/10 ring-inset dark:ring-white/10'
-  return 'pointer-events-none absolute inset-0 z-10'
-}
-
-function selectionBorderClassName(theme: ThemeId) {
-  if (theme === 'terminal') return 'absolute inset-0 border border-green-400'
-  if (theme === 'retro') return 'absolute inset-0 border-2 border-black dark:border-zinc-200'
-  if (theme === 'tactile')
-    return 'absolute inset-0 border border-sky-500/80 shadow-[0_0_0_1px_rgb(255_255_255/0.3)] dark:border-sky-400/80'
-  return 'absolute inset-0 border border-sky-500 dark:border-sky-400'
-}
-
-function selectionHandleClassName(theme: ThemeId) {
-  if (theme === 'terminal') return 'pointer-events-auto absolute size-[9px] border-2 border-green-400 bg-zinc-950'
-  if (theme === 'retro')
-    return 'pointer-events-auto absolute size-[9px] border-2 border-black bg-white dark:bg-zinc-500 dark:border-zinc-200'
-  if (theme === 'tactile') {
-    return 'pointer-events-auto absolute size-[9px] rounded-full border-2 border-sky-500 bg-gradient-to-b from-white to-sky-200 shadow-[inset_0_1px_0_rgb(255_255_255/0.8),0_1px_4px_rgb(0_0_0/0.4)] dark:border-sky-400'
-  }
-  return 'pointer-events-auto absolute size-[9px] border border-sky-500 bg-white dark:border-sky-400'
-}
-
 function SelectionHandles({
   layer,
-  theme,
   onResizePointerDown,
 }: {
   layer: Layer
-  theme: ThemeId
   onResizePointerDown: (event: PointerEvent, handle: string) => void
 }) {
   const handles = ['top-left', 'top-right', 'bottom-right', 'bottom-left']
@@ -210,13 +167,13 @@ function SelectionHandles({
       className="pointer-events-none absolute"
       style={{ left: layer.x, top: layer.y, width: layer.width, height: layer.height, zIndex: 10 }}
     >
-      <div className={selectionBorderClassName(theme)} />
+      <div className="absolute inset-0 border border-sky-500 dark:border-sky-400" />
       {handles.map((handle) => (
         <button
           key={handle}
           type="button"
           aria-label={`Resize from ${handle.replace('-', ' ')}`}
-          className={selectionHandleClassName(theme)}
+          className="pointer-events-auto absolute size-[9px] border border-sky-500 bg-white dark:border-sky-400"
           style={getHandlePosition(handle, layer.width, layer.height)}
           onPointerDown={(event) => {
             event.stopPropagation()
@@ -506,7 +463,7 @@ export function Canvas() {
   return (
     <div
       ref={viewportRef}
-      className={viewportClassName(state.theme, cursorClass) + ' isolate'}
+      className={`relative size-full min-w-0 rounded-3xl bg-zinc-100 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900/50 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-3xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline ${cursorClass} isolate`}
       style={{ touchAction: 'none', cursor: brushCursor }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
@@ -514,7 +471,7 @@ export function Canvas() {
       onPointerCancel={handlePointerCancel}
       onDoubleClick={handleDoubleClick}
     >
-      <div className={edgeRingClassName(state.theme)} />
+      <div className="pointer-events-none absolute inset-0 z-10" />
       <div className="absolute inset-0 overflow-hidden rounded-[inherit]">
         {state.layers.map((layer, index) => (
           <CanvasLayer
@@ -529,7 +486,6 @@ export function Canvas() {
         {showSelection && (
           <SelectionHandles
             layer={selectedLayer}
-            theme={state.theme}
             onResizePointerDown={(event, handle) => {
               const ctx = buildToolContext()
               ctx.dispatch({ type: 'SELECT_LAYER', id: selectedLayer.id })

@@ -1,5 +1,6 @@
 import { WebsitesBrowserEditor } from '@/components/home/websites-browser-editor'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/tooltip'
+import { getHighlighter } from '@/lib/shiki'
 import { TypeScript } from '@ridemountainpig/svgl-react'
 import { clsx } from 'clsx'
 import Image from 'next/image'
@@ -98,7 +99,7 @@ const tools = {
 
 const descriptions = {
   websites: 'Responsive, performant sites and web apps — crafted with a focus on design, speed, and UX.',
-  desktop: 'Native desktop apps built with Rust (GPUI) and Swift for maximum performance and platform integration.',
+  desktop: 'Performant, native apps built with Rust (GPUI) or Swift.',
   mobile: 'iOS apps written in Swift and SwiftUI — fluid, platform-native experiences.',
   developerTools: 'Reusable frameworks and tooling that make building faster and more consistent.',
 }
@@ -158,7 +159,7 @@ function TechnologyIcons({ items }: { items: Tool[] }) {
 
 function MockupSurface({ children }: { children: ReactNode }) {
   return (
-    <div className="flex h-full flex-col rounded-xl bg-zinc-50 p-3 ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
+    <div className="flex h-full flex-col rounded-xl bg-white/70 p-3 shadow-2xl ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-zinc-950/60 dark:ring-white/10">
       {children}
     </div>
   )
@@ -200,107 +201,81 @@ function WebsiteMockup() {
   )
 }
 
+const DESKTOP_NAV = [
+  { label: 'Inbox', dot: 'bg-emerald-500', active: false },
+  { label: 'Projects', dot: 'bg-sky-500', active: true },
+  { label: 'Today', dot: 'bg-amber-500', active: false },
+  { label: 'Team', dot: 'bg-violet-500', active: false },
+  { label: 'Settings', dot: 'bg-zinc-500', active: false },
+]
+
+const DESKTOP_TASKS = [
+  { title: 'Redesign landing page', meta: 'Design · Due Fri', done: true },
+  { title: 'Ship sync engine v0.3', meta: 'Engineering · 4 subtasks', done: false },
+  { title: 'Write release notes', meta: 'Docs · Due Mon', done: false },
+  { title: 'Review pull requests', meta: 'Team · 3 open', done: false },
+  { title: 'Polish onboarding flow', meta: 'Design · In review', done: false },
+]
+
 function DesktopMockup() {
   return (
-    <div className="relative h-full perspective-distant transform-3d translate-x-10 translate-y-0 rotate-x-50 -rotate-z-30 rotate-y-20">
-      <div className="absolute inset-0 w-300 h-300 transform-3d rounded-lg bg-zinc-100 dark:bg-zinc-950 transform-gpu" />
-      <div className="relative z-10 -translate-y-2 transform-3d transform-gpu">
-        <div className="flex items-center gap-3 border-b border-zinc-200 px-3 py-2.5 dark:border-zinc-900 rounded-lg bg-white dark:bg-zinc-950 backdrop-blur-sm shadow-xl" style={{ backgroundColor: 'rgb(255 255 255 / 0.8)' }}>
-          <div className="flex shrink-0 items-center gap-1.5">
-            <span className="size-3 rounded-full bg-red-400 ring-1 ring-inset" style={{ boxShadow: 'inset 0 0 0 1px rgb(9 9 11 / 0.05)' }} />
-            <span className="size-3 rounded-full bg-yellow-400 ring-1 ring-inset" style={{ boxShadow: 'inset 0 0 0 1px rgb(9 9 11 / 0.05)' }} />
-            <span className="size-3 rounded-full bg-green-400 ring-1 ring-inset" style={{ boxShadow: 'inset 0 0 0 1px rgb(9 9 11 / 0.05)' }} />
-          </div>
-          <div className="mx-auto ml-1 px-8 flex min-w-0 items-center gap-2 rounded-full bg-white py-1.5 text-xs text-zinc-500 shadow-sm ring-1" style={{ boxShadow: '0 0 0 1px rgb(9 9 11 / 0.05), 0 1px 2px 0 rgb(0 0 0 / 0.05)' }}>
-            <span className="hidden truncate sm:inline">Project.app</span>
-          </div>
+    <div className="flex h-[calc(100%+3rem)] w-[calc(100%+3rem)] flex-col overflow-hidden rounded-xl bg-white/70 shadow-2xl ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-zinc-950/60 dark:ring-white/10">
+      {/* Title bar */}
+      <div className="flex items-center gap-3 border-b border-zinc-950/10 bg-zinc-950/5 px-3 py-2.5 backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className="size-2.5 rounded-full bg-red-400 ring-1 ring-white/10 ring-inset" />
+          <span className="size-2.5 rounded-full bg-yellow-400 ring-1 ring-white/10 ring-inset" />
+          <span className="size-2.5 rounded-full bg-green-400 ring-1 ring-white/10 ring-inset" />
         </div>
-        <div className="absolute -left-2 -top-8 w-36 -translate-y-3 transform-gpu">
-          <div className="rounded-lg border border-zinc-200 p-2 dark:border-zinc-900 backdrop-blur-sm shadow-2xl" style={{ backgroundColor: 'rgb(255 255 255 / 0.9)' }}>
-            <div className="mb-3 px-2">
-              <div className="h-1.5 w-10 rounded-full bg-zinc-900 dark:bg-white" />
-            </div>
-            <nav className="space-y-1">
-              <div className="flex items-center gap-2 rounded-md bg-zinc-900 px-2 py-1.5 dark:bg-white">
-                <span className="size-1.5 shrink-0 rounded-full bg-emerald-500" />
-                <span className="text-[10px] font-medium text-white dark:text-zinc-900">Inbox</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-2 py-1.5 dark:bg-zinc-800">
-                <span className="size-1.5 shrink-0 rounded-full bg-sky-500" />
-                <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">Projects</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-2 py-1.5 dark:bg-zinc-800">
-                <span className="size-1.5 shrink-0 rounded-full bg-amber-500" />
-                <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">Today</span>
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-2 py-1.5 dark:bg-zinc-800">
-                <span className="size-1.5 shrink-0 rounded-full bg-violet-500" />
-                <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">Team</span>
-              </div>
-            </nav>
-            <div className="mt-auto pt-2 border-t border-zinc-200 dark:border-zinc-900">
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-2 py-1.5 dark:bg-zinc-800">
-                <span className="size-1.5 shrink-0 rounded-full bg-zinc-400" />
-                <span className="text-[10px] font-medium text-zinc-600 dark:text-zinc-400">Settings</span>
-              </div>
-            </div>
-          </div>
+        <div className="mx-auto flex min-w-0 items-center gap-2 rounded-full bg-zinc-950/5 px-4 py-1 text-[11px] text-zinc-600 ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-white/10 dark:text-zinc-300 dark:ring-white/10">
+          <span className="truncate">Projects — Acme</span>
         </div>
-        <div className="absolute -right-2 -top-8 w-[calc(100%+1.5rem)] -translate-y-4 transform-gpu">
-          <div className="rounded-lg border border-zinc-200 p-4 dark:border-zinc-900 backdrop-blur-sm shadow-2xl ml-36" style={{ backgroundColor: 'rgb(255 255 255 / 0.9)' }}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="space-y-1">
-                <div className="h-4 w-24 rounded-full bg-zinc-900 dark:bg-white" />
-                <div className="h-2 w-32 rounded-full bg-zinc-400 dark:bg-zinc-600" />
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="h-2 w-2 rounded-full border border-zinc-300 dark:border-zinc-600" />
-                <div className="h-2 w-2 rounded-full border border-zinc-300 dark:border-zinc-600" />
-                <div className="h-2 w-2 rounded-full border border-zinc-300 dark:border-zinc-600" />
-              </div>
-            </div>
-            <div className="space-y-1.5">
-              <div className="flex items-center gap-2 rounded-md bg-zinc-900 px-3 py-2 dark:bg-white">
-                <span className="size-2 shrink-0 rounded-full bg-emerald-500" />
-                <span className="flex-1 space-y-1">
-                  <span className="block h-1.5 w-3/4 rounded-full" style={{ backgroundColor: 'rgb(255 255 255 / 0.9)' }} />
-                  <span className="block h-1 w-1/2 rounded-full" style={{ backgroundColor: 'rgb(255 255 255 / 0.5)' }} />
+        <div className="w-12 shrink-0" />
+      </div>
+      <div className="flex min-h-0 flex-1">
+        {/* Frosted sidebar — wallpaper shows through */}
+        <aside className="flex w-32 shrink-0 flex-col border-r border-zinc-950/10 bg-zinc-950/5 px-2 py-3 backdrop-blur-2xl dark:border-white/10 dark:bg-white/10">
+          <nav className="space-y-0.5">
+            {DESKTOP_NAV.map((item) => (
+              <div key={item.label} className="flex items-center gap-2 px-2 py-1.5">
+                <span className={`size-1.5 shrink-0 rounded-full ${item.dot}`} />
+                <span
+                  className={
+                    item.active
+                      ? 'text-[11px] font-semibold text-zinc-900 dark:text-white'
+                      : 'text-[11px] text-zinc-500 dark:text-zinc-400'
+                  }
+                >
+                  {item.label}
                 </span>
-                <span className="size-2 shrink-0 rounded-full border" style={{ borderColor: 'rgb(255 255 255 / 0.7)' }} />
               </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-2 dark:bg-zinc-800">
-                <span className="size-2 shrink-0 rounded-full bg-sky-500" />
-                <span className="flex-1 space-y-1">
-                  <span className="block h-1.5 w-3/4 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                  <span className="block h-1 w-1/2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+            ))}
+          </nav>
+        </aside>
+        {/* Main list — plain rows, no cards */}
+        <div className="min-w-0 flex-1 px-4 py-3">
+          <p className="text-[13px] font-semibold text-zinc-900 dark:text-white">Projects</p>
+          <p className="mt-0.5 text-[10px] text-zinc-500">5 tasks · Updated just now</p>
+          <div className="mt-2 divide-y divide-zinc-950/5 dark:divide-white/5">
+            {DESKTOP_TASKS.map((task) => (
+              <div key={task.title} className="flex items-center gap-2.5 py-2">
+                <span
+                  className={
+                    task.done
+                      ? 'grid size-3.5 shrink-0 place-items-center rounded-full bg-emerald-500 text-[8px] text-white'
+                      : 'size-3.5 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-600'
+                  }
+                >
+                  {task.done ? '✓' : null}
                 </span>
-                <span className="size-2 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-500" />
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-2 dark:bg-zinc-800">
-                <span className="size-2 shrink-0 rounded-full bg-amber-500" />
-                <span className="flex-1 space-y-1">
-                  <span className="block h-1.5 w-3/4 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                  <span className="block h-1 w-1/2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[11px] font-medium text-zinc-900 dark:text-zinc-100">
+                    {task.title}
+                  </span>
+                  <span className="block truncate text-[9px] text-zinc-500">{task.meta}</span>
                 </span>
-                <span className="size-2 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-500" />
               </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-2 dark:bg-zinc-800">
-                <span className="size-2 shrink-0 rounded-full bg-violet-500" />
-                <span className="flex-1 space-y-1">
-                  <span className="block h-1.5 w-3/4 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                  <span className="block h-1 w-1/2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                </span>
-                <span className="size-2 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-500" />
-              </div>
-              <div className="flex items-center gap-2 rounded-md bg-zinc-100 px-3 py-2 dark:bg-zinc-800">
-                <span className="size-2 shrink-0 rounded-full bg-rose-500" />
-                <span className="flex-1 space-y-1">
-                  <span className="block h-1.5 w-3/4 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-                  <span className="block h-1 w-1/2 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-                </span>
-                <span className="size-2 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-500" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
@@ -420,10 +395,10 @@ function IPadAppUi() {
 
 function MobileMockup() {
   return (
-    <div className="flex h-full items-center justify-center px-6 pb-8" aria-hidden="true">
-      <div className="flex items-end justify-center">
+    <div className="flex h-full w-full items-center justify-center px-[8%] py-[6%]" aria-hidden="true">
+      <div className="flex h-full w-full items-end justify-center">
         <div
-          className="relative h-52 shrink-0 drop-shadow-xl sm:h-56 lg:h-52 xl:h-56"
+          className="relative h-[88%] w-auto shrink-0 drop-shadow-xl"
           style={{ aspectRatio: '2640 / 1880' }}
         >
           <div className="absolute top-[5%] right-[3.2%] bottom-[5%] left-[3.2%] overflow-hidden rounded-[3px] bg-white dark:bg-zinc-950">
@@ -439,7 +414,7 @@ function MobileMockup() {
           />
         </div>
         <div
-          className="relative z-10 -ml-8 h-44 shrink-0 drop-shadow-xl sm:h-48 lg:h-44 xl:h-48"
+          className="relative z-10 -ml-[6%] h-[74%] w-auto shrink-0 drop-shadow-xl"
           style={{ aspectRatio: '1350 / 2760' }}
         >
           <div className="absolute top-[1.8%] right-[4%] bottom-[1.8%] left-[4%] overflow-hidden rounded-[14px] bg-white dark:bg-zinc-950">
@@ -459,68 +434,130 @@ function MobileMockup() {
   )
 }
 
+const TOWER_CODE = `import { gatehouse } from '@towerjs/gatehouse'
+import { defineTower, env } from '@towerjs/tower/blueprint'
+import { vault } from '@towerjs/vault'
+
+export default defineTower({
+  modules: [
+    vault({
+      provider: 'neon',
+      connectionString: env.string('DATABASE_URL'),
+    }),
+    gatehouse({
+      provider: 'better-auth',
+    }),
+  ],
+})`
+
+async function TowerCode() {
+  const highlighter = await getHighlighter()
+  const html = highlighter.codeToHtml(TOWER_CODE, {
+    lang: 'ts',
+    themes: { light: 'theme-light', dark: 'theme-dark' },
+  })
+  return (
+    <div
+      className="font-mono text-[11px] leading-5 [&_code]:bg-transparent [&_.shiki]:bg-transparent! [&_.shiki_span]:dark:[color:var(--shiki-dark)]! [&_pre]:bg-transparent! [&_pre]:p-0"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  )
+}
+
 function DeveloperToolsMockup() {
   return (
     <MockupSurface>
       <div className="flex items-center gap-2 border-b border-zinc-950/10 pb-2.5 dark:border-white/10">
         <WindowControls />
-        <div className="h-2 w-16 rounded-full bg-zinc-100 dark:bg-zinc-800" />
+        <div className="rounded-md bg-zinc-950/5 px-2 py-0.5 font-mono text-[10px] text-zinc-600 dark:bg-white/10 dark:text-zinc-300">
+          tower.ts
+        </div>
       </div>
-      <div className="mt-3 grid flex-1 grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-2">
-        <div className="h-3/5 rounded border border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-800" />
-        <div className="h-px w-3 bg-zinc-300 dark:bg-zinc-600" />
-        <div className="h-4/5 rounded border border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-800" />
-        <div className="h-px w-3 bg-zinc-300 dark:bg-zinc-600" />
-        <div className="h-3/5 rounded border border-zinc-950/10 bg-white dark:border-white/10 dark:bg-zinc-800" />
+      <div className="mt-3 min-h-0 flex-1 overflow-auto">
+        <TowerCode />
       </div>
     </MockupSurface>
   )
 }
 
-type Bleed = {
-  right?: boolean
-  bottom?: boolean
+function FilmGrain() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 opacity-20"
+      style={{ backgroundImage: 'url(/bg-noise.png)', backgroundSize: '250px 250px' }}
+    />
+  )
 }
 
 function BentoCard({
   title,
   tools,
   description,
+  wallpaper,
+  darkWallpaper,
+  wallpaperClassName,
+  darkWallpaperClassName,
+  lightOverlayClassName,
+  darkOverlayClassName,
   children,
-  bleed,
   className,
 }: {
   title: string
   tools: Tool[]
   description: string
+  wallpaper: string
+  darkWallpaper?: string
+  wallpaperClassName?: string
+  darkWallpaperClassName?: string
+  lightOverlayClassName?: string
+  darkOverlayClassName?: string
   children: ReactNode
-  bleed?: Bleed
   className?: string
 }) {
-  const clipRight = bleed?.right
-  const clipBottom = bleed?.bottom
-
   return (
     <div
       className={clsx(
-        'relative flex flex-col rounded-2xl bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-2xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline',
+        'relative flex flex-col overflow-hidden rounded-[20px] bg-white dark:bg-zinc-900',
         className
       )}
     >
-      <div className="px-5 pt-5 sm:px-6 sm:pt-6">
+      <div className="absolute inset-0 rounded-[20px] ring pointer-events-none ring-inset ring-zinc-950/5 dark:ring-white/10 z-10" />
+      {/* Wallpaper fills the whole card behind everything */}
+      <Image
+        src={wallpaper}
+        alt=""
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className={clsx('absolute inset-0 h-full w-full object-cover dark:hidden', wallpaperClassName)}
+        draggable={false}
+      />
+      <Image
+        src={darkWallpaper ?? wallpaper}
+        alt=""
+        fill
+        sizes="(max-width: 1024px) 100vw, 50vw"
+        className={clsx('absolute inset-0 hidden h-full w-full object-cover dark:block', darkWallpaperClassName)}
+        draggable={false}
+      />
+      {lightOverlayClassName ? (
+        <div aria-hidden className={clsx('pointer-events-none absolute inset-0 dark:hidden', lightOverlayClassName)} />
+      ) : null}
+      {darkOverlayClassName ? (
+        <div aria-hidden className={clsx('pointer-events-none absolute inset-0 hidden dark:block', darkOverlayClassName)} />
+      ) : null}
+      {/*<FilmGrain />*/}
+      <div className="relative px-5 pt-5 sm:px-6 sm:pt-6">
         <div className="flex flex-wrap items-center gap-3">
           <h3 className="text-[15px] font-semibold tracking-tight text-zinc-950 dark:text-white">{title}</h3>
           <TechnologyIcons items={tools} />
         </div>
-        <p className="mt-2 text-sm leading-6 text-zinc-500 dark:text-zinc-400">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-zinc-950/50 dark:text-white/60 dark:mix-blend-plus-lighter">{description}</p>
       </div>
 
-      <div className="relative mt-6 flex-1 overflow-hidden rounded-2xl">
-        <div className={clsx('h-full', clipRight ? 'ml-3' : 'mx-3', clipBottom ? 'pb-0' : 'pb-3')}>
-          <div className={clsx('h-full', clipRight && '-mr-6 sm:-mr-8', clipBottom && '-mb-6 sm:-mb-8')}>
-            {children}
-          </div>
-        </div>
+      {/* Padding = card (20px) − window rounded-xl (12px) = 8px, perfectly concentric */}
+      <div className="relative mt-6 flex-1 px-2 pb-2">
+        <div className="h-full">{children}</div>
       </div>
     </div>
   )
@@ -534,6 +571,9 @@ export function SoftwareUiGrid() {
           title="Websites"
           tools={tools.websites}
           description={descriptions.websites}
+          wallpaper="/wallpaper-1-light.png"
+          darkWallpaper="/wallpaper-1-dark.png"
+          darkWallpaperClassName="brightness-70"
           className="lg:col-span-7 min-h-95"
         >
           <WebsitesBrowserEditor />
@@ -543,8 +583,10 @@ export function SoftwareUiGrid() {
           title="Desktop Apps"
           tools={tools.desktop}
           description={descriptions.desktop}
-          bleed={{ right: true, bottom: true }}
-          className="lg:col-span-5 min-h-95"
+          wallpaper="/wallpaper-7.png"
+          lightOverlayClassName="bg-white/30 mix-blend-screen"
+          darkOverlayClassName="bg-black/40 mix-blend-multiply"
+          className="lg:col-span-5 min-h-95 *:[img]:scale-130 *:[img]:-translate-y-20 *:[img]:-translate-x-10"
         >
           <DesktopMockup />
         </BentoCard>
@@ -553,8 +595,8 @@ export function SoftwareUiGrid() {
           title="Mobile Apps"
           tools={tools.mobile}
           description={descriptions.mobile}
-          bleed={{ bottom: true }}
-          className="lg:col-span-6 min-h-85"
+          wallpaper="/wallpaper-3.png"
+          className="lg:col-span-6 min-h-85 not-dark:*:[img]:brightness-200 not-dark:*:[img]:invert"
         >
           <MobileMockup />
         </BentoCard>
@@ -563,8 +605,10 @@ export function SoftwareUiGrid() {
           title="Developer Tools"
           tools={tools.developerTools}
           description={descriptions.developerTools}
-          bleed={{ right: true }}
-          className="lg:col-span-6 min-h-85"
+          wallpaper="/wallpaper-4-rotated.png"
+          lightOverlayClassName="bg-white/60 mix-blend-screen"
+          darkOverlayClassName="bg-black/40 mix-blend-multiply"
+          className="lg:col-span-6 min-h-85 *:[img]:scale-180 *:[img]:-translate-y-40 *:[img]:translate-x-30"
         >
           <DeveloperToolsMockup />
         </BentoCard>
