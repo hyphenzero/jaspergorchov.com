@@ -33,6 +33,7 @@ const GAP_FACTOR = 0.05
 const DURATION = 2
 const FADE_LEAD_MS = 600
 const FADED_OPACITY = 0.25
+const FADED_OPACITY_LIGHT = 0.12
 const PORTRAIT_PADDING = 12
 
 type Position = {
@@ -149,6 +150,23 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const [scrollY, setScrollY] = useState(0)
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const [shuffled, setShuffled] = useState(false)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    const check = () =>
+      setIsDark(document.documentElement.classList.contains('dark') || window.matchMedia('(prefers-color-scheme: dark)').matches)
+    check()
+    const observer = new MutationObserver(check)
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+    const media = window.matchMedia('(prefers-color-scheme: dark)')
+    media.addEventListener('change', check)
+    return () => {
+      observer.disconnect()
+      media.removeEventListener('change', check)
+    }
+  }, [])
+
+  const fadedOpacity = isDark ? FADED_OPACITY : FADED_OPACITY_LIGHT
 
   const centerIdx = Math.floor(imageProjects.length / 2)
 
@@ -439,7 +457,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
                     height: pos.height,
                     left: pos.x,
                     top: pos.y,
-                    opacity: idx === activeIdx ? 1 : FADED_OPACITY,
+                    opacity: idx === activeIdx ? 1 : fadedOpacity,
                     transition: 'opacity 1.2s cubic-bezier(0.42, 0, 0.58, 1)',
                   }}
                   onMouseEnter={() => setHoveredIdx(idx)}

@@ -115,9 +115,7 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
                 Jasper Gorchov
               </Text>
 
-              <Heading className="text-body mt-4.5 mb-0 text-4xl font-medium tracking-tight">
-                My latest work
-              </Heading>
+              <Heading className="text-body mt-4.5 mb-0 text-4xl font-medium tracking-tight">My latest work</Heading>
 
               <Text className="text-secondary mt-5.5 mb-0 text-sm/7">
                 Hey, I recently published <span className="text-body font-semibold">{contentLabel}</span>. Here’s the

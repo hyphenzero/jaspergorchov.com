@@ -129,7 +129,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
     <div className="-mt-20 overflow-hidden">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div ref={setReferenceWindowRef}>
-          <h2 className="font-mono text-sm font-medium tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
+          <h2 className="font-mono text-sm font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">
             Recent projects
           </h2>
         </div>

@@ -8,6 +8,15 @@ const nextConfig = {
   experimental: {
     mdxRs: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/uses',
+        destination: '/about',
+        permanent: true,
+      },
+    ]
+  },
 } satisfies NextConfig
 
 const withMDX = require('@next/mdx')()

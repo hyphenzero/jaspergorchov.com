@@ -20,14 +20,14 @@ type NoteCardProps = {
 
 export function NoteCard({ meta, className, children }: NoteCardProps) {
   return (
-    <div className={clsx('rounded-3xl border border-zinc-200 p-4 dark:border-zinc-800', className)}>
+    <div className={clsx('rounded-3xl p-4 bg-white dark:bg-zinc-900', className)}>
       <div className="flex items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-950/8 dark:bg-zinc-900">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-950">
           <Logo className="size-5" />
         </span>
         <div>
           <p className="text-sm font-semibold text-zinc-950 dark:text-white">Jasper Gorchov</p>
-          <p className="font-mono text-xs/5 tracking-widest text-zinc-500 uppercase">{timeAgo(meta.date)}</p>
+          <p className="font-mono font-semibold text-xs/5 tracking-widest text-zinc-400 uppercase">{timeAgo(meta.date)}</p>
         </div>
       </div>
       <div className="prose prose-blog mt-4 max-w-none">{children}</div>

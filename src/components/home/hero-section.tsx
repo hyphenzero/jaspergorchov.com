@@ -21,29 +21,27 @@ const socialMedia = [
     ),
   },
   {
+    name: 'NPM',
+    href: 'https://www.npmjs.com/~hyphenzero',
+    icon: (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
+      <svg fill="currentColor" data-slot="icon" viewBox="0 0 24 24" {...props}>
+        <path d="M1.763 0C.786 0 0 .786 0 1.763v20.474C0 23.214.786 24 1.763 24h20.474c.977 0 1.763-.786 1.763-1.763V1.763C24 .786 23.214 0 22.237 0zM5.13 5.323l13.837.019-.009 13.836h-3.464l.01-10.382h-3.456L12.04 19.17H5.113z" />
+      </svg>
+    ),
+  },
+  {
+    name: 'Dribbble',
+    href: 'https://dribbble.com/hyphenzero',
+    icon: (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
+      <svg fill="currentColor" data-slot="icon" viewBox="0 0 24 24" {...props}><path d="M12 24C5.385 24 0 18.615 0 12S5.385 0 12 0s12 5.385 12 12-5.385 12-12 12zm10.12-10.358c-.35-.11-3.17-.953-6.384-.438 1.34 3.684 1.887 6.684 1.992 7.308 2.3-1.555 3.936-4.02 4.395-6.87zm-6.115 7.808c-.153-.9-.75-4.032-2.19-7.77l-.066.02c-5.79 2.015-7.86 6.025-8.04 6.4 1.73 1.358 3.92 2.166 6.29 2.166 1.42 0 2.77-.29 4-.814zm-11.62-2.58c.232-.4 3.045-5.055 8.332-6.765.135-.045.27-.084.405-.12-.26-.585-.54-1.167-.832-1.74C7.17 11.775 2.206 11.71 1.756 11.7l-.004.312c0 2.633.998 5.037 2.634 6.855zm-2.42-8.955c.46.008 4.683.026 9.477-1.248-1.698-3.018-3.53-5.558-3.8-5.928-2.868 1.35-5.01 3.99-5.676 7.17zM9.6 2.052c.282.38 2.145 2.914 3.822 6 3.645-1.365 5.19-3.44 5.373-3.702-1.81-1.61-4.19-2.586-6.795-2.586-.825 0-1.63.1-2.4.285zm10.335 3.483c-.218.29-1.935 2.493-5.724 4.04.24.49.47.985.68 1.486.08.18.15.36.22.53 3.41-.43 6.8.26 7.14.33-.02-2.42-.88-4.64-2.31-6.38z"/></svg>
+    ),
+  },
+  {
     name: 'YouTube',
     href: 'https://youtube.com/@jaspergorchov',
     icon: (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
       <svg fill="currentColor" data-slot="icon" viewBox="0 0 24 24" {...props}>
         <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Bluesky',
-    href: '#',
-    icon: (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
-      <svg fill="currentColor" data-slot="icon" viewBox="0 0 24 24" {...props}>
-        <path d="M12 10.8c-1.087-2.114-4.046-6.053-6.798-7.995C2.566.944 1.561 1.266.902 1.565.139 1.908 0 3.08 0 3.768c0 .69.378 5.65.624 6.479.815 2.736 3.713 3.66 6.383 3.364.136-.02.275-.039.415-.056-.138.022-.276.04-.415.056-3.912.58-7.387 2.005-2.83 7.078 5.013 5.19 6.87-1.113 7.823-4.308.953 3.195 2.05 9.271 7.733 4.308 4.267-4.308 1.172-6.498-2.74-7.078a8.741 8.741 0 0 1-.415-.056c.14.017.279.036.415.056 2.67.297 5.568-.628 6.383-3.364.246-.828.624-5.79.624-6.478 0-.69-.139-1.861-.902-2.206-.659-.298-1.664-.62-4.3 1.24C16.046 4.748 13.087 8.687 12 10.8Z" />
-      </svg>
-    ),
-  },
-  {
-    name: 'Behance',
-    href: '#',
-    icon: (props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) => (
-      <svg fill="currentColor" data-slot="icon" viewBox="0 0 24 24" {...props}>
-        <path d="M16.969 16.927a2.561 2.561 0 0 0 1.901.677 2.501 2.501 0 0 0 1.531-.475c.362-.235.636-.584.779-.99h2.585a5.091 5.091 0 0 1-1.9 2.896 5.292 5.292 0 0 1-3.091.88 5.839 5.839 0 0 1-2.284-.433 4.871 4.871 0 0 1-1.723-1.211 5.657 5.657 0 0 1-1.08-1.874 7.057 7.057 0 0 1-.383-2.393c-.005-.8.129-1.595.396-2.349a5.313 5.313 0 0 1 5.088-3.604 4.87 4.87 0 0 1 2.376.563c.661.362 1.231.87 1.668 1.485a6.2 6.2 0 0 1 .943 2.133c.194.821.263 1.666.205 2.508h-7.699c-.063.79.184 1.574.688 2.187ZM6.947 4.084a8.065 8.065 0 0 1 1.928.198 4.29 4.29 0 0 1 1.49.638c.418.303.748.711.958 1.182.241.579.357 1.203.341 1.83a3.506 3.506 0 0 1-.506 1.961 3.726 3.726 0 0 1-1.503 1.287 3.588 3.588 0 0 1 2.027 1.437c.464.747.697 1.615.67 2.494a4.593 4.593 0 0 1-.423 2.032 3.945 3.945 0 0 1-1.163 1.413 5.114 5.114 0 0 1-1.683.807 7.135 7.135 0 0 1-1.928.259H0V4.084h6.947Zm-.235 12.9c.308.004.616-.029.916-.099a2.18 2.18 0 0 0 .766-.332c.228-.158.411-.371.534-.619.142-.317.208-.663.191-1.009a2.08 2.08 0 0 0-.642-1.715 2.618 2.618 0 0 0-1.696-.505h-3.54v4.279h3.471Zm13.635-5.967a2.13 2.13 0 0 0-1.654-.619 2.336 2.336 0 0 0-1.163.259 2.474 2.474 0 0 0-.738.62 2.359 2.359 0 0 0-.396.792c-.074.239-.12.485-.137.734h4.769a3.239 3.239 0 0 0-.679-1.785l-.002-.001Zm-13.813-.648a2.254 2.254 0 0 0 1.423-.433c.399-.355.607-.88.56-1.413a1.916 1.916 0 0 0-.178-.891 1.298 1.298 0 0 0-.495-.533 1.851 1.851 0 0 0-.711-.274 3.966 3.966 0 0 0-.835-.073H3.241v3.631h3.293v-.014ZM21.62 5.122h-5.976v1.527h5.976V5.122Z" />
       </svg>
     ),
   },
@@ -97,7 +95,7 @@ export function HeroSection({ projects }: Props) {
         className="relative mx-auto mt-[100dvh] flex translate-y-[calc(-100%-70px)] flex-col gap-10 px-6 pb-6 sm:translate-y-[calc(-100%-62px)] md:flex-row md:items-end md:justify-between md:gap-8 md:px-12 md:pb-12 lg:translate-y-[calc(-100%-60px)] lg:px-14 lg:pb-14"
       >
         <h1 className="max-w-5xl text-3xl/11 font-medium tracking-tight text-balance text-zinc-950 [text-box:trim-both_cap_alphabetic] sm:text-[clamp(2rem,3.4vw,3rem)]/tight dark:text-white">
-          I'm Jasper Gorchov, a software developer, design engineer, and 3D artist.
+          I’m Jasper Gorchov, a software developer, design engineer, and 3D artist.
         </h1>
 
         <div className="flex flex-col items-center justify-between max-sm:*:w-full sm:max-md:flex-row sm:max-md:items-center md:self-stretch">
@@ -112,7 +110,7 @@ export function HeroSection({ projects }: Props) {
 
           <div className="flex w-full items-center justify-between px-6 max-sm:mt-10 sm:max-md:ml-12 sm:max-md:px-0 md:pt-6">
             {socialMedia.map((item) => (
-              <Link key={item.name} href={item.href} data-track={`hero-social-${item.name.toLowerCase()}`}>
+              <Link key={item.name} href={item.href} data-track={`hero-social-${item.name.toLowerCase()}`} target="_blank" rel="noopener norefferer">
                 <item.icon className="size-5 text-zinc-950/75 mix-blend-plus-lighter transition-colors duration-200 hover:text-zinc-950 dark:text-white/75 dark:hover:text-white" />
                 <span className="sr-only">{item.name}</span>
               </Link>

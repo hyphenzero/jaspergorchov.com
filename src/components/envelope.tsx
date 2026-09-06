@@ -11,7 +11,7 @@ const JG_G =
 
 export function Envelope({ email, flipped, className }: { email: string; flipped: boolean; className?: string }) {
   return (
-    <div className={clsx('relative shrink-0', className)} style={{ perspective: '800px', width: 192 }}>
+    <div className={clsx('relative shrink-0', className)} style={{ perspective: '800px', width: 272 }}>
       <motion.div
         className="relative w-full"
         style={{
@@ -23,8 +23,19 @@ export function Envelope({ email, flipped, className }: { email: string; flipped
       >
         <div className="absolute inset-0" style={{ backfaceVisibility: 'hidden' }}>
           <svg viewBox="0 0 280 200" className="size-full text-zinc-950/15 dark:text-white/15" fill="none">
+            <defs>
+              <clipPath id="envelope-clip">
+                <rect x="4" y="4" width="272" height="192" rx="8" />
+              </clipPath>
+            </defs>
             <rect x="4" y="4" width="272" height="192" rx="8" stroke="currentColor" strokeWidth="1.5" />
-            <path d="M4 4 L140 56 L276 4" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+            <path
+              d="M4 4 L140 56 L276 4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinejoin="round"
+              clipPath="url(#envelope-clip)"
+            />
           </svg>
         </div>
 

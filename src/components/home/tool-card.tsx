@@ -251,7 +251,7 @@ export function ToolCard({
         </Canvas>
       </div>
       <h3 className="text-sm font-semibold text-zinc-950 dark:text-white">{title}</h3>
-      <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">{description}</p>
+      <p className="mt-1.5 text-sm/7 text-zinc-500 dark:text-zinc-400">{description}</p>
     </div>
   )
 }

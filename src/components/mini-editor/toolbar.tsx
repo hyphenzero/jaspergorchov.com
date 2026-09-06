@@ -10,6 +10,7 @@ import {
   StopCircleIcon,
   StopIcon,
 } from '@heroicons/react/16/solid'
+import { useEffect, useState } from 'react'
 import { useEditor } from './store'
 import { type ThemeId, TOOL_IDS, type ToolId } from './types'
 
@@ -195,9 +196,11 @@ function ToolOptionsPopover({ tool }: { tool: ToolId }) {
 
 export function BottomToolbar() {
   const { state, dispatch, history } = useEditor()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
-  const canUndo = history.canUndo
-  const canRedo = history.canRedo
+  const canUndo = mounted ? history.canUndo : false
+  const canRedo = mounted ? history.canRedo : false
 
   return (
     <div className="pointer-events-none flex justify-center px-4">
@@ -207,6 +210,7 @@ export function BottomToolbar() {
           aria-label="Undo"
           title="Undo (⌘Z)"
           disabled={!canUndo}
+          suppressHydrationWarning
           onClick={() => dispatch({ type: 'UNDO' })}
           className={toolButtonClassName(state.theme, false)}
         >
@@ -217,6 +221,7 @@ export function BottomToolbar() {
           aria-label="Redo"
           title="Redo (⌘⇧Z)"
           disabled={!canRedo}
+          suppressHydrationWarning
           onClick={() => dispatch({ type: 'REDO' })}
           className={toolButtonClassName(state.theme, false)}
         >
