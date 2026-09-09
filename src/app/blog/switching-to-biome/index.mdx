@@ -1,0 +1,14 @@
+import { CodeExampleStack } from '@/components/markdown/code-example'
+
+export const meta = {
+  title: 'Switching to Biome, then switching back',
+  lead: `I moved this site to Biome for its speed, then moved back — the formatter is still in beta and I couldn't trust it with my Tailwind classes.`,
+  date: '2026-06-16',
+  tags: ['Tooling'],
+}
+
+I moved this site to Biome for the obvious reason: one fast tool for linting and formatting instead of two slow ones. Its built-in formatter handles Tailwind class sorting and import organizing, which covered my two Prettier plugins on paper.
+
+It didn't stick. The formatter is still in beta and behaves weirdly in some cases — classes it shouldn't touch, output I couldn't predict. Formatting is the one tool output I read all day, so "usually right" isn't good enough. I moved back to ESLint and Prettier with the official Tailwind plugin, which sorts classes the same way every time.
+
+The open question is splitting the job: Biome for linting, where its speed matters most, with Prettier and the official `prettier-plugin-tailwindcss` for formatting, where correctness matters most. I haven't tried that combo yet. Biome's speed is real and I'd like to keep it — I just don't trust its formatter with my classes yet.

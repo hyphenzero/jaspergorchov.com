@@ -1,0 +1,285 @@
+.prose {
+  --prose-color: var(--color-zinc-700);
+  --prose-heading-color: var(--color-zinc-950);
+  --prose-strong-color: var(--color-zinc-950);
+  --prose-link-color: var(--color-zinc-950);
+  --prose-code-color: var(--color-zinc-950);
+  --prose-marker-color: color-mix(in oklab, var(--color-zinc-700) 25%, transparent);
+  --prose-link-underline-color: var(--color-zinc-200);
+  --prose-link-underline-hover-color: var(--color-sky-500);
+  --prose-link-icon-bg-color: var(--color-zinc-200);
+  --prose-link-icon-color: var(--color-zinc-400);
+  --prose-link-icon-bg-hover-color: var(--color-zinc-300);
+  --prose-link-icon-hover-color: var(--color-zinc-600);
+  --prose-th-borders: var(--color-zinc-300);
+  --prose-td-borders: var(--color-zinc-200);
+  --prose-hr-color: color-mix(in oklab, var(--color-zinc-950) 5%, transparent);
+  --prose-blockquote-border-color: var(--color-zinc-300);
+
+  @media (prefers-color-scheme: dark) {
+    --prose-color: var(--color-zinc-300);
+    --prose-heading-color: var(--color-white);
+    --prose-strong-color: var(--color-white);
+    --prose-link-color: var(--color-white);
+    --prose-code-color: var(--color-white);
+    --prose-marker-color: color-mix(in oklab, var(--color-zinc-300) 35%, transparent);
+    --prose-link-underline-color: var(--color-zinc-600);
+    --prose-link-underline-hover-color: var(--color-sky-400);
+    --prose-link-icon-bg-color: var(--color-zinc-900);
+    --prose-link-icon-color: var(--color-zinc-500);
+    --prose-link-icon-bg-hover-color: var(--color-zinc-800);
+    --prose-link-icon-hover-color: var(--color-zinc-400);
+    --prose-th-borders: var(--color-zinc-600);
+    --prose-td-borders: var(--color-zinc-700);
+    --prose-hr-color: color-mix(in oklab, var(--color-white) 10%, transparent);
+    --prose-blockquote-border-color: var(--color-zinc-600);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .shiki,
+    .shiki span {
+      color: var(--shiki-dark) !important;
+    }
+  }
+
+  color: var(--prose-color);
+  font-size: var(--text-sm);
+  line-height: 2;
+
+  *:where(:not([data-media], [data-media] *):not(:has([data-media]))) {
+    max-width: var(--breakpoint-md);
+  }
+
+  *:where(:not(.not-prose, .not-prose *)) + *:where(:not(.not-prose, .not-prose *)) {
+    @apply mt-6;
+  }
+
+  /* Don't apply the above top margin when the following element is a timeline list or inside one */
+  *:where(:not(.not-prose, .not-prose *)) + *:where([data-timeline-list]) {
+    @apply mt-0;
+  }
+
+  @apply **:data-media:mt-0 **:data-media:not-[[data-image-grid]_[data-media],[data-timeline]_[data-media]]:py-12 **:[[data-media]+*]:mt-0;
+
+  &.prose > [data-media]:first-child:where(:not(.not-prose, .not-prose *)) {
+    @apply pt-0 pb-12;
+  }
+
+  h2:where(:not(.not-prose, .not-prose *)) {
+    font-size: var(--text-lg);
+    line-height: calc(28 / 18);
+    letter-spacing: -0.025em;
+    color: var(--prose-code-color);
+    font-weight: var(--font-weight-semibold);
+    margin-top: calc(var(--spacing) * 20);
+  }
+
+  h2:has(+ h3):where(:not(.not-prose, .not-prose *)) {
+    font-size: var(--text-xs);
+    line-height: 2;
+    font-weight: var(--font-weight-medium);
+    font-family: var(--font-mono);
+    font-variant-ligatures: none;
+    letter-spacing: 0.1em;
+    color: var(--prose-color);
+    text-transform: uppercase;
+  }
+
+  h3:where(:not(.not-prose, .not-prose *)) {
+    font-size: var(--text-base);
+    line-height: calc(28 / 18);
+    color: var(--prose-heading-color);
+    font-weight: var(--font-weight-semibold);
+    margin-top: calc(var(--spacing) * 16);
+  }
+
+  h2 + h3:where(:not(.not-prose, .not-prose *)) {
+    margin-top: calc(var(--spacing) * 6);
+  }
+
+  h4:where(:not(.not-prose, .not-prose *)) {
+    font-size: var(--text-sm);
+    line-height: calc(28 / 14);
+    color: var(--prose-heading-color);
+    font-weight: var(--font-weight-semibold);
+    margin-top: calc(var(--spacing) * 12);
+  }
+
+  :is(h2, h3, h4):where(:not(.not-prose, .not-prose *)) {
+    scroll-margin-top: calc(var(--spacing) * 32);
+    @variant lg {
+      scroll-margin-top: calc(var(--spacing) * 18);
+    }
+  }
+
+  & [data-timeline] h2,
+  & [data-timeline] h3,
+  & [data-timeline] h4,
+  & [data-timeline] h2 + h3 {
+    margin-top: 0;
+  }
+
+  /* Give media blocks inside timelines smaller vertical padding */
+  & [data-timeline] [data-media] {
+    @apply py-8;
+  }
+
+  /* If a media block is the last item inside a timeline entry, remove bottom padding
+     and keep only top padding so the timeline item doesn't get extra vertical space. */
+  & [data-timeline] [data-media]:last-child {
+    @apply pt-8 pb-0;
+  }
+
+  ol:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
+    padding-left: calc(var(--spacing) * 6);
+    list-style-type: decimal;
+  }
+
+  ol li:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
+    padding-left: calc(var(--spacing) * 3);
+  }
+
+  ol li + li:where(:not(.not-prose, .not-prose *, [data-timeline] *)) {
+    margin-top: calc(var(--spacing) * 4);
+  }
+
+  ol li:where(:not(.not-prose, .not-prose *, [data-timeline-list]))::marker {
+    font-weight: 600;
+    color: var(--prose-strong-color);
+  }
+
+  ul:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
+    padding-left: calc(var(--spacing) * 6);
+    list-style-type: disc;
+  }
+
+  ul li:where(:not(.not-prose, .not-prose *, [data-timeline-list])) {
+    padding-left: calc(var(--spacing) * 3);
+  }
+
+  ul li + li:where(:not(.not-prose, .not-prose *, [data-timeline] *)) {
+    margin-top: calc(var(--spacing) * 4);
+  }
+
+  ul li:where(:not(.not-prose, .not-prose *, [data-timeline-list]))::marker {
+    color: var(--prose-marker-color);
+  }
+
+  [data-timeline-list] > li:where(:not(.not-prose, .not-prose *)) {
+    padding-left: 0;
+  }
+
+  a:not(:where(:is(h2, h3, h4) *)):where(:not(.not-prose, .not-prose *)) {
+    color: var(--prose-link-color);
+    font-weight: var(--font-weight-medium);
+    text-decoration: underline;
+    -webkit-text-decoration-color: var(--prose-link-underline-color);
+    text-decoration-color: var(--prose-link-underline-color);
+    text-underline-offset: calc(3 / 16 * 1rem);
+    @apply transition;
+  }
+
+  a:hover:where(:not(.not-prose, .not-prose *)) {
+    -webkit-text-decoration-color: var(--prose-link-underline-hover-color);
+    text-decoration-color: var(--prose-link-underline-hover-color);
+  }
+
+  a:where(:not(.not-prose, .not-prose *, [data-timeline], [data-timeline] *)):has(> [data-media]) {
+    display: block;
+  }
+
+  strong:where(:not(.not-prose, .not-prose *)) {
+    color: var(--prose-strong-color);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  code:where(:not(.not-prose, .not-prose *)) {
+    font-variant-ligatures: none;
+    font-family: var(--font-fira-code);
+    font-weight: var(--font-weight-medium);
+    color: var(--prose-code-color);
+    background-color: color-mix(in oklab, var(--color-zinc-200) 55%, transparent);
+    @media (prefers-color-scheme: dark) {
+      background-color: var(--color-zinc-900);
+    }
+    padding-inline: var(--spacing);
+    padding-block: calc(var(--spacing) * 0.5);
+    border-radius: var(--radius-md);
+  }
+
+  :where(h2, h3, h4) code:where(:not(.not-prose, .not-prose *)) {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  pre:where(:not(.not-prose, .not-prose *)) {
+    margin-top: calc(var(--spacing) * 4);
+    margin-bottom: calc(var(--spacing) * 10);
+  }
+
+  pre code * + *:where(:not(.not-prose, .not-prose *)) {
+    margin-top: 0;
+  }
+
+  pre code:where(:not(.not-prose, .not-prose *))::before,
+  pre code:where(:not(.not-prose, .not-prose *))::after {
+    content: none;
+  }
+
+  pre code:where(:not(.not-prose, .not-prose *)) {
+    font-variant-ligatures: none;
+    font-family: var(--font-fira-code);
+    font-size: var(--text-sm);
+    line-height: 2;
+  }
+
+  hr:where(:not(.not-prose, .not-prose *)) {
+    border-color: var(--prose-hr-color);
+    margin-block: --spacing(16);
+    & + h2 {
+      margin-top: --spacing(16);
+    }
+  }
+
+  blockquote {
+    font-style: italic;
+    border-inline-start-width: 0.25rem;
+    border-inline-start-color: var(--prose-blockquote-border-color);
+    padding-inline-start: calc(var(--spacing) * 4);
+  }
+
+  blockquote p:first-of-type::before {
+    content: open-quote;
+  }
+
+  blockquote p:last-of-type::after {
+    content: close-quote;
+  }
+
+  figure:where(:not(.not-prose, .not-prose *)) {
+    figcaption:where(:not(.not-prose, .not-prose *)) {
+      margin-top: calc(var(--spacing) * 3);
+      text-align: center;
+      font-size: var(--text-sm);
+      line-height: var(--text-sm--line-height);
+      font-style: italic;
+      color: color-mix(in oklab, var(--prose-color) 75%, transparent);
+    }
+  }
+
+  :first-child:where(:not(.not-prose, .not-prose *)) {
+    margin-top: 0;
+  }
+
+  :last-child:where(:not(.not-prose, .not-prose *)) {
+    margin-bottom: 0;
+  }
+}
+
+/* .prose-blog {
+  img:where(:not(.not-prose, .not-prose *)) {
+    @media (max-width: theme(--breakpoint-sm)) {
+      margin-inline: calc(var(--spacing) * -4);
+      max-width: calc(100% + calc(var(--spacing) * 8));
+    }
+  }
+} */

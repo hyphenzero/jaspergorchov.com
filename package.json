@@ -1,55 +1,79 @@
 {
-	"name": "jaspergorchov.com",
-	"version": "0.1.0",
-	"private": true,
-	"scripts": {
-		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
-		"lint": "next lint",
-		"format": "npx prettier --write ./src"
-	},
-	"browserslist": "defaults, not ie <= 11",
-	"dependencies": {
-		"@headlessui/react": "^1.7.16",
-		"@headlessui/tailwindcss": "^0.2.0",
-		"@heroicons/react": "^2.0.18",
-		"@leafac/rehype-shiki": "^2.2.1",
-		"@mdx-js/loader": "^2.3.0",
-		"@mdx-js/react": "^2.3.0",
-		"@next/mdx": "^13.4.13",
-		"@vercel/analytics": "^1.2.2",
-		"acorn": "^8.10.0",
-		"acorn-jsx": "^5.3.2",
-		"autoprefixer": "10.4.14",
-		"clsx": "^1.2.1",
-		"escape-string-regexp": "^5.0.0",
-		"fast-glob": "^3.3.1",
-		"framer-motion": "^10.15.0",
-		"next": "^13.4.17",
-		"path": "^0.12.7",
-		"postcss": "^8.4.31",
-		"react": "18.2.0",
-		"react-dom": "18.2.0",
-		"react-fast-marquee": "^1.6.0",
-		"react-live-clock": "^6.1.14",
-		"react-parallax-tilt": "^1.7.156",
-		"recma-import-images": "^0.0.3",
-		"remark-gfm": "^3.0.1",
-		"remark-rehype-wrap": "^0.0.3",
-		"remark-unwrap-images": "^3.0.1",
-		"sharp": "^0.32.5",
-		"shiki": "^0.11.1",
-		"tailwindcss": "3.3.3",
-		"unified-conditional": "^0.0.2"
-	},
-	"devDependencies": {
-		"@tailwindcss/forms": "^0.5.4",
-		"@tailwindcss/typography": "^0.5.9",
-		"@trivago/prettier-plugin-sort-imports": "^4.2.0",
-		"eslint": "8.45.0",
-		"eslint-config-next": "13.4.10",
-		"prettier": "^3.0.0",
-		"prettier-plugin-tailwindcss": "^0.4.1"
-	}
+  "name": "jaspergorchov.com",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@headlessui/react": "^2.2.10",
+    "@heroicons/react": "^2.2.0",
+    "@next/mdx": "16.2.10",
+    "@radix-ui/react-tooltip": "^1.2.16",
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.6.1",
+    "@ridemountainpig/svgl-react": "^1.0.17",
+    "@shikijs/transformers": "^4.3.1",
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/mdx": "^2.0.14",
+    "clsx": "^2.1.1",
+    "dedent": "^1.7.2",
+    "motion": "^12.42.2",
+    "next": "16.3.4",
+    "pg": "^8.22.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-email": "^6.6.7",
+    "react-use-measure": "^2.1.7",
+    "recharts": "^3.9.2",
+    "resend": "^6.17.1",
+    "shaders": "^3.2.466",
+    "shiki": "^4.3.1",
+    "tailwindcss": "4.3.3",
+    "three": "^0.185.1",
+    "three-stdlib": "^2.36.1"
+  },
+  "devDependencies": {
+    "@types/hast": "^3.0.4",
+    "@types/node": "^26.1.0",
+    "@types/pg": "^8.20.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@types/three": "^0.185.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16",
+    "postcss": "^8.5.16",
+    "potrace": "^2.1.8",
+    "prettier": "^3.9.5",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "prettier-plugin-tailwindcss-canonical-classes": "^0.1.5",
+    "sharp": "^0.35.3",
+    "typescript": "^6.0.3"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true,
+    "printWidth": 120,
+    "trailingComma": "es5",
+    "tailwindFunctions": [
+      "clsx",
+      "tw"
+    ],
+    "plugins": [
+      "prettier-plugin-organize-imports",
+      "prettier-plugin-tailwindcss",
+      "prettier-plugin-tailwindcss-canonical-classes"
+    ]
+  },
+  "postcss": {
+    "plugins": {
+      "@tailwindcss/postcss": {}
+    }
+  },
+  "packageManager": "pnpm@11.24.0+sha512.bd27e345e976dcb0be0b7a1228217b049a817e21b1f355c90dbe7dc46671895a8bc1e6d06c24554505ea93ea0b45f489a27ec1bfbc8de6a9659fca0f16fa0000"
 }

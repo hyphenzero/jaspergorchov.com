@@ -1,0 +1,29 @@
+import thumbnail from './thumbnail.png'
+import closeup1 from './closeup-1.png'
+import closeup2 from './closeup-2.png'
+import { Image, ImageGrid } from '@/components/markdown/media'
+
+export const meta = {
+  title: 'Abstract Composition',
+  lead: `Pastel blocks, spheres, and a wood curve stacked on a pedestal — a composition exercise rendered in Blender.`,
+  date: '2023-08-15T17:00:00.000Z',
+  image: thumbnail,
+  tags: ['3D Art'],
+}
+
+I made this in Blender as a composition exercise. The whole scene is simple primitives — cubes, spheres, one curved wood piece — stacked on a pedestal against a dark concrete wall.
+
+The palette does most of the work: pastel pink, pale blue, and yellow against navy, with a single wood texture in the mix so the whole thing doesn't read as plastic. A few of the cubes have circular holes cut straight through them, which gives the shadows something to catch on.
+
+The wall is a concrete texture with the formwork holes left visible. It keeps the background from going flat black without pulling attention away from the stack.
+
+<ImageGrid>
+  <Image src={closeup1} alt="Close-up of the stacked shapes" />
+  <Image src={closeup2} alt="Close-up of the spheres and wood curve" />
+</ImageGrid>
+
+## Process
+
+Everything is built from simple shapes, with circular holes cut through a few of the cubes. The materials are matte across the board except the wood — one textured material is enough to sell the scale of the rest.
+
+The render is a single still, lit softly so the pastel shapes stand out against the dark wall.

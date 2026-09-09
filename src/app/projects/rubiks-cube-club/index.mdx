@@ -1,0 +1,23 @@
+import posterLight from './poster-light.png'
+import posterDark from './poster-dark.png'
+
+export const meta = {
+  title: 'Rubik’s Cube Club Website',
+  image: posterLight,
+  imageDark: posterDark,
+  lead: `The website for the Lake Oswego High School Rubik's Cube Club — schedule, countdown, monthly tournaments, cube guides, and team.`,
+  releaseDate: '2026-05-07',
+  tags: ['Web Development'],
+}
+
+I built the website for my school's Rubik's Cube Club. It's a Next.js site for the LOHS club that meets Mondays and Fridays in Room 223.
+
+The homepage covers the essentials: what the club is, a schedule section with a calendar, a countdown to the next meeting, and browser notifications that fire 30 minutes before it starts. There's a competition section for the first-Friday monthly tournaments, a rundown of what we solve — 2x2, 3x3 from beginner method up to CFOP, Pyraminx, and whatever else people bring — and a team page. Join links go to our ClubHub page.
+
+<SitePreview siteUrl="https://cube-club.vercel.app" />
+
+## Process
+
+The schedule section was the real feature. Instead of a static meeting time, the page has a calendar, a countdown to the next meeting, and a notify-me toggle for browser notifications 30 minutes before it starts.
+
+Everything else is straightforward content: sections for about, competitions, cubes, and team, with photos from actual meetings. The posters at the top of this page are the site's visual identity — the isometric cube on a light grid, with a matching dark version so it works in both modes.

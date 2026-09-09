@@ -1,0 +1,19 @@
+import posterLight from './poster-light.png'
+import posterDark from './poster-dark.png'
+
+export const meta = {
+  title: 'My personal website, reimagined',
+  lead: `After months of work this summer, the redesigned site is live. Next.js 16, Tailwind CSS v4, and MDX — here's what's on it and why it's built this way.`,
+  date: '2026-09-09',
+  image: posterLight,
+  imageDark: posterDark,
+  tags: ['Releases'],
+}
+
+After months of work this summer, the new site is live today.
+
+I wanted one place for everything: the 3D renders, the websites I've built, and somewhere to write about tooling and process. So the site has three content types — project pages, blog posts, and short notes — all as MDX files in the repo. Publishing something new means adding a folder, not touching a database or a CMS.
+
+The stack is Next.js 16 with Tailwind v4. Code samples render with Shiki, images ship in light and dark variants that follow the OS appearance, and there's a newsletter plus first-party analytics underneath it all — the full rundown is on the [project page](/projects/personal-website).
+
+The homepage has a couple of interactive pieces. The software section has a miniature design editor running inside a browser frame — toolbar, layers, undo and redo, all working. The 3D section has a live Three.js canvas next to the render thumbnails, with orbit controls, studio lighting, and a teapot.

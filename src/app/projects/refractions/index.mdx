@@ -1,0 +1,25 @@
+import thumbnail from './thumbnail.png'
+import closeup1 from './closeup-1.png'
+import closeup2 from './closeup-2.png'
+import { Image, ImageGrid } from '@/components/markdown/media'
+
+export const meta = {
+  title: 'Refractions',
+  lead: `A grid of glass cubes bending large white type behind them — a Blender test of glass shaders, refraction, and dispersion.`,
+  date: '2023-09-01T17:00:00.000Z',
+  image: thumbnail,
+  tags: ['3D Art'],
+}
+
+I made this to test glass in Blender. The setup is a grid of glass cubes floating in front of a wall of huge white text spelling "Refractions" on black.
+
+Each cube bends and flips the letters behind it. The red and blue fringing around the edges is dispersion — glass bends different wavelengths by different amounts, the same thing a prism does.
+
+<ImageGrid>
+  <Image src={closeup1} alt="Close-up of glass cubes bending the text" />
+  <Image src={closeup2} alt="Close-up of dispersion on the cube edges" />
+</ImageGrid>
+
+## Process
+
+Glass with nothing behind it renders grey and dead, so the high-contrast text wall is doing real work — every bright edge gives the cubes something to bend. The cube edges catch bright highlights, which is what keeps the glass from reading as flat, and the grid is arranged so each cube frames a different part of a letter.

@@ -1,0 +1,20 @@
+import site from './site.png'
+import { Image } from '@/components/markdown/media'
+
+export const meta = {
+  title: 'Create-O-Holics Website',
+  lead: `A Sanity-powered site for the Create-O-Holics Minecraft SMP, including a gallery of builds, an interactive lore experience, and profile cards for each player on the server.`,
+  releaseDate: '2025-01-11T17:00:00.000Z',
+  image: site,
+  tags: ['Web Development', 'Design'],
+}
+
+I built the website for Create-O-Holics, a modded Minecraft server run by a group of 11 YouTubers who build and automate with the Create mod.
+
+The site has a page for everything the server needs. Watch pulls in videos from all 11 members' YouTube channels in one feed. Roster is a card per player with their socials — each card ships light and dark variants. Modpack covers the public CurseForge pack with breakdowns of the key mods: Create for automation and trains, Chipped for building blocks, Terralith for terrain, and YUNG's mods for structures. Then there's a gallery of builds, an interactive lore experience, seasons, and a public server page.
+
+<SitePreview siteUrl="https://createoholics.com" />
+
+## Process
+
+The roster cards come in light and dark versions to match the site theme, and each one lists only the socials that player actually has. The watch page pulls uploads across all 11 channels with view counts and relative dates, filterable by creator.

@@ -1,0 +1,90 @@
+'use client'
+
+import { clsx } from 'clsx'
+import { motion, useMotionValue, useTransform } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
+
+export function Example({
+  children,
+  resizable = false,
+  padding = true,
+  className,
+}: React.PropsWithChildren<{
+  resizable?: boolean
+  padding?: boolean
+  className?: string
+}>) {
+  const [isDragging, setIsDragging] = useState(false)
+  const containerRef = useRef(null)
+  const constraintsRef = useRef(null)
+  const x = useMotionValue(0)
+  const marginRight = useTransform(x, (v) => -v)
+
+  useEffect(() => {
+    if (!resizable || !containerRef.current) return
+    const observer = new window.ResizeObserver(() => x.set(0))
+    observer.observe(containerRef.current)
+    return () => {
+      observer.disconnect()
+    }
+  }, [x, resizable])
+
+  if (!resizable) {
+    return (
+      <div
+        className={clsx(className, 'not-prose overflow-auto rounded-lg bg-white dark:bg-zinc-950', padding && 'p-8')}
+      >
+        {children}
+      </div>
+    )
+  }
+
+  return (
+    <div
+      ref={containerRef}
+      data-dragging={isDragging ? true : undefined}
+      className={clsx(className, 'group not-prose relative overflow-hidden sm:overflow-visible')}
+    >
+      <motion.div
+        style={{ marginRight }}
+        className={clsx(
+          padding && 'p-8',
+          '@container relative overflow-auto rounded-lg bg-white dark:bg-zinc-950',
+          // Add layer on top of example while dragging to prevent issues with iframes
+          'group-data-dragging:before:absolute group-data-dragging:before:inset-0'
+        )}
+      >
+        {children}
+      </motion.div>
+      <div ref={constraintsRef} className="pointer-events-none absolute inset-y-0 right-1.5 left-60 max-sm:hidden">
+        <motion.div
+          title="Drag to resize"
+          className={clsx(
+            'pointer-events-auto absolute top-1/2 right-0 z-50 -mt-6 h-12 w-1.5 cursor-ew-resize rounded-full backdrop-blur-xs transition-colors',
+            'bg-zinc-950/20 group-data-dragging:bg-zinc-950/40 hover:bg-zinc-950/40',
+            'dark:bg-white/40 dark:group-data-dragging:bg-zinc-300 dark:hover:bg-zinc-300'
+          )}
+          drag="x"
+          dragElastic={0}
+          dragMomentum={false}
+          dragConstraints={constraintsRef}
+          style={{ x }}
+          onMouseDown={() => {
+            setIsDragging(true)
+          }}
+          onMouseUp={() => {
+            setIsDragging(false)
+          }}
+          onDragStart={() => {
+            setIsDragging(true)
+            document.documentElement.classList.add('select-none', '**:cursor-ew-resize')
+          }}
+          onDragEnd={() => {
+            setIsDragging(false)
+            document.documentElement.classList.remove('select-none', '**:cursor-ew-resize')
+          }}
+        />
+      </div>
+    </div>
+  )
+}

@@ -1,0 +1,26 @@
+import posterLight from './poster-light.png'
+import posterDark from './poster-dark.png'
+
+export const meta = {
+  title: 'Personal Website',
+  lead: `My personal website — projects, blog posts, and notes, built with Next.js 16, Tailwind CSS v4, and MDX.`,
+  date: '2023-09-02',
+  updatedDate: '2026-07-02',
+  image: posterLight,
+  imageDark: posterDark,
+  tags: ['Web Development'],
+}
+
+This is the site you're reading now. I rebuilt it over the summer of 2026 to have one place for everything: projects, blog posts, and short notes.
+
+## Stack
+
+The site is Next.js 16 with Tailwind CSS v4. Projects, posts, and notes are all MDX files in the repo — no CMS, just folders with an `index.mdx` each. Code blocks render through Shiki with filename tags and diff highlighting, and every page supports separate light and dark images that swap with the OS appearance.
+
+## Content
+
+There are three content types. Projects are long-form pages like this one, with a hero image, tags, and release dates. Blog posts work the same way but live under `/blog`. Notes are short updates — a paragraph or two rendered inline on the blog listing and homepage, with no page of their own.
+
+## Details
+
+A few things beyond the pages themselves: a newsletter that emails subscribers on every new post, sent through Resend, page-view and click analytics on a private admin dashboard, and live site previews embedded directly in project pages.

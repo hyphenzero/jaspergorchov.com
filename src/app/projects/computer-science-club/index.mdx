@@ -1,0 +1,33 @@
+import posterLight from './poster-light.png'
+import posterDark from './poster-dark.png'
+
+export const meta = {
+  title: 'Computer Science Club Website',
+  lead: `A home page for the LOHS Computer Science Club — member projects, a posts feed, realtime chat, and meeting management. Laravel and React, still in development.`,
+  image: posterLight,
+  imageDark: posterDark,
+  releaseDate: '2024-09-01T17:00:00.000Z',
+  tags: ['Web Development'],
+}
+
+I'm building the website for my school's Computer Science Club at lohs.dev. It's still in development and not released yet.
+
+The stack is Laravel on the backend with React through Inertia and Tailwind on the frontend — one repo, PHP serving a React app with no separate API layer.
+
+What's in it so far: a home page showing the latest member projects. A projects section where members post what they're building, request to join each other's projects with roles, and connect GitHub accounts. A posts feed with likes and view counts. A realtime chat with replies. A calendar of meetings and sessions with an admin panel to manage them, plus a TV page that pulls up the current meeting's slideshow for a room display. Members get @handle profile pages.
+
+<Timeline>
+  <TimelineItem date="2026-08-05" title="Projects and collaboration">
+    Project posting with join requests, memberships, roles, and GitHub connections.
+  </TimelineItem>
+  <TimelineItem date="2026-08-06" title="Meetings and sessions">
+    Calendar with meetings, sessions, and an admin panel to manage them.
+  </TimelineItem>
+  <TimelineItem date="2026-08-07" title="Realtime chat">
+    Chat with replies, plus a TV display mode for meetings.
+  </TimelineItem>
+</Timeline>
+
+## What's left
+
+It isn't released yet. Workshop materials are still to build — everything above maps to routes and pages already in the repo.
