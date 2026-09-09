@@ -1,5 +1,6 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
+import type React from 'react'
 import type { BlogPost, Note, Project } from '../types/post'
 import { formatDate as _formatDate, formatTimeLocal as _formatTimeLocal } from './api-utils'
 
@@ -17,14 +18,42 @@ function isValidSlug(slug: string) {
  * Preserves width/height from static imports so downstream consumers can
  * pass the full object to Next.js Image or derive the correct aspect ratio.
  */
-function normalizeImage(img: any): { src: string; width?: number; height?: number } | undefined {
+interface MdxFrontmatter {
+  [key: string]: unknown
+  title?: string
+  date?: string
+  releaseDate?: string
+  updatedDate?: string
+  updated?: string
+  lead?: string
+  excerpt?: string
+  description?: string
+  tags?: string[]
+  image?: unknown
+  imageDark?: unknown
+  video?: string
+  private?: boolean
+}
+
+interface MdxModule {
+  default: React.FC
+  meta?: MdxFrontmatter
+}
+
+function asString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined
+}
+
+function normalizeImage(img: unknown): { src: string; width?: number; height?: number } | undefined {
   if (!img) return undefined
   if (typeof img === 'string') return { src: img }
   if (typeof img === 'object') {
+    const record = img as Record<string, unknown>
+    const raw = record.src ?? record.default
     return {
-      src: img.src ?? img.default ?? String(img),
-      width: typeof img.width === 'number' ? img.width : undefined,
-      height: typeof img.height === 'number' ? img.height : undefined,
+      src: typeof raw === 'string' ? raw : String(img),
+      width: typeof record.width === 'number' ? record.width : undefined,
+      height: typeof record.height === 'number' ? record.height : undefined,
     }
   }
   return { src: String(img) }
@@ -41,22 +70,22 @@ export async function getBlogPostBySlug(slug: string): Promise<BlogPost | null> 
     const absolutePath = path.join(process.cwd(), `src/app/blog/${slug}/index.mdx`)
     if (!(await fs.stat(absolutePath).catch(() => null))) return null
 
-    const module = await import(`../app/blog/${slug}/index.mdx`)
-    if (!module?.default) return null
+    const mod: MdxModule = await import(`../app/blog/${slug}/index.mdx`)
+    if (!mod?.default) return null
 
-    const meta = module.meta || {}
-    const normalized: any = {
-      ...meta,
-      // Prefer an explicit `date`, but allow `releaseDate` on blog pages for robustness.
-      date: meta.date ?? meta.releaseDate,
-      // Normalize to `lead` from either `lead`, `excerpt`, or `description` frontmatter.
-      lead: meta.lead ?? meta.excerpt ?? meta.description,
+    const meta = mod.meta ?? {}
+    const normalized: BlogPost['meta'] = {
+      title: asString(meta.title) ?? '',
+      date: asString(meta.date) ?? asString(meta.releaseDate) ?? '',
+      lead: asString(meta.lead) ?? asString(meta.excerpt) ?? asString(meta.description) ?? '',
+      tags: Array.isArray(meta.tags) ? meta.tags.filter((t): t is string => typeof t === 'string') : [],
       image: normalizeImage(meta.image),
       imageDark: normalizeImage(meta.imageDark),
     }
+    if (typeof meta.private === 'boolean') normalized.private = meta.private
 
     return {
-      Component: module.default,
+      Component: mod.default,
       meta: normalized,
       slug,
     }
@@ -101,26 +130,27 @@ export async function getProjectBySlug(slug: string): Promise<Project | null> {
     const absolutePath = path.join(process.cwd(), `src/app/projects/${slug}/index.mdx`)
     if (!(await fs.stat(absolutePath).catch(() => null))) return null
 
-    const module = await import(`../app/projects/${slug}/index.mdx`)
-    if (!module?.default) return null
+    const mod: MdxModule = await import(`../app/projects/${slug}/index.mdx`)
+    if (!mod?.default) return null
 
-    const meta = module.meta || {}
-    const normalizedImage = normalizeImage(meta.image)
-    const normalizedMeta: any = {
-      ...meta,
+    const meta = mod.meta ?? {}
+    const normalizedMeta: Project['meta'] = {
+      title: asString(meta.title) ?? '',
       // Normalized canonical date for consumers. Prefer explicit releaseDate.
-      date: meta.releaseDate ?? meta.date,
-      releaseDate: meta.releaseDate,
+      date: asString(meta.releaseDate) ?? asString(meta.date) ?? '',
+      releaseDate: asString(meta.releaseDate),
       // Support both `updatedDate` and legacy `updated` fields.
-      updatedDate: meta.updatedDate ?? meta.updated,
-      // Normalize to `lead` from either `lead`, `excerpt`, or `description` frontmatter.
-      lead: meta.lead ?? meta.excerpt ?? meta.description,
-      image: normalizedImage,
+      updatedDate: asString(meta.updatedDate) ?? asString(meta.updated),
+      lead: asString(meta.lead) ?? asString(meta.excerpt) ?? asString(meta.description) ?? '',
+      tags: Array.isArray(meta.tags) ? meta.tags.filter((t): t is string => typeof t === 'string') : [],
+      image: normalizeImage(meta.image),
       imageDark: normalizeImage(meta.imageDark),
+      video: asString(meta.video),
     }
+    if (typeof meta.private === 'boolean') normalizedMeta.private = meta.private
 
     return {
-      Component: module.default,
+      Component: mod.default,
       meta: normalizedMeta,
       slug,
     }
@@ -168,18 +198,18 @@ export async function getNoteBySlug(slug: string): Promise<Note | null> {
     const absolutePath = path.join(process.cwd(), `src/app/blog/_notes/${slug}/index.mdx`)
     if (!(await fs.stat(absolutePath).catch(() => null))) return null
 
-    const module = await import(`../app/blog/_notes/${slug}/index.mdx`)
-    if (!module?.default) return null
+    const mod: MdxModule = await import(`../app/blog/_notes/${slug}/index.mdx`)
+    if (!mod?.default) return null
 
-    const meta = module.meta || {}
-    const normalized: any = {
-      ...meta,
-      date: meta.date,
+    const meta = mod.meta ?? {}
+    const normalized: Note['meta'] = {
+      date: asString(meta.date) ?? '',
       image: normalizeImage(meta.image),
+      imageDark: normalizeImage(meta.imageDark),
     }
 
     return {
-      Component: module.default,
+      Component: mod.default,
       meta: normalized,
       slug,
     }

@@ -5,7 +5,15 @@ import { ThemeImage } from '@/components/theme-image'
 import { SerializableProject } from '@/types/post'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/16/solid'
 import { clsx } from 'clsx'
-import { type HTMLMotionProps, MotionValue, motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
+import {
+  type HTMLMotionProps,
+  MotionValue,
+  motion,
+  useAnimationControls,
+  useMotionValueEvent,
+  useScroll,
+  useSpring,
+} from 'motion/react'
 import Link from 'next/link'
 import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import useMeasure, { type RectReadOnly } from 'react-use-measure'
@@ -17,7 +25,6 @@ function ProjectCard({
   img,
   imgDark,
   video,
-  children,
   bounds,
   scrollX,
   href,
@@ -29,33 +36,33 @@ function ProjectCard({
   name?: string
   title?: string
   href?: string
-  children: React.ReactNode
   bounds: RectReadOnly
   scrollX: MotionValue<number>
 } & HTMLMotionProps<'div'>) {
-  let ref = useRef<HTMLDivElement | null>(null)
-  let [isHovered, setIsHovered] = useState(false)
+  const ref = useRef<HTMLDivElement | null>(null)
+  const [isHovered, setIsHovered] = useState(false)
 
-  let computeOpacity = useCallback(() => {
-    let element = ref.current
+  const computeOpacity = useCallback(() => {
+    const element = ref.current
     if (!element || bounds.width === 0) return 1
 
-    let rect = element.getBoundingClientRect()
+    const rect = element.getBoundingClientRect()
 
     if (rect.left < bounds.left) {
-      let diff = bounds.left - rect.left
-      let percent = diff / rect.width
+      const diff = bounds.left - rect.left
+      const percent = diff / rect.width
       return Math.max(0.5, 1 - percent)
     } else if (rect.right > bounds.right) {
-      let diff = rect.right - bounds.right
-      let percent = diff / rect.width
+      const diff = rect.right - bounds.right
+      const percent = diff / rect.width
       return Math.max(0.5, 1 - percent)
     } else {
       return 1
     }
   }, [ref, bounds.width, bounds.left, bounds.right])
 
-  let opacity = useSpring(computeOpacity(), {
+  // Starts at 1; the layout effect below syncs the true value before paint.
+  const opacity = useSpring(1, {
     stiffness: 154,
     damping: 23,
   })
@@ -109,20 +116,55 @@ function ProjectCard({
   )
 }
 
+const NUDGE_SPRING = { type: 'spring', stiffness: 550, damping: 19, mass: 0.7 } as const
+
 export function RecentProjects({ projects }: { projects: SerializableProject[] }) {
-  let scrollRef = useRef<HTMLDivElement | null>(null)
-  let { scrollX } = useScroll({ container: scrollRef })
-  let [setReferenceWindowRef, bounds] = useMeasure()
-  let [activeIndex, setActiveIndex] = useState(0)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const { scrollX } = useScroll({ container: scrollRef })
+  const [setReferenceWindowRef, bounds] = useMeasure()
+  const [activeIndex, setActiveIndex] = useState(0)
+  // `activeIndex` is measured from the scroll container, which only exists on
+  // the client — the server can only guess. Keep `disabled` out of the SSR
+  // HTML entirely and enable it after mount so hydration always agrees, then
+  // the scroll listener below syncs the true index before paint.
+  const [isMounted, setIsMounted] = useState(false)
+  useLayoutEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional one-shot mounted flag so SSR and hydration HTML agree on `disabled`
+    setIsMounted(true)
+  }, [])
+  const visibleProjects = projects.slice(0, 4)
+  const maxIndex = Math.max(0, visibleProjects.length - 1)
+  const prevControls = useAnimationControls()
+  const nextControls = useAnimationControls()
+
+  // Springs only support two keyframes, so the nudge runs as two sequential
+  // spring animations: out in the travel direction, then back to rest.
+  async function nudge(controls: ReturnType<typeof useAnimationControls>, direction: 1 | -1) {
+    try {
+      await controls.start({ x: direction * 5, transition: NUDGE_SPRING })
+      await controls.start({ x: 0, transition: NUDGE_SPRING })
+    } catch {
+      // Interrupted by a newer nudge — the latest sequence wins.
+    }
+  }
 
   useMotionValueEvent(scrollX, 'change', (x) => {
-    setActiveIndex(Math.floor(x / scrollRef.current!.children[0].clientWidth))
+    const container = scrollRef.current
+    if (!container || !container.children[0]) return
+    const gap = 32
+    const width = (container.children[0] as HTMLElement).clientWidth
+    const step = width + gap
+    if (step <= 0) return
+    const index = Math.min(maxIndex, Math.max(0, Math.round(x / step)))
+    setActiveIndex(index)
   })
 
   function scrollTo(index: number) {
-    let gap = 32
-    let width = (scrollRef.current!.children[0] as HTMLElement).offsetWidth
-    scrollRef.current!.scrollTo({ left: (width + gap) * index })
+    const container = scrollRef.current
+    if (!container || !container.children[0]) return
+    const gap = 32
+    const width = (container.children[0] as HTMLElement).offsetWidth
+    container.scrollTo({ left: (width + gap) * index, behavior: 'smooth' })
   }
 
   return (
@@ -143,7 +185,7 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
           '[--scroll-padding:max(--spacing(6),calc((100vw-(var(--container-7xl)))/2+(var(--spacing)*6)))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-(var(--container-7xl)))/2+(var(--spacing)*8)))]',
         ])}
       >
-        {projects.slice(0, 4).map((project, projectIndex) => (
+        {visibleProjects.map((project, projectIndex) => (
           <ProjectCard
             key={projectIndex}
             name={project.meta.title}
@@ -154,11 +196,8 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
             bounds={bounds}
             scrollX={scrollX}
             href={`/projects/${project.slug}`}
-          >
-            {project.meta.lead}
-          </ProjectCard>
+          />
         ))}
-        <div className="w-2xl shrink-0 sm:w-216" />
       </div>
       <div className="mx-auto mt-12 max-w-7xl px-6 lg:px-8">
         <div className="flex justify-between">
@@ -167,22 +206,32 @@ export function RecentProjects({ projects }: { projects: SerializableProject[] }
           </Button>
           <div className="hidden sm:flex sm:gap-2">
             <Button
-              onClick={() => scrollTo(Math.max(0, activeIndex - 1))}
+              onClick={() => {
+                scrollTo(Math.max(0, activeIndex - 1))
+                void nudge(prevControls, -1)
+              }}
               outline={true}
               aria-label="Previous project"
-              disabled={activeIndex === 0}
+              disabled={isMounted && activeIndex === 0}
               className="px-2.75!"
             >
-              <ChevronLeftIcon />
+              <motion.span data-slot="icon" animate={prevControls} className="inline-flex">
+                <ChevronLeftIcon className="size-full" />
+              </motion.span>
             </Button>
             <Button
-              onClick={() => scrollTo(Math.min(projects.length - 1, activeIndex + 1))}
+              onClick={() => {
+                scrollTo(Math.min(maxIndex, activeIndex + 1))
+                void nudge(nextControls, 1)
+              }}
               outline={true}
               aria-label="Next project"
-              disabled={activeIndex >= projects.length - 1}
+              disabled={isMounted && activeIndex >= maxIndex}
               className="px-2.75!"
             >
-              <ChevronRightIcon />
+              <motion.span data-slot="icon" animate={nextControls} className="inline-flex">
+                <ChevronRightIcon className="size-full" />
+              </motion.span>
             </Button>
           </div>
         </div>

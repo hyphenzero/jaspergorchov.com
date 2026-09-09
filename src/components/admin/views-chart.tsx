@@ -13,27 +13,25 @@ interface Bucket {
   count: number
 }
 
-interface Props {
-  totalViews: number
-}
+
 
 function startOfDay(d: Date) {
-  let r = new Date(d)
+  const r = new Date(d)
   r.setHours(0, 0, 0, 0)
   return r
 }
 
 function startOfWeek(d: Date) {
-  let r = new Date(d)
-  let day = r.getDay()
-  let diff = day === 0 ? -6 : 1 - day
+  const r = new Date(d)
+  const day = r.getDay()
+  const diff = day === 0 ? -6 : 1 - day
   r.setDate(r.getDate() + diff)
   r.setHours(0, 0, 0, 0)
   return r
 }
 
 function startOfMonth(d: Date) {
-  let r = new Date(d)
+  const r = new Date(d)
   r.setDate(1)
   r.setHours(0, 0, 0, 0)
   return r
@@ -44,19 +42,19 @@ function startOfYear(d: Date) {
 }
 
 function addDays(d: Date, n: number) {
-  let r = new Date(d)
+  const r = new Date(d)
   r.setDate(r.getDate() + n)
   return r
 }
 
 function addMonths(d: Date, n: number) {
-  let r = new Date(d)
+  const r = new Date(d)
   r.setMonth(r.getMonth() + n)
   return r
 }
 
 function addYears(d: Date, n: number) {
-  let r = new Date(d)
+  const r = new Date(d)
   r.setFullYear(r.getFullYear() + n)
   return r
 }
@@ -70,11 +68,11 @@ function monthName(d: Date) {
 }
 
 function fillBuckets(from: Date, to: Date, data: Bucket[]): Bucket[] {
-  let map = new Map(data.map((b) => [b.date, b.count]))
-  let result: Bucket[] = []
+  const map = new Map(data.map((b) => [b.date, b.count]))
+  const result: Bucket[] = []
   let cur = new Date(from)
   while (cur < to) {
-    let key = fmtDate(cur)
+    const key = fmtDate(cur)
     result.push({ date: key, count: map.get(key) ?? 0 })
     cur = addDays(cur, 1)
   }
@@ -85,7 +83,7 @@ function getDateRange(
   range: TimeRange,
   ref: Date
 ): { from: Date; to: Date; periods: string[]; currentPeriod: string; periodIndex: number } {
-  let now = startOfDay(new Date())
+  const now = startOfDay(new Date())
 
   switch (range) {
     case 'all': {
@@ -98,9 +96,9 @@ function getDateRange(
       }
     }
     case 'year': {
-      let from = startOfYear(ref)
-      let to = addDays(startOfYear(addYears(ref, 1)), -1)
-      let years = Array.from({ length: 10 }, (_, i) => String(now.getFullYear() - 9 + i))
+      const from = startOfYear(ref)
+      const to = addDays(startOfYear(addYears(ref, 1)), -1)
+      const years = Array.from({ length: 10 }, (_, i) => String(now.getFullYear() - 9 + i))
       return {
         from,
         to: addDays(to, 1),
@@ -110,10 +108,10 @@ function getDateRange(
       }
     }
     case 'month': {
-      let from = startOfMonth(ref)
-      let to = addDays(startOfMonth(addMonths(ref, 1)), -1)
-      let months = Array.from({ length: 12 }, (_, i) => {
-        let d = new Date(ref.getFullYear(), i, 1)
+      const from = startOfMonth(ref)
+      const to = addDays(startOfMonth(addMonths(ref, 1)), -1)
+      const months = Array.from({ length: 12 }, (_, i) => {
+        const d = new Date(ref.getFullYear(), i, 1)
         return d.toLocaleString('en-US', { month: 'long' })
       })
       return {
@@ -125,16 +123,16 @@ function getDateRange(
       }
     }
     case 'week': {
-      let from = startOfWeek(ref)
-      let to = addDays(from, 7)
-      let periods = Array.from({ length: 4 }, (_, i) => {
-        let weekStart = addDays(from, i * 7)
-        let weekEnd = addDays(weekStart, 6)
+      const from = startOfWeek(ref)
+      const to = addDays(from, 7)
+      const periods = Array.from({ length: 4 }, (_, i) => {
+        const weekStart = addDays(from, i * 7)
+        const weekEnd = addDays(weekStart, 6)
         return `${monthName(weekStart)} ${weekStart.getDate()} – ${monthName(weekEnd)} ${weekEnd.getDate()}`
       })
-      let weekStart = startOfWeek(ref)
-      let weekEnd = addDays(weekStart, 6)
-      let currentPeriod = `${monthName(weekStart)} ${weekStart.getDate()} – ${monthName(weekEnd)} ${weekEnd.getDate()}`
+      const weekStart = startOfWeek(ref)
+      const weekEnd = addDays(weekStart, 6)
+      const currentPeriod = `${monthName(weekStart)} ${weekStart.getDate()} – ${monthName(weekEnd)} ${weekEnd.getDate()}`
       return {
         from,
         to,
@@ -163,16 +161,15 @@ const RANGE_OPTIONS: { value: TimeRange; label: string }[] = [
   { value: 'day', label: 'Day' },
 ]
 
-export function ViewsChart({ totalViews }: Props) {
-  let [range, setRange] = useState<TimeRange>('all')
-  let [ref, setRef] = useState(() => new Date())
-  let [data, setData] = useState<Bucket[]>([])
-  let [loading, setLoading] = useState(false)
+export function ViewsChart() {
+  const [range, setRange] = useState<TimeRange>('all')
+  const [ref, setRef] = useState(() => new Date())
+  const [data, setData] = useState<Bucket[]>([])
+  const [loading, setLoading] = useState(false)
 
-  let { from, to, periods, currentPeriod, periodIndex } = useMemo(() => getDateRange(range, ref), [range, ref])
+  const { from, to, currentPeriod } = useMemo(() => getDateRange(range, ref), [range, ref])
 
   useEffect(() => {
-    setLoading(true)
     let cancelled = false
     getPageViewsTimeSeriesAction(fmtDate(from), fmtDate(to))
       .then((result) => {
@@ -187,31 +184,37 @@ export function ViewsChart({ totalViews }: Props) {
     }
   }, [from, to])
 
-  let filled = useMemo(() => fillBuckets(from, to, data), [from, to, data])
+  const filled = useMemo(() => fillBuckets(from, to, data), [from, to, data])
 
-  let cappedTo = useMemo(() => {
-    let today = startOfDay(new Date())
-    if (to.getTime() <= today.getTime()) return to
+  // Computed inline (not memoized): it reads the current time, so the
+  // React Compiler owns memoization here.
+  const today = startOfDay(new Date())
+  let cappedTo = today
+  if (to.getTime() <= today.getTime()) {
+    cappedTo = to
+  } else {
     for (let i = filled.length - 1; i >= 0; i--) {
       if (filled[i].count > 0) {
-        return addDays(new Date(filled[i].date), 1)
+        cappedTo = addDays(new Date(filled[i].date), 1)
+        break
       }
     }
-    return today
-  }, [filled, to])
+  }
 
-  let cappedFilled = useMemo(() => {
+  const cappedFilled = useMemo(() => {
     if (cappedTo.getTime() >= to.getTime()) return filled
     return filled.filter((b) => new Date(b.date).getTime() < cappedTo.getTime())
   }, [filled, cappedTo, to])
 
-  let handleRangeChange = useCallback((newRange: TimeRange) => {
+  const handleRangeChange = useCallback((newRange: TimeRange) => {
+    setLoading(true)
     setRange(newRange)
     setRef(new Date())
   }, [])
 
-  let navigatePeriod = useCallback(
+  const navigatePeriod = useCallback(
     (dir: -1 | 1) => {
+      setLoading(true)
       setRef((prev) => {
         if (range === 'year') return addYears(prev, dir)
         if (range === 'month') return addMonths(prev, dir)
@@ -223,11 +226,11 @@ export function ViewsChart({ totalViews }: Props) {
     [range]
   )
 
-  let canNavigate = range !== 'all'
+  const canNavigate = range !== 'all'
 
   function formatDateTick(dateStr: string) {
-    let d = new Date(dateStr + 'T00:00:00')
-    let spanDays = (cappedTo.getTime() - from.getTime()) / 86400000
+    const d = new Date(dateStr + 'T00:00:00')
+    const spanDays = (cappedTo.getTime() - from.getTime()) / 86400000
 
     if (spanDays <= 1) return `${d.getHours()}:00`
     if (spanDays <= 7) return d.toLocaleString('en-US', { weekday: 'short', day: 'numeric' })
@@ -236,8 +239,8 @@ export function ViewsChart({ totalViews }: Props) {
     return String(d.getFullYear())
   }
 
-  let canGoForward = useMemo(() => {
-    let now = new Date()
+  const canGoForward = useMemo(() => {
+    const now = new Date()
     if (range === 'day') return startOfDay(ref).getTime() < startOfDay(now).getTime()
     if (range === 'week') return startOfWeek(ref).getTime() < startOfWeek(now).getTime()
     if (range === 'month') return startOfMonth(ref).getTime() < startOfMonth(now).getTime()

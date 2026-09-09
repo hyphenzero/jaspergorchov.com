@@ -3,6 +3,7 @@ import {
   Blender,
   Figma,
   Ghostty,
+  Laravel,
   Nextjs,
   Paper,
   PnpmLight,
@@ -72,6 +73,29 @@ function LogoWorkLouder() {
   )
 }
 
+// Bird-only Swift mark ( Brandt's bird, no app-icon square). Inline SVG —
+// not next/image — so currentColor inherits the badge text color.
+function LogoSwiftBird() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="10 20 110 100"
+      fill="currentColor"
+      className="size-3.5 text-orange-500 dark:text-orange-400"
+    >
+      <path d="M85 96.5c-11.11 6.13-26.38 6.76-41.75.47A64.53 64.53 0 0113.84 73a50 50 0 0010.85 6.32c15.87 7.1 31.73 6.61 42.9 0-15.9-11.66-29.4-26.82-39.46-39.2a43.47 43.47 0 01-5.29-6.82c12.16 10.61 31.5 24 38.38 27.79a271.77 271.77 0 01-27-32.34 266.8 266.8 0 0044.47 34.87c.71.38 1.26.7 1.7 1a32.7 32.7 0 001.21-3.51c3.71-12.89-.53-27.54-9.79-39.67C93.25 33.81 106 57.05 100.66 76.51c-.14.53-.29 1-.45 1.55l.19.22c10.59 12.63 7.68 26 6.35 23.5C101 91 90.37 94.33 85 96.5z" />
+    </svg>
+  )
+}
+
+function LogoNeon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-3.5">
+      <path d="M24 0V24l-9.365-8.045V24H0V0ZM2.942 21.087h8.751V9.563l9.365 8.204V2.919L2.942 2.914Z" />
+    </svg>
+  )
+}
+
 const svglComponents: Record<string, React.ComponentType<{ className?: string }>> = {
   Zed: ZedLight,
   Ghostty: Ghostty,
@@ -82,6 +106,7 @@ const svglComponents: Record<string, React.ComponentType<{ className?: string }>
   'Next.js': Nextjs,
   'Tailwind CSS': TailwindCSS,
   TypeScript: TypeScript,
+  Laravel: Laravel,
   pnpm: PnpmLight,
   Vite: Vite,
 }
@@ -92,15 +117,21 @@ const manualLogos: Record<string, React.ComponentType> = {
   'Keychron K3 Pro': LogoKeychron,
   'Work Louder': LogoWorkLouder,
   'Work Louder Creator Micro': LogoWorkLouder,
+  Swift: LogoSwiftBird,
+  Neon: LogoNeon,
 }
 
 function ToolBadge({ name }: { name: string }) {
   const SvglComponent = svglComponents[name]
   const ManualLogo = manualLogos[name]
 
-  // Fallback image logos for tools not in svgl
-  const imageSrc: Record<string, string> = {
-    'Three.js': '/logos/threejs.svg',
+  // Fallback image logos for tools not in svgl. These must be solid fills —
+  // currentColor doesn't survive next/image (it forces color: transparent on
+  // the img, and SVG-as-image can't inherit the page text color). Use inline
+  // SVG components above for currentColor marks instead.
+  const imageLogos: Record<string, { src: string; className?: string }> = {
+    'Three.js': { src: '/logos/threejs.svg', className: 'dark:invert' },
+    Rust: { src: '/logos/rust.svg', className: 'dark:invert' },
   }
 
   return (
@@ -110,8 +141,14 @@ function ToolBadge({ name }: { name: string }) {
           <SvglComponent className="size-3.5" />
         ) : ManualLogo ? (
           <ManualLogo />
-        ) : imageSrc[name] ? (
-          <Image src={imageSrc[name]} alt={name} width={14} height={14} className="size-3.5 object-contain dark:invert" />
+        ) : imageLogos[name] ? (
+          <Image
+            src={imageLogos[name].src}
+            alt={name}
+            width={14}
+            height={14}
+            className={`size-3.5 object-contain ${imageLogos[name].className ?? ''}`}
+          />
         ) : null}
       </span>
       <span>{name}</span>
@@ -132,37 +169,40 @@ export default function AboutPage() {
       <div className="mt-16 max-w-3xl space-y-8 text-[17px]/8 text-pretty text-zinc-600 dark:text-zinc-400">
         <p>
           I&apos;m Jasper Gorchov, a software developer, design engineer, and 3D artist. I build digital products
-          across the web, desktop, and mobile, and create 3D art and illustrations in <ToolBadge name="Blender" />.
-          My work brings together software, interface design, and 3D to create experiences that are precise, considered,
-          and enjoyable to use.
+          across the web, desktop, and mobile, and create 3D art and illustrations. My
+          work spans both the technical and visual sides of projects, from interfaces and application architecture to 3D
+          modeling and rendering.
         </p>
 
         <p>
           I work across design and engineering throughout the process, iterating on ideas until both the visual and
           technical sides feel right. <ToolBadge name="Figma" /> and <ToolBadge name="Tailwind CSS" /> are a big part
-          of that process, especially for refining layout, typography, spacing, and interaction. I build primarily with{' '}
-          <ToolBadge name="TypeScript" /> and <ToolBadge name="Next.js" />, and maintain my own application framework
-          on top of <ToolBadge name="Next.js" /> and <ToolBadge name="Vite" /> for projects that need a consistent
-          foundation across databases, authentication, realtime, AI, and other services.
+          of my process, especially for refining layout, typography, spacing, and interaction. I build with{' '}
+          <ToolBadge name="TypeScript" />, <ToolBadge name="Next.js" />, <ToolBadge name="Vite" />,{' '}
+          <ToolBadge name="Laravel" />, <ToolBadge name="Rust" />, GPUI, and <ToolBadge name="Swift" /> across web,
+          desktop, and native applications. I work across the full stack, from interfaces and application architecture
+          to databases with <ToolBadge name="Neon" />, authentication with Better Auth, realtime systems, AI, and other
+          services.
         </p>
 
         <p>
-          I&apos;ve been coding since I was 9, and that long familiarity with making things has always been paired
-          with a high attention to detail and a high bar for quality. I enjoy understanding how things work, but I
-          care just as much about how they look, behave, and feel in use.
+          I&apos;ve been coding since I was 9, and that long familiarity with making things has always come with an
+          attention to detail. I care about how things work, but just as much about how they look, behave, and feel in
+          use.
         </p>
 
         <p>
           Alongside software, I create 3D work in <ToolBadge name="Blender" />, from illustrations and models to fully
-          rendered scenes. When a project calls for it, I bring that work into the browser with{' '}
-          <ToolBadge name="Three.js" />, using 3D as another way to build visual experiences rather than treating it
-          as something separate from the rest of my work.
+          rendered scenes. I work across the full 3D process, from modeling, sculpting, and shading to texturing,
+          lighting, animation, rendering, and procedural work with Geometry Nodes. When a project calls for it, I bring
+          that work into the browser with <ToolBadge name="Three.js" />, using 3D as another way to build visual
+          experiences rather than treating it as something separate from the rest of my work.
         </p>
 
         <p>
-          I&apos;m interested in the space between design and engineering — where a well-considered idea becomes a
-          polished, functional product. Whether I&apos;m building a website, a native application, or an interactive 3D
-          experience, I want the result to feel deliberate down to the smallest detail.
+          I&apos;m interested in the space between design and engineering, where an idea becomes a functional product.
+          Whether I&apos;m building a website, a native application, or an interactive 3D experience, I pay attention
+          to the details throughout.
         </p>
       </div>
 

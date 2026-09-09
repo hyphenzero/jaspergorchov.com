@@ -90,11 +90,15 @@ export function SubscribeForm({
   const trimmed = email.trim()
   const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
 
-  useEffect(() => {
+  const [lastActionState, setLastActionState] = useState(state)
+  // Reset submission UI when a new server result arrives. Adjusted during
+  // render (the endorsed alternative to syncing in an effect).
+  if (state !== lastActionState) {
+    setLastActionState(state)
     setOptimistic(false)
     setDismissed(false)
     setShowErrors(false)
-  }, [state])
+  }
 
   const showCheckmark = optimistic || (state.status === 'success' && !dismissed)
   const buttonStatus = showCheckmark ? 'success' : 'idle'

@@ -3,43 +3,47 @@
 import { trackEvent } from '@/actions/analytics'
 import { ArrowPathIcon, ArrowUpRightIcon } from '@heroicons/react/16/solid'
 import { usePathname } from 'next/navigation'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 export function SitePreview({ siteUrl }: { siteUrl: string }) {
-  let url: URL
-  try {
-    url = new URL(siteUrl)
-  } catch {
-    return null
-  }
+  const url = useMemo(() => {
+    try {
+      return new URL(siteUrl)
+    } catch {
+      return null
+    }
+  }, [siteUrl])
 
-  let pathname = usePathname()
-  let slug = pathname.split('/').pop() ?? ''
-  let contentType = pathname.startsWith('/blog') ? 'blog' : 'project'
+  const pathname = usePathname()
+  const slug = pathname.split('/').pop() ?? ''
+  const contentType = pathname.startsWith('/blog') ? 'blog' : 'project'
 
-  let [currentUrl, setCurrentUrl] = useState(siteUrl)
-  let iframeRef = useRef<HTMLIFrameElement>(null)
+  const [currentUrl, setCurrentUrl] = useState(siteUrl)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
 
-  function trackPreviewEvent(eventType: 'preview_click' | 'preview_reload') {
-    trackEvent({
-      event_type: eventType,
-      slug,
-      content_type: contentType,
-      url: currentUrl,
-    }).catch(() => {})
-  }
+  const trackPreviewEvent = useCallback(
+    (eventType: 'preview_click' | 'preview_reload') => {
+      trackEvent({
+        event_type: eventType,
+        slug,
+        content_type: contentType,
+        url: currentUrl,
+      }).catch(() => {})
+    },
+    [slug, contentType, currentUrl]
+  )
 
-  let reload = useCallback(() => {
-    let iframe = iframeRef.current
+  const reload = useCallback(() => {
+    const iframe = iframeRef.current
     if (iframe) {
       iframe.src = currentUrl
     }
     trackPreviewEvent('preview_reload')
-  }, [currentUrl])
+  }, [currentUrl, trackPreviewEvent])
 
-  let handleLoad = useCallback(() => {
+  const handleLoad = useCallback(() => {
     try {
-      let href = iframeRef.current?.contentWindow?.location?.href
+      const href = iframeRef.current?.contentWindow?.location?.href
       if (href) {
         setCurrentUrl(href)
       }
@@ -48,9 +52,11 @@ export function SitePreview({ siteUrl }: { siteUrl: string }) {
     }
   }, [])
 
-  let displayUrl = (() => {
+  if (!url) return null
+
+  const displayUrl = (() => {
     try {
-      let u = new URL(currentUrl)
+      const u = new URL(currentUrl)
       return {
         host: u.host,
         path: u.pathname.replace(/\/$/, '') + u.search + u.hash,

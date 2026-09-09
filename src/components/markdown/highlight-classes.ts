@@ -20,19 +20,19 @@ export function highlightClasses(opts: HighlightClassesOptions): ShikiTransforme
   return {
     name: 'tailwindcss/highlight-classes',
     code(ast) {
-      let lines = ast.children.filter((i) => i.type === 'element')
+      const lines = ast.children.filter((i) => i.type === 'element')
 
       // Lines that should be removed from the output
-      let toRemove = new Set<ElementContent>()
+      const toRemove = new Set<ElementContent>()
 
       // Classes that should be highlighted
-      let toHighlight = new Set<string>()
+      const toHighlight = new Set<string>()
 
-      for (let line of lines) {
-        let highlight = parseHighlightDirective(line)
+      for (const line of lines) {
+        const highlight = parseHighlightDirective(line)
         if (highlight) {
           toRemove.add(line)
-          for (let cls of highlight.classes) {
+          for (const cls of highlight.classes) {
             toHighlight.add(cls)
           }
 
@@ -44,12 +44,12 @@ export function highlightClasses(opts: HighlightClassesOptions): ShikiTransforme
         let classState = ClassState.None
 
         for (let i = 0; i < line.children.length; ++i) {
-          let el = line.children[i]
+          const el = line.children[i]
           if (el.type !== 'element') continue
           if (el.tagName !== 'div' && el.tagName !== 'span') continue
 
           // Tiny state machine to make sure we're inside a class attribute
-          let text = getTextContent(el).trim()
+          const text = getTextContent(el).trim()
 
           if (classState === ClassState.None) {
             if (text === 'class' || text === 'className') {
@@ -78,7 +78,7 @@ export function highlightClasses(opts: HighlightClassesOptions): ShikiTransforme
 
           if (classState !== ClassState.InsideSingle) continue
 
-          let replacements = highlightClassesIn.call(this, el, toHighlight, opts)
+          const replacements = highlightClassesIn.call(this, el, toHighlight, opts)
 
           classState = ClassState.None
 
@@ -104,7 +104,7 @@ function highlightClassesIn(
   classes: Set<string>,
   opts: HighlightClassesOptions
 ): Element[] | null {
-  let textNode = el.children[0]
+  const textNode = el.children[0]
   if (textNode.type !== 'text') return null
 
   function create(value: string): Element {
@@ -115,22 +115,22 @@ function highlightClassesIn(
     }
   }
 
-  let text = textNode.value
+  const text = textNode.value
 
   // A list of new <span> elements that will replace the current element
   // where classes are highlighted
-  let matches: [start: number, end: number][] = []
+  const matches: [start: number, end: number][] = []
 
   // Note where every class is found in the text
-  for (let cls of classes) {
+  for (const cls of classes) {
     let index = text.indexOf(cls)
 
     while (index !== -1) {
-      let prevChar = text[index - 1]
-      let nextChar = text[index + cls.length]
+      const prevChar = text[index - 1]
+      const nextChar = text[index + cls.length]
 
-      let isValidStart = !prevChar || classListStart.test(prevChar)
-      let isValidEnd = !nextChar || classListEnd.test(nextChar)
+      const isValidStart = !prevChar || classListStart.test(prevChar)
+      const isValidEnd = !nextChar || classListEnd.test(nextChar)
 
       if (isValidStart && isValidEnd) {
         matches.push([index, index + cls.length])
@@ -147,18 +147,18 @@ function highlightClassesIn(
   matches.sort(([a], [b]) => a - b)
 
   // Split the text into segments based on the matches
-  let segments: Element[] = []
+  const segments: Element[] = []
 
   let last = 0
 
-  for (let [start, end] of matches) {
+  for (const [start, end] of matches) {
     // Add an element for the text between the last match and this match
     if (start > last) {
       segments.push(create(text.slice(last, start)))
     }
 
     // Add an element for the class itself
-    let classEl = create(text.slice(start, end))
+    const classEl = create(text.slice(start, end))
     segments.push(classEl)
 
     // Always use the single highlightedClassName which already includes dark mode styling
@@ -187,13 +187,13 @@ interface Highlight {
 }
 
 function parseHighlightDirective(el: Element): Highlight | null {
-  let comment = getControlComment(el)
+  const comment = getControlComment(el)
   if (!comment) return null
 
-  let match = comment.match(classControlPattern)
+  const match = comment.match(classControlPattern)
   if (!match) return null
 
-  let classes = segment(match[1], ',')
+  const classes = segment(match[1], ',')
 
   if (classes.length === 0) return null
 
@@ -201,7 +201,7 @@ function parseHighlightDirective(el: Element): Highlight | null {
 }
 
 function getControlComment(el: Element): string | null {
-  let text = getTextContent(el)
+  const text = getTextContent(el)
   if (text === '') return null
 
   let match = text.match(commentStart)

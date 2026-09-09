@@ -116,6 +116,8 @@ export interface AnalyticsSummary {
   unique_pages: number
   total_reloads: number
   total_button_clicks: number
+  total_canvas_draws: number
+  total_threejs_lab_uses: number
 }
 
 export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
@@ -136,6 +138,12 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
   const { rows: buttonCount } = await pool.query<{ count: number }>(
     `SELECT COUNT(*)::int FROM analytics_events WHERE event_type = 'button_click'`
   )
+  const { rows: canvasDrawCount } = await pool.query<{ count: number }>(
+    `SELECT COUNT(*)::int FROM analytics_events WHERE event_type = 'canvas_draw'`
+  )
+  const { rows: threejsLabCount } = await pool.query<{ count: number }>(
+    `SELECT COUNT(*)::int FROM analytics_events WHERE event_type = 'threejs_lab_use'`
+  )
 
   return {
     total_views: viewCount[0]?.count ?? 0,
@@ -143,6 +151,8 @@ export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
     unique_pages: uniquePages[0]?.count ?? 0,
     total_reloads: reloadCount[0]?.count ?? 0,
     total_button_clicks: buttonCount[0]?.count ?? 0,
+    total_canvas_draws: canvasDrawCount[0]?.count ?? 0,
+    total_threejs_lab_uses: threejsLabCount[0]?.count ?? 0,
   }
 }
 

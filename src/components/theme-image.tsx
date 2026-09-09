@@ -3,6 +3,8 @@ import NextImage from 'next/image'
 
 type NextImageProps = React.ComponentProps<typeof NextImage>
 
+type ImageSource = string | { src: string; width?: number; height?: number }
+
 export function ThemeImage({
   src,
   darkSrc,
@@ -10,10 +12,18 @@ export function ThemeImage({
   className,
   imgClassName,
   ...props
-}: NextImageProps & { darkSrc?: string; imgClassName?: string }) {
+}: NextImageProps & { darkSrc?: ImageSource; imgClassName?: string }) {
   if (!darkSrc) {
     return <NextImage src={src} alt={alt} className={clsx(className, imgClassName)} {...props} />
   }
+
+  const darkUrl = typeof darkSrc === 'string' ? darkSrc : darkSrc.src
+  // An imported image object carries its own dimensions — use them so the
+  // dark variant satisfies Next.js's width/height requirement on its own.
+  const darkDims =
+    typeof darkSrc !== 'string' && darkSrc.width && darkSrc.height
+      ? { width: darkSrc.width, height: darkSrc.height }
+      : {}
 
   // For fill mode, the parent container provides explicit sizing.
   // We wrap in a relative div so both absolutely-positioned images overlap.
@@ -27,7 +37,7 @@ export function ThemeImage({
           {...props}
         />
         <NextImage
-          src={darkSrc}
+          src={darkUrl}
           alt={alt}
           className={clsx('absolute inset-0 size-full object-cover not-dark:hidden!', imgClassName)}
           {...props}
@@ -43,10 +53,11 @@ export function ThemeImage({
     <div className={clsx('grid grid-cols-1 grid-rows-1', className)}>
       <NextImage src={src} alt={alt} className={clsx('col-start-1 row-start-1 dark:hidden', imgClassName)} {...props} />
       <NextImage
-        src={darkSrc}
+        src={darkUrl}
         alt={alt}
         className={clsx('col-start-1 row-start-1 not-dark:hidden', imgClassName)}
         {...props}
+        {...darkDims}
       />
     </div>
   )

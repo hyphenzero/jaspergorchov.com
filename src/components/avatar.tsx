@@ -1,5 +1,6 @@
 import * as Headless from '@headlessui/react'
 import clsx from 'clsx'
+import Image from 'next/image'
 import React, { forwardRef } from 'react'
 import { TouchTarget } from './button'
 import { Link } from './link'
@@ -27,7 +28,7 @@ export function Avatar({
       className={clsx(
         className,
         // Basic layout
-        'inline-grid shrink-0 align-middle [--avatar-radius:20%] *:col-start-1 *:row-start-1',
+        'relative inline-grid shrink-0 align-middle [--avatar-radius:20%] *:col-start-1 *:row-start-1',
         'outline -outline-offset-1 outline-black/10 dark:outline-white/10',
         // Border radius
         square ? 'rounded-(--avatar-radius) *:rounded-(--avatar-radius)' : 'rounded-full *:rounded-full'
@@ -45,7 +46,7 @@ export function Avatar({
           </text>
         </svg>
       )}
-      {src && <img className="size-full" src={src} alt={alt} />}
+      {src && <Image className="object-cover" src={src} alt={alt} fill sizes="48px" />}
     </span>
   )
 }
@@ -62,7 +63,7 @@ export const AvatarButton = forwardRef(function AvatarButton(
     (Omit<Headless.ButtonProps, 'as' | 'className'> | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>),
   ref: React.ForwardedRef<HTMLElement>
 ) {
-  let classes = clsx(
+  const classes = clsx(
     className,
     square ? 'rounded-[20%]' : 'rounded-full',
     'relative inline-grid focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500'

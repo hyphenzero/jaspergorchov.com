@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useLoader, useThree } from '@react-three/fiber'
 import { clsx } from 'clsx'
-import { Suspense, useMemo, useRef, useState } from 'react'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { SVGLoader } from 'three-stdlib'
 
@@ -175,7 +175,7 @@ function AutoFitCamera({ logosCount }: { logosCount: number }) {
   const camera = useThree((s) => s.camera) as THREE.OrthographicCamera
   const size = useThree((s) => s.size)
 
-  useMemo(() => {
+  useEffect(() => {
     const cols = logosCount <= 2 ? logosCount : Math.ceil(Math.sqrt(logosCount))
     const rows = Math.ceil(logosCount / cols)
     const spacing = 2.4
@@ -184,6 +184,9 @@ function AutoFitCamera({ logosCount }: { logosCount: number }) {
 
     const zoomX = size.width / contentWidth
     const zoomY = size.height / contentHeight
+    // Mutating the camera is the only API three.js offers; it can't be
+    // expressed declaratively because the instance comes from useThree.
+    // eslint-disable-next-line react-hooks/immutability
     camera.zoom = Math.min(zoomX, zoomY) * 0.65
     camera.updateProjectionMatrix()
   }, [logosCount, size, camera])

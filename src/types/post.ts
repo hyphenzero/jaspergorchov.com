@@ -9,6 +9,8 @@ export interface BlogPost {
   meta: {
     title: string
     date: string
+    updatedDate?: string
+    updated?: string
     lead: string
     tags: string[]
     image?: { src: string; width?: number; height?: number }
@@ -54,6 +56,7 @@ export interface Note {
   meta: {
     date: string
     image?: { src: string; width?: number; height?: number }
+    imageDark?: { src: string; width?: number; height?: number }
   }
   slug: string
 }

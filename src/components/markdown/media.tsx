@@ -30,7 +30,7 @@ export function YouTubeVideo({ className, id, ...props }: React.IframeHTMLAttrib
   )
 }
 
-export function Iframe({ height = 500, children, className, ...props }: React.IframeHTMLAttributes<HTMLIFrameElement>) {
+export function Iframe({ height = 500, className, ...props }: React.IframeHTMLAttributes<HTMLIFrameElement>) {
   return (
     <div data-media className={className}>
       <div className="not-prose relative overflow-hidden rounded-xl">
@@ -51,7 +51,9 @@ export function Image({
   darkSrc,
   className,
   ...props
-}: React.ComponentProps<typeof NextImage> & { darkSrc?: string }) {
+}: React.ComponentProps<typeof NextImage> & {
+  darkSrc?: string | { src: string; width?: number; height?: number }
+}) {
   return (
     <div data-media className={className}>
       <div className="not-prose relative h-auto overflow-hidden rounded-xl">

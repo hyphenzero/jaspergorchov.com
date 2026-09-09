@@ -3,9 +3,9 @@
 import * as Headless from '@headlessui/react'
 import { ArrowLongRightIcon } from '@heroicons/react/20/solid'
 import { clsx } from 'clsx'
-import { type HTMLMotionProps, MotionValue, motion, useMotionValueEvent, useScroll, useSpring } from 'motion/react'
-import { useCallback, useLayoutEffect, useRef, useState } from 'react'
-import useMeasure, { type RectReadOnly } from 'react-use-measure'
+import Image from 'next/image'
+import { type HTMLMotionProps, motion, useMotionValueEvent, useScroll } from 'motion/react'
+import { useRef, useState } from 'react'
 import { Link } from './link'
 
 const testimonials = [
@@ -47,64 +47,13 @@ const testimonials = [
   },
 ]
 
-function TestimonialCard({
-  name,
-  title,
-  img,
-  children,
-  bounds,
-  scrollX,
-  ...props
-}: {
-  img: string
-  name: string
-  title: string
-  children: React.ReactNode
-  bounds: RectReadOnly
-  scrollX: MotionValue<number>
-} & HTMLMotionProps<'div'>) {
-  let ref = useRef<HTMLDivElement | null>(null)
-
-  let computeOpacity = useCallback(() => {
-    let element = ref.current
-    if (!element || bounds.width === 0) return 1
-
-    let rect = element.getBoundingClientRect()
-
-    if (rect.left < bounds.left) {
-      let diff = bounds.left - rect.left
-      let percent = diff / rect.width
-      return Math.max(0.5, 1 - percent)
-    } else if (rect.right > bounds.right) {
-      let diff = rect.right - bounds.right
-      let percent = diff / rect.width
-      return Math.max(0.5, 1 - percent)
-    } else {
-      return 1
-    }
-  }, [ref, bounds.width, bounds.left, bounds.right])
-
-  let opacity = useSpring(computeOpacity(), {
-    stiffness: 154,
-    damping: 23,
-  })
-
-  useLayoutEffect(() => {
-    opacity.set(computeOpacity())
-  }, [computeOpacity, opacity])
-
-  useMotionValueEvent(scrollX, 'change', () => {
-    opacity.set(computeOpacity())
-  })
-
+function TestimonialCard({ img, ...props }: { img: string } & HTMLMotionProps<'div'>) {
   return (
     <motion.div
-      ref={ref}
-      style={{ opacity }}
       {...props}
       className="relative flex aspect-video w-full shrink-0 snap-start scroll-ml-(--scroll-padding) flex-col justify-end overflow-hidden rounded-3xl"
     >
-      <img alt="" src={img} className="absolute inset-x-0 top-0 aspect-square w-full object-cover" />
+      <Image alt="" src={img} fill sizes="(max-width: 1024px) 100vw, 400px" className="object-cover" />
     </motion.div>
   )
 }
@@ -126,18 +75,17 @@ function CallToAction() {
 }
 
 export function Testimonials() {
-  let scrollRef = useRef<HTMLDivElement | null>(null)
-  let { scrollX } = useScroll({ container: scrollRef })
-  let [setReferenceWindowRef, bounds] = useMeasure()
-  let [activeIndex, setActiveIndex] = useState(0)
+  const scrollRef = useRef<HTMLDivElement | null>(null)
+  const { scrollX } = useScroll({ container: scrollRef })
+  const [activeIndex, setActiveIndex] = useState(0)
 
   useMotionValueEvent(scrollX, 'change', (x: number) => {
     setActiveIndex(Math.floor(x / scrollRef.current!.children[0].clientWidth))
   })
 
   function scrollTo(index: number) {
-    let gap = 32
-    let width = (scrollRef.current!.children[0] as HTMLElement).offsetWidth
+    const gap = 32
+    const width = (scrollRef.current!.children[0] as HTMLElement).offsetWidth
     scrollRef.current!.scrollTo({ left: (width + gap) * index })
   }
 
@@ -152,18 +100,8 @@ export function Testimonials() {
           '[--scroll-padding:max(--spacing(6),calc((100vw-96rem)/2+(--spacing(6))))] lg:[--scroll-padding:max(--spacing(8),calc((100vw-96rem)/2+(--spacing(8))))]',
         ])}
       >
-        {testimonials.map(({ img, name, title, quote }, testimonialIndex) => (
-          <TestimonialCard
-            key={testimonialIndex}
-            name={name}
-            title={title}
-            img={img}
-            bounds={bounds}
-            scrollX={scrollX}
-            onClick={() => scrollTo(testimonialIndex)}
-          >
-            {quote}
-          </TestimonialCard>
+        {testimonials.map(({ img }, testimonialIndex) => (
+          <TestimonialCard key={testimonialIndex} img={img} onClick={() => scrollTo(testimonialIndex)} />
         ))}
         <div className="w-2xl shrink-0 sm:w-216" />
       </div>

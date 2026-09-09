@@ -1,4 +1,4 @@
-import { createHighlighter } from 'shiki'
+import { createHighlighter, type Highlighter } from 'shiki'
 import atApplyInjection from '../components/syntax-highlighter/at-apply.json'
 import atRulesInjection from '../components/syntax-highlighter/at-rules.json'
 import darkTheme from '../components/syntax-highlighter/dark-theme.json'
@@ -7,7 +7,13 @@ import themeFnInjection from '../components/syntax-highlighter/theme-fn.json'
 
 // Lazily initialize and cache a single shiki highlighter instance. The cached
 // promise allows multiple callers to await the same initialization.
-let highlighterPromise: Promise<any> | null = null
+let highlighterPromise: Promise<Highlighter> | null = null
+
+type ShikiLang = Parameters<typeof createHighlighter>[0]['langs'][number]
+
+// Custom TextMate grammar injections. Typed loosely (they predate shiki's
+// strict registration types) and cast once here rather than at each use.
+const injections = [atApplyInjection, atRulesInjection, themeFnInjection] as unknown as ShikiLang[]
 
 export function getHighlighter() {
   if (!highlighterPromise) {
@@ -23,9 +29,7 @@ export function getHighlighter() {
         },
       ],
       langs: [
-        atApplyInjection as any,
-        atRulesInjection,
-        themeFnInjection,
+        ...injections,
         'astro',
         'blade',
         'css',

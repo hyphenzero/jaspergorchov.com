@@ -1,4 +1,5 @@
 import type { NextConfig } from 'next'
+import createMDX from '@next/mdx'
 
 const nextConfig = {
   pageExtensions: ['js', 'jsx', 'ts', 'tsx', 'mdx'],
@@ -7,6 +8,9 @@ const nextConfig = {
   },
   experimental: {
     mdxRs: true,
+  },
+  images: {
+    remotePatterns: [{ hostname: 'cdn.polyhaven.com' }, { hostname: 'dl.polyhaven.org' }],
   },
   async redirects() {
     return [
@@ -19,5 +23,6 @@ const nextConfig = {
   },
 } satisfies NextConfig
 
-const withMDX = require('@next/mdx')()
-module.exports = withMDX(nextConfig)
+const withMDX = createMDX()
+
+export default withMDX(nextConfig)

@@ -10,6 +10,11 @@ type NoteMeta = {
     width?: number
     height?: number
   }
+  imageDark?: {
+    src: string
+    width?: number
+    height?: number
+  }
 }
 
 type NoteCardProps = {
@@ -20,9 +25,9 @@ type NoteCardProps = {
 
 export function NoteCard({ meta, className, children }: NoteCardProps) {
   return (
-    <div className={clsx('rounded-3xl p-4 bg-white dark:bg-zinc-900', className)}>
+    <div className={clsx('rounded-3xl p-4 bg-white dark:bg-zinc-900 h-fit', className)}>
       <div className="flex items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-950">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100 dark:bg-zinc-800">
           <Logo className="size-5" />
         </span>
         <div>
@@ -37,6 +42,7 @@ export function NoteCard({ meta, className, children }: NoteCardProps) {
           <ThemeImage
             unoptimized
             src={meta.image.src}
+            darkSrc={meta.imageDark}
             width={meta.image.width!}
             height={meta.image.height!}
             alt=""

@@ -3,6 +3,7 @@ import Link from 'next/link'
 import React, { ReactNode } from 'react'
 import { CodeExample } from './components/markdown/code-example'
 import { SitePreview } from './components/markdown/site-preview'
+import { Timeline, TimelineItem } from './components/markdown/timeline'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './components/table'
 
 function getTextContent(node: React.ReactNode): string {
@@ -10,12 +11,11 @@ function getTextContent(node: React.ReactNode): string {
     return String(node)
   }
 
-  if (React.isValidElement(node)) {
+  if (React.isValidElement<{ children?: React.ReactNode }>(node)) {
     if (node.type === 'small') {
       return ''
     }
 
-    // @ts-ignore
     return getTextContent(node.props.children)
   }
 
@@ -37,8 +37,8 @@ function slugify(str: React.ReactNode) {
 }
 
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
-  return ({ children }: React.PropsWithChildren) => {
-    let slug = slugify(children)
+  return function Heading({ children }: React.PropsWithChildren) {
+    const slug = slugify(children)
     return React.createElement(`h${level}`, { id: slug }, [
       React.createElement(
         'a',
@@ -63,16 +63,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     h5: createHeading(5),
     h6: createHeading(6),
 
-    a(props: any) {
+    a({ href, children, ...rest }: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
       // Use the project's Link for internal navigation; external links open in a new tab.
-      const { href } = props || {}
-
-      function isExternal(href?: string) {
-        if (!href || typeof href !== 'string') return false
-        if (href.startsWith('#') || href.startsWith('/')) return false
-        if (href.startsWith('//')) return true
+      function isExternal(target: string) {
+        if (target.startsWith('#') || target.startsWith('/')) return false
+        if (target.startsWith('//')) return true
         try {
-          const url = new URL(href)
+          const url = new URL(target)
           const host = url.hostname
           if (host === 'localhost') return false
           if (host === 'jaspergorchov.com') return false
@@ -83,9 +80,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         }
       }
 
-      if (isExternal(href)) {
-        const { children, ...rest } = props
-
+      if (typeof href === 'string' && isExternal(href)) {
         return (
           <Link
             {...rest}
@@ -108,7 +103,11 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
         )
       }
 
-      return <Link {...props} />
+      return (
+        <a href={href} {...rest}>
+          {children}
+        </a>
+      )
     },
 
     table: (props) => <Table className="not-prose" {...props} />,
@@ -137,23 +136,26 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     },
 
     SitePreview,
+    Timeline,
+    TimelineItem,
 
     pre(props) {
-      let child = React.Children.only(props.children) as React.ReactElement<{
+      const child = React.Children.only(props.children) as React.ReactElement<{
         className?: string
         children?: string
       }>
       if (!child) return null
 
-      let { className, children: code } = child.props as { className?: string; children?: string }
+      const { className } = child.props as { className?: string; children?: string }
+      let { children: code } = child.props as { children?: string }
       if (typeof code !== 'string') code = String(code ?? '')
-      let lang = className ? className.replace('language-', '') : ''
+      const lang = className ? className.replace('language-', '') : ''
       let filename = undefined
 
       // Extract optional filename directives from the first line of a code block
-      let lines = code.split('\n')
-      let filenameRegex = /\[\!code filename\:(.+)\]/
-      let match = lines[0].match(filenameRegex)
+      const lines = code.split('\n')
+      const filenameRegex = /\[\!code filename\:(.+)\]/
+      const match = lines[0].match(filenameRegex)
       if (match) {
         filename = match[1]
         code = lines.splice(1).join('\n')

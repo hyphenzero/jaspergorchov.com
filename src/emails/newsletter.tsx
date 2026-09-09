@@ -30,7 +30,6 @@ interface NewsletterDigestProps {
 }
 
 export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
-  const totalCount = entries.length
   const blogEntries = entries.filter((e) => e.type === 'blog')
   const projectEntries = entries.filter((e) => e.type === 'project')
   const blogCount = blogEntries.length
@@ -97,6 +96,8 @@ export function NewsletterDigest({ siteUrl, entries }: NewsletterDigestProps) {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+          {/* Email HTML has no _document; link tags are the only way to load fonts here. */}
+          {/* eslint-disable-next-line @next/next/no-page-custom-font */}
           <link
             href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&display=swap"
             rel="stylesheet"

@@ -65,7 +65,7 @@ export default async function ArticlePage(props: Props) {
 
   const meta = post.meta
   const releaseDate = meta.date
-  const updatedDate = (meta as any).updatedDate ?? (meta as any).updated
+  const updatedDate = meta.updatedDate ?? meta.updated
 
   return (
     <>

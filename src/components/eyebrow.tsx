@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 
-const colors = [
+export const colors = [
   'red',
   'orange',
   'amber',

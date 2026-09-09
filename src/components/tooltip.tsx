@@ -19,7 +19,7 @@ const TooltipContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={clsx(
-        'pointer-events-none z-10 flex translate-y-0.5 items-center gap-1 rounded-full bg-white/75 px-2 py-0.5 text-center text-xs/6 font-medium whitespace-nowrap text-zinc-950 opacity-100 shadow ring-1 ring-zinc-950/10 backdrop-blur transition-opacity dark:bg-zinc-800/75 dark:text-white dark:ring-white/10 dark:ring-inset starting:opacity-0',
+        'pointer-events-none z-10 flex translate-y-0.5 items-center gap-1 rounded-full bg-white/75 px-2 text-center text-xs/6 font-medium whitespace-nowrap text-zinc-950 opacity-100 shadow ring-1 ring-zinc-950/10 backdrop-blur transition-opacity dark:bg-zinc-800/75 dark:text-white dark:ring-white/10 dark:ring-inset starting:opacity-0',
         className
       )}
       {...props}

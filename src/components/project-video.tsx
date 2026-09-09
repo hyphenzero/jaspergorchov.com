@@ -1,6 +1,5 @@
 'use client'
 
-import { useVideoCache } from '@/components/video-cache-context'
 import { useEffect, useRef, useState } from 'react'
 
 type Props = {
@@ -16,11 +15,6 @@ export function ProjectVideoOverlay({ src, isActive, className }: Props) {
   const [mounted, setMounted] = useState(false)
   const [ready, setReady] = useState(false)
   const mountedRef = useRef(false)
-  const { preload } = useVideoCache()
-
-  useEffect(() => {
-    preload(src)
-  }, [src, preload])
 
   useEffect(() => {
     mountedRef.current = mounted
@@ -64,6 +58,7 @@ export function ProjectVideoOverlay({ src, isActive, className }: Props) {
           playsInline
           muted
           loop
+          preload="metadata"
           onCanPlay={() => setReady(true)}
         />
       )}

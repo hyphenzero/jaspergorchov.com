@@ -66,13 +66,29 @@ export function deleteLayer(id: string, index: number, layer: Layer): Command {
   }
 }
 
-export function setLayerPosition(id: string, oldX: number, oldY: number, newX: number, newY: number): Command {
+export function setLayerPosition(
+  id: string,
+  oldX: number,
+  oldY: number,
+  newX: number,
+  newY: number,
+  oldPoints?: { x: number; y: number }[],
+  newPoints?: { x: number; y: number }[]
+): Command {
   return {
     apply(layers) {
-      return layers.map((l) => (l.id === id ? { ...l, x: newX, y: newY } : l))
+      return layers.map((l) => {
+        if (l.id !== id) return l
+        if (l.type !== 'brush') return { ...l, x: newX, y: newY }
+        return { ...l, x: newX, y: newY, points: newPoints ?? l.points } as BrushLayer
+      })
     },
     undo(layers) {
-      return layers.map((l) => (l.id === id ? { ...l, x: oldX, y: oldY } : l))
+      return layers.map((l) => {
+        if (l.id !== id) return l
+        if (l.type !== 'brush') return { ...l, x: oldX, y: oldY }
+        return { ...l, x: oldX, y: oldY, points: oldPoints ?? l.points } as BrushLayer
+      })
     },
   }
 }
@@ -119,63 +135,4 @@ export function updateLayerProperty(id: string, property: string, oldValue: unkn
   }
 }
 
-export function addBrushPoints(id: string, oldPoints: { x: number; y: number }[]): Command {
-  return {
-    apply(layers) {
-      return layers.map((l) => {
-        if (l.id !== id || l.type !== 'brush') return l
-        return { ...l, points: [...l.points] }
-      })
-    },
-    undo(layers) {
-      return layers.map((l) => {
-        if (l.id !== id || l.type !== 'brush') return l
-        return { ...l, points: oldPoints }
-      })
-    },
-  }
-}
 
-export function reorderLayer(id: string, oldIndex: number, newIndex: number): Command {
-  return {
-    apply(layers) {
-      const copy = [...layers]
-      const idx = copy.findIndex((l) => l.id === id)
-      if (idx === -1) return layers
-      const [moved] = copy.splice(idx, 1)
-      const target = newIndex > idx ? newIndex - 1 : newIndex
-      copy.splice(target, 0, moved)
-      return copy
-    },
-    undo(layers) {
-      const copy = [...layers]
-      const idx = copy.findIndex((l) => l.id === id)
-      if (idx === -1) return layers
-      const [moved] = copy.splice(idx, 1)
-      copy.splice(oldIndex, 0, moved)
-      return copy
-    },
-  }
-}
-
-export function toggleVisibility(id: string): Command {
-  return {
-    apply(layers) {
-      return layers.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
-    },
-    undo(layers) {
-      return layers.map((l) => (l.id === id ? { ...l, visible: !l.visible } : l))
-    },
-  }
-}
-
-export function updateText(id: string, oldText: string, newText: string): Command {
-  return {
-    apply(layers) {
-      return layers.map((l) => (l.id === id && l.type === 'text' ? { ...l, text: newText } : l))
-    },
-    undo(layers) {
-      return layers.map((l) => (l.id === id && l.type === 'text' ? { ...l, text: oldText } : l))
-    },
-  }
-}

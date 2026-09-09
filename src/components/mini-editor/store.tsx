@@ -1,7 +1,8 @@
 'use client'
 
-import { createContext, type ReactNode, useCallback, useContext, useReducer, useRef } from 'react'
-import { CommandHistory, deleteLayer, reorderLayer, toggleVisibility, updateLayerProperty } from './commands'
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useReducer, useRef, useState } from 'react'
+import { trackEvent } from '@/actions/analytics'
+import { CommandHistory, deleteLayer, updateLayerProperty } from './commands'
 import type { BrushLayer, EditorAction, EditorState, EllipseLayer, Layer, RectangleLayer } from './types'
 
 function createInitialLayers(): Layer[] {
@@ -10,16 +11,18 @@ function createInitialLayers(): Layer[] {
 
 const initialLayers = createInitialLayers()
 
+// Keep initialState static so server and client render the same HTML.
+// The dark-mode color preference (black vs white) is applied lazily on the
+// first paint instead, so no fork happens during hydration.
 export const initialState: EditorState = {
   layers: initialLayers,
   selectedLayerId: null,
-  activeTool: 'move',
-  theme: 'jg',
+  activeTool: 'brush',
   brushSize: 4,
-  brushColor: '#1d1d1f',
-  fillColor: '#60a5fa',
-  history: [],
-  historyIndex: 0,
+  eraserSize: 16,
+  eraserMode: 'pixels',
+  brushColor: '#18181b',
+  fillColor: '#18181b',
 }
 
 function editorReducer(state: EditorState, action: EditorAction): EditorState {
@@ -31,13 +34,18 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, selectedLayerId: null }
 
     case 'SET_TOOL':
-      return { ...state, activeTool: action.tool, selectedLayerId: null }
-
-    case 'SET_THEME':
-      return { ...state, theme: action.theme }
+      // Switching tools clears the selection, except when switching
+      // specifically to the select tool, which keeps it.
+      return { ...state, activeTool: action.tool, selectedLayerId: action.tool === 'move' ? state.selectedLayerId : null }
 
     case 'SET_BRUSH_SIZE':
       return { ...state, brushSize: action.size }
+
+    case 'SET_ERASER_SIZE':
+      return { ...state, eraserSize: action.size }
+
+    case 'SET_ERASER_MODE':
+      return { ...state, eraserMode: action.mode }
 
     case 'SET_BRUSH_COLOR':
       return { ...state, brushColor: action.color }
@@ -49,42 +57,41 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, layers: action.layers }
 
     case 'CREATE_LAYER': {
+      // No auto-select; callers select explicitly on pointer-up / edit-finish.
       return {
         ...state,
         layers: [...state.layers, action.layer],
-        selectedLayerId: action.layer.id,
       }
     }
 
     case 'DELETE_LAYER': {
+      // Keep a stale selectedLayerId so undo restores the selection along
+      // with the layer. Nothing renders for a missing layer, and any new
+      // selection overwrites it.
       const filtered = state.layers.filter((l) => l.id !== action.id)
-      const newSelected = state.selectedLayerId === action.id ? null : state.selectedLayerId
-      return { ...state, layers: filtered, selectedLayerId: newSelected }
-    }
-
-    case 'REORDER_LAYER': {
-      const layers = [...state.layers]
-      const idx = layers.findIndex((l) => l.id === action.id)
-      if (idx === -1) return state
-      const [layer] = layers.splice(idx, 1)
-      layers.splice(action.index, 0, layer)
-      return { ...state, layers }
-    }
-
-    case 'RENAME_LAYER': {
-      const layers = state.layers.map((l) => (l.id === action.id ? { ...l, name: action.name } : l))
-      return { ...state, layers }
-    }
-
-    case 'TOGGLE_VISIBILITY': {
-      const layers = state.layers.map((l) => (l.id === action.id ? { ...l, visible: !l.visible } : l))
-      return { ...state, layers }
+      return { ...state, layers: filtered }
     }
 
     case 'SET_LAYER_PROPERTY': {
       const layers = state.layers.map((l) => {
         if (l.id !== action.id) return l
-        return { ...l, [action.property]: action.value }
+        return { ...l, [action.property]: action.value } as Layer
+      })
+      return { ...state, layers }
+    }
+
+    case 'RESIZE_TEXT': {
+      const layers = state.layers.map((l) => {
+        if (l.id !== action.id) return l
+        return { ...l, fontSize: action.fontSize, x: action.x, y: action.y, width: action.width, height: action.height }
+      })
+      return { ...state, layers }
+    }
+
+    case 'SET_TEXT_CONTENT': {
+      const layers = state.layers.map((l) => {
+        if (l.id !== action.id) return l
+        return { ...l, text: action.text, width: action.width, height: action.height }
       })
       return { ...state, layers }
     }
@@ -92,16 +99,19 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
     case 'MOVE_LAYER': {
       const layers = state.layers.map((l) => {
         if (l.id !== action.id) return l
-        if (l.type !== 'brush') return { ...l, x: action.x, y: action.y }
-
         const dx = action.x - l.x
         const dy = action.y - l.y
-
+        const movedErasures = l.erasures?.map((stroke) => ({
+          ...stroke,
+          points: stroke.points.map((point) => ({ x: point.x + dx, y: point.y + dy })),
+        }))
+        if (l.type !== 'brush') return { ...l, x: action.x, y: action.y, erasures: movedErasures }
         return {
           ...l,
           x: action.x,
           y: action.y,
           points: l.points.map((point) => ({ x: point.x + dx, y: point.y + dy })),
+          erasures: movedErasures ?? [],
         }
       })
       return { ...state, layers }
@@ -151,11 +161,12 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         strokeColor: action.color,
         strokeWidth: action.size,
         points: [action.point],
+        erasures: [],
       }
+      // Paths never auto-select, so the brush tool stays handle-free.
       return {
         ...state,
         layers: [...state.layers, brushLayer],
-        selectedLayerId: action.id,
       }
     }
 
@@ -203,19 +214,9 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
       return {
         ...state,
         layers: [...state.layers, layer],
-        selectedLayerId: action.id,
       }
     }
 
-    case 'UPDATE_CREATING': {
-      const layers = state.layers.map((l) => {
-        if (l.id !== action.id) return l
-        return { ...l, x: action.x, y: action.y, width: action.width, height: action.height }
-      })
-      return { ...state, layers }
-    }
-
-    case 'PUSH_HISTORY':
     case 'UNDO':
     case 'REDO':
       return state
@@ -227,8 +228,9 @@ function editorReducer(state: EditorState, action: EditorAction): EditorState {
         layers,
         selectedLayerId: null,
         activeTool: state.activeTool,
-        theme: state.theme,
         brushSize: state.brushSize,
+        eraserSize: state.eraserSize,
+        eraserMode: state.eraserMode,
         brushColor: state.brushColor,
         fillColor: state.fillColor,
       }
@@ -247,20 +249,44 @@ interface EditorContextValue {
 
 const EditorContext = createContext<EditorContextValue | null>(null)
 
-export function EditorProvider({ children, initialTheme }: { children: ReactNode; initialTheme?: string }) {
-  const [state, baseDispatch] = useReducer(
-    editorReducer,
-    initialTheme ? { ...initialState, theme: initialTheme as EditorState['theme'] } : initialState
-  )
+export function EditorProvider({ children }: { children: ReactNode }) {
+  const [state, baseDispatch] = useReducer(editorReducer, initialState)
   const stateRef = useRef(state)
-  stateRef.current = state
-  const historyRef = useRef<CommandHistory>(new CommandHistory())
+  const drawTrackedRef = useRef(false)
+  const [history] = useState(() => new CommandHistory())
+  useEffect(() => {
+    stateRef.current = state
+  })
+  // Dark-mode visitors get white defaults instead of black, but the decision
+  // must not introduce a hydration mismatch. This effect runs only after
+  // hydration and never mutates the DOM beforehand.
+  const appliedThemeRef = useRef(false)
+  useEffect(() => {
+    if (appliedThemeRef.current) return
+    appliedThemeRef.current = true
+    const darkAtLoad =
+      typeof window !== 'undefined' &&
+      (window.matchMedia('(prefers-color-scheme: dark)').matches || document.documentElement.classList.contains('dark'))
+    if (darkAtLoad) {
+      baseDispatch({ type: 'SET_BRUSH_COLOR', color: '#ffffff' })
+      baseDispatch({ type: 'SET_FILL_COLOR', color: '#ffffff' })
+    }
+  }, [])
 
   const dispatch = useCallback((action: EditorAction) => {
     const current = stateRef.current
 
+    // First real mark on the canvas counts as one "use" per page load —
+    // brush strokes and created shapes only, not selection or undo.
+    if (action.type === 'START_BRUSH_STROKE' || action.type === 'START_CREATE') {
+      if (!drawTrackedRef.current) {
+        drawTrackedRef.current = true
+        trackEvent({ event_type: 'canvas_draw', content_type: 'home', source: 'drawing-canvas' }).catch(() => {})
+      }
+    }
+
     if (action.type === 'UNDO') {
-      const newLayers = historyRef.current.undo(current.layers)
+      const newLayers = history.undo(current.layers)
       if (newLayers) {
         baseDispatch({ type: 'SET_LAYERS', layers: newLayers })
       }
@@ -268,7 +294,7 @@ export function EditorProvider({ children, initialTheme }: { children: ReactNode
     }
 
     if (action.type === 'REDO') {
-      const newLayers = historyRef.current.redo(current.layers)
+      const newLayers = history.redo(current.layers)
       if (newLayers) {
         baseDispatch({ type: 'SET_LAYERS', layers: newLayers })
       }
@@ -279,23 +305,8 @@ export function EditorProvider({ children, initialTheme }: { children: ReactNode
       const layer = current.layers.find((l) => l.id === action.id)
       if (layer) {
         const index = current.layers.indexOf(layer)
-        historyRef.current.record(deleteLayer(action.id, index, layer))
+        history.record(deleteLayer(action.id, index, layer))
       }
-      baseDispatch(action)
-      return
-    }
-
-    if (action.type === 'REORDER_LAYER') {
-      const oldIndex = current.layers.findIndex((l) => l.id === action.id)
-      if (oldIndex !== -1) {
-        historyRef.current.record(reorderLayer(action.id, oldIndex, action.index))
-      }
-      baseDispatch(action)
-      return
-    }
-
-    if (action.type === 'TOGGLE_VISIBILITY') {
-      historyRef.current.record(toggleVisibility(action.id))
       baseDispatch(action)
       return
     }
@@ -303,24 +314,24 @@ export function EditorProvider({ children, initialTheme }: { children: ReactNode
     if (action.type === 'SET_LAYER_PROPERTY') {
       const layer = current.layers.find((l) => l.id === action.id)
       if (layer && action.property in layer) {
-        const oldValue = (layer as any)[action.property]
-        historyRef.current.record(updateLayerProperty(action.id, action.property, oldValue, action.value))
+        const oldValue = (layer as unknown as Record<string, unknown>)[action.property]
+        history.record(updateLayerProperty(action.id, action.property, oldValue, action.value))
       }
       baseDispatch(action)
       return
     }
 
     if (action.type === 'LOAD_DEFAULT_COMPOSITION') {
-      historyRef.current.reset()
+      history.reset()
       baseDispatch(action)
       return
     }
 
     baseDispatch(action)
-  }, [])
+  }, [history])
 
   return (
-    <EditorContext.Provider value={{ state, dispatch, history: historyRef.current }}>{children}</EditorContext.Provider>
+    <EditorContext.Provider value={{ state, dispatch, history }}>{children}</EditorContext.Provider>
   )
 }
 

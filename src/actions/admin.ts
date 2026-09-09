@@ -25,7 +25,7 @@ export async function adminLogin(_prevState: AdminLoginState, formData: FormData
   const headersList = await headers()
   const ip = headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown'
 
-  const { allowed, remaining } = checkLoginRateLimit(ip)
+  const { allowed } = checkLoginRateLimit(ip)
   if (!allowed) {
     console.warn(`[auth] rate-limited login attempt from ${ip}`)
     return { error: 'Too many attempts. Try again later.' }

@@ -32,7 +32,7 @@ function SourceChips({ sources }: { sources: { source: string; count: number }[]
 }
 
 function ContentSection({ title, rows }: { title: string; rows: PageViewRow[] }) {
-  let maxViews = Math.max(1, ...rows.map((r) => r.total_views))
+  const maxViews = Math.max(1, ...rows.map((r) => r.total_views))
 
   return (
     <div className={cardClass}>
@@ -44,7 +44,7 @@ function ContentSection({ title, rows }: { title: string; rows: PageViewRow[] })
       ) : (
         <div className="mt-4">
           {rows.map((row) => {
-            let pct = (row.total_views / maxViews) * 100
+            const pct = (row.total_views / maxViews) * 100
             return (
               <div
                 key={row.slug}
@@ -78,8 +78,8 @@ function ContentSection({ title, rows }: { title: string; rows: PageViewRow[] })
 }
 
 export function ContentAnalytics({ pageViews }: { pageViews: PageViewRow[] }) {
-  let blogPosts = pageViews.filter((p) => p.content_type === 'blog')
-  let projects = pageViews.filter((p) => p.content_type === 'project')
+  const blogPosts = pageViews.filter((p) => p.content_type === 'blog')
+  const projects = pageViews.filter((p) => p.content_type === 'project')
 
   return (
     <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">

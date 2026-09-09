@@ -1,26 +1,54 @@
+import {
+  CheckCircleIcon,
+  ChevronLeftIcon,
+  ChevronUpDownIcon,
+  DocumentIcon,
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  SparklesIcon,
+  Squares2X2Icon,
+} from '@heroicons/react/16/solid'
+import { IpadBezelSvg, IphoneBezelSvg } from '@/components/home/device-bezels'
+import { Logo } from '@/components/logo'
 import { WebsitesBrowserEditor } from '@/components/home/websites-browser-editor'
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/tooltip'
 import { getHighlighter } from '@/lib/shiki'
-import { TypeScript } from '@ridemountainpig/svgl-react'
+import { RustDark, RustLight, TypeScript } from '@ridemountainpig/svgl-react'
 import { clsx } from 'clsx'
 import Image from 'next/image'
 import type { ReactNode, SVGProps } from 'react'
 
 function RustIcon(props: SVGProps<SVGSVGElement>) {
+  const { className, ...rest } = props
+  const dark = typeof className === 'string' && className.includes('dark')
+  const Light = RustLight as unknown as (p: Record<string, unknown>) => React.ReactNode
+  const Dark = RustDark as unknown as (p: Record<string, unknown>) => React.ReactNode
+  // Render both and let CSS dark-mode toggle them — svgl ships them as
+  // separate colored assets.
+  return (
+    <>
+      <span className="contents dark:hidden">
+        <Light {...rest} className={className} />
+      </span>
+      <span className="contents hidden dark:contents">
+        <Dark {...rest} className={className} />
+      </span>
+    </>
+  )
+}
+
+// Bird-only Swift mark. Simple Icons' Swift glyph is the rounded-square app
+// icon, so this is just its inner bird subpath re-rooted to an absolute
+// moveto (previous subpath starts at 7.508,0, so m6.035 3.41 === M13.543 3.41).
+function SwiftBirdIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg {...props} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" />
+      <path d="M13.543 3.41c4.114 2.47 6.545 7.162 5.549 11.131-.024.093-.05.181-.076.272l.002.001c2.062 2.538 1.5 5.258 1.236 4.745-1.072-2.086-3.066-1.568-4.088-1.043a6.803 6.803 0 0 1-.281.158l-.02.012-.002.002c-2.115 1.123-4.957 1.205-7.812-.022a12.568 12.568 0 0 1-5.64-4.838c.649.48 1.35.902 2.097 1.252 3.019 1.414 6.051 1.311 8.197-.002C9.651 12.73 7.101 9.67 5.146 7.191a10.628 10.628 0 0 1-1.005-1.384c2.34 2.142 6.038 4.83 7.365 5.576C8.69 8.408 6.208 4.743 6.324 4.86c4.436 4.47 8.528 6.996 8.528 6.996.154.085.27.154.36.213.085-.215.16-.437.224-.668.708-2.588-.09-5.548-1.893-7.992z" />
     </svg>
   )
 }
 
-function SwiftIcon(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg {...props} viewBox="0 0 24 24" fill="currentColor">
-      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z" />
-    </svg>
-  )
-}
+const SwiftIcon = SwiftBirdIcon
 
 function TauriIcon(props: SVGProps<SVGSVGElement>) {
   return (
@@ -99,7 +127,7 @@ const tools = {
 
 const descriptions = {
   websites: 'Responsive, performant sites and web apps — crafted with a focus on design, speed, and UX.',
-  desktop: 'Performant, native apps built with Rust (GPUI) or Swift.',
+  desktop: 'Performant, native apps built with Rust & GPUI or Swift.',
   mobile: 'iOS apps written in Swift and SwiftUI — fluid, platform-native experiences.',
   developerTools: 'Reusable frameworks and tooling that make building faster and more consistent.',
 }
@@ -141,9 +169,7 @@ function TechnologyIcons({ items }: { items: Tool[] }) {
             <TooltipTrigger asChild>
               <span className="group grid size-6 cursor-default place-items-center">
                 <span className="transition-transform duration-150 group-data-[state=delayed-open]:-translate-y-1 group-data-[state=instant-open]:-translate-y-1">
-                  {Icon ? (
-                    <Icon className={`size-4 ${colorClass}`} />
-                  ) : null}
+                  {Icon ? <Icon className={`size-4 ${colorClass}`} /> : null}
                 </span>
               </span>
             </TooltipTrigger>
@@ -157,123 +183,99 @@ function TechnologyIcons({ items }: { items: Tool[] }) {
   )
 }
 
-function MockupSurface({ children }: { children: ReactNode }) {
-  return (
-    <div className="flex h-full flex-col rounded-xl bg-white/70 p-3 shadow-2xl ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-zinc-950/60 dark:ring-white/10">
-      {children}
-    </div>
-  )
-}
-
-function WindowControls() {
-  return (
-    <div className="flex gap-1">
-      <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-      <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-      <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
-    </div>
-  )
-}
-
-function WebsiteMockup() {
-  return (
-    <MockupSurface>
-      <div className="flex items-end gap-2 border-b border-zinc-950/10 pb-2 dark:border-white/10">
-        <WindowControls />
-        <div className="h-3 w-16 rounded-t bg-zinc-100 dark:bg-zinc-800" />
-        <div className="h-3 w-12 rounded-t bg-zinc-100 dark:bg-zinc-800" />
-      </div>
-      <div className="mt-2 flex items-center gap-2">
-        <div className="size-2 rounded-full border border-zinc-300 dark:border-zinc-600" />
-        <div className="size-2 rounded-full border border-zinc-300 dark:border-zinc-600" />
-        <div className="h-3 flex-1 rounded-full bg-zinc-100 dark:bg-zinc-800" />
-      </div>
-      <div className="mt-3 grid flex-1 grid-cols-[1.2fr_1fr] grid-rows-[auto_1fr] gap-x-3 gap-y-2">
-        <div className="rounded bg-zinc-100 dark:bg-zinc-800" />
-        <div className="row-span-2 rounded bg-zinc-100 dark:bg-zinc-800" />
-        <div className="space-y-2">
-          <div className="h-2 w-4/5 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-          <div className="h-2 w-3/5 rounded-full bg-zinc-100 dark:bg-zinc-800" />
-          <div className="h-2 w-2/3 rounded-full bg-zinc-100 dark:bg-zinc-800" />
-        </div>
-      </div>
-    </MockupSurface>
-  )
-}
-
-const DESKTOP_NAV = [
-  { label: 'Inbox', dot: 'bg-emerald-500', active: false },
-  { label: 'Projects', dot: 'bg-sky-500', active: true },
-  { label: 'Today', dot: 'bg-amber-500', active: false },
-  { label: 'Team', dot: 'bg-violet-500', active: false },
-  { label: 'Settings', dot: 'bg-zinc-500', active: false },
-]
-
-const DESKTOP_TASKS = [
-  { title: 'Redesign landing page', meta: 'Design · Due Fri', done: true },
-  { title: 'Ship sync engine v0.3', meta: 'Engineering · 4 subtasks', done: false },
-  { title: 'Write release notes', meta: 'Docs · Due Mon', done: false },
-  { title: 'Review pull requests', meta: 'Team · 3 open', done: false },
-  { title: 'Polish onboarding flow', meta: 'Design · In review', done: false },
+const DESKTOP_SIDEBAR: { label: string; icon: 'back' | 'search' | 'overview' | 'tasks' | 'docs' | 'agent'; active?: boolean }[] = [
+  { label: 'Projects', icon: 'back' },
+  { label: 'Search', icon: 'search' },
+  { label: 'Overview', icon: 'overview', active: true },
+  { label: 'Tasks', icon: 'tasks' },
+  { label: 'Documents', icon: 'docs' },
+  { label: 'Agent', icon: 'agent' },
 ]
 
 function DesktopMockup() {
   return (
-    <div className="flex h-[calc(100%+3rem)] w-[calc(100%+3rem)] flex-col overflow-hidden rounded-xl bg-white/70 shadow-2xl ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-zinc-950/60 dark:ring-white/10">
+    <div className="flex h-[calc(100%+3rem)] w-[calc(100%+3rem)] flex-col overflow-hidden rounded-xl text-zinc-900 ring-1 ring-zinc-950/10 dark:text-zinc-100 dark:ring-white/10">
       {/* Title bar */}
-      <div className="flex items-center gap-3 border-b border-zinc-950/10 bg-zinc-950/5 px-3 py-2.5 backdrop-blur-xl dark:border-white/10 dark:bg-white/5">
+      <div className="relative flex items-center border-b border-zinc-950/10 px-4 py-3 dark:border-white/10">
         <div className="flex shrink-0 items-center gap-1.5">
-          <span className="size-2.5 rounded-full bg-red-400 ring-1 ring-white/10 ring-inset" />
-          <span className="size-2.5 rounded-full bg-yellow-400 ring-1 ring-white/10 ring-inset" />
-          <span className="size-2.5 rounded-full bg-green-400 ring-1 ring-white/10 ring-inset" />
+          <span className="size-2.5 rounded-full bg-[#ff5f57]" />
+          <span className="size-2.5 rounded-full bg-[#febc2e]" />
+          <span className="size-2.5 rounded-full bg-[#28c840]" />
         </div>
-        <div className="mx-auto flex min-w-0 items-center gap-2 rounded-full bg-zinc-950/5 px-4 py-1 text-[11px] text-zinc-600 ring-1 ring-zinc-950/10 backdrop-blur-xl dark:bg-white/10 dark:text-zinc-300 dark:ring-white/10">
-          <span className="truncate">Projects — Acme</span>
-        </div>
-        <div className="w-12 shrink-0" />
+        <span className="ml-6 shrink-0 text-xs font-medium text-zinc-700 dark:text-zinc-200">hyphenzero</span>
+        <ChevronUpDownIcon className="ml-1.5 size-3 shrink-0 text-zinc-400" />
+        <span className="shrink-0 ml-2 text-xs text-zinc-300 dark:text-zinc-600">/</span>
+        <span className="truncate ml-3 text-xs font-medium text-zinc-700 dark:text-zinc-200">Relay</span>
+        <ChevronUpDownIcon className="ml-1.5 size-3 shrink-0 text-zinc-400" />
       </div>
       <div className="flex min-h-0 flex-1">
-        {/* Frosted sidebar — wallpaper shows through */}
-        <aside className="flex w-32 shrink-0 flex-col border-r border-zinc-950/10 bg-zinc-950/5 px-2 py-3 backdrop-blur-2xl dark:border-white/10 dark:bg-white/10">
-          <nav className="space-y-0.5">
-            {DESKTOP_NAV.map((item) => (
-              <div key={item.label} className="flex items-center gap-2 px-2 py-1.5">
-                <span className={`size-1.5 shrink-0 rounded-full ${item.dot}`} />
-                <span
-                  className={
-                    item.active
-                      ? 'text-[11px] font-semibold text-zinc-900 dark:text-white'
-                      : 'text-[11px] text-zinc-500 dark:text-zinc-400'
-                  }
-                >
+        {/* Sidebar */}
+        <aside className="flex w-36 shrink-0 flex-col border-r border-zinc-950/10 px-2.5 py-3 dark:border-white/10">
+          <nav className="space-y-1">
+            {DESKTOP_SIDEBAR.map((item) => (
+              <div
+                key={item.label}
+                className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 ${
+                  item.active ? 'bg-zinc-950/5 dark:bg-white/10' : ''
+                }`}
+              >
+                {item.icon === 'back' && <ChevronLeftIcon className="size-3.5 shrink-0 text-zinc-500 dark:text-zinc-400" />}
+                {item.icon === 'search' && <MagnifyingGlassIcon className="size-3.5 shrink-0 text-zinc-500 dark:text-zinc-400" />}
+                {item.icon === 'overview' && <Squares2X2Icon className="size-3.5 shrink-0 text-zinc-700 dark:text-zinc-100" />}
+                {item.icon === 'tasks' && <CheckCircleIcon className="size-3.5 shrink-0 text-zinc-500 dark:text-zinc-400" />}
+                {item.icon === 'docs' && <PencilSquareIcon className="size-3.5 shrink-0 text-zinc-500 dark:text-zinc-400" />}
+                {item.icon === 'agent' && <SparklesIcon className="size-3.5 shrink-0 text-zinc-500 dark:text-zinc-400" />}
+                <span className={`flex-1 truncate text-xs ${item.active ? 'font-medium text-zinc-900 dark:text-white' : 'text-zinc-600 dark:text-zinc-300'}`}>
                   {item.label}
                 </span>
+                {item.icon === 'search' && <span className="shrink-0 text-[10px] text-zinc-400 dark:text-zinc-600">⌘K</span>}
               </div>
             ))}
           </nav>
         </aside>
-        {/* Main list — plain rows, no cards */}
-        <div className="min-w-0 flex-1 px-4 py-3">
-          <p className="text-[13px] font-semibold text-zinc-900 dark:text-white">Projects</p>
-          <p className="mt-0.5 text-[10px] text-zinc-500">5 tasks · Updated just now</p>
-          <div className="mt-2 divide-y divide-zinc-950/5 dark:divide-white/5">
-            {DESKTOP_TASKS.map((task) => (
-              <div key={task.title} className="flex items-center gap-2.5 py-2">
-                <span
-                  className={
-                    task.done
-                      ? 'grid size-3.5 shrink-0 place-items-center rounded-full bg-emerald-500 text-[8px] text-white'
-                      : 'size-3.5 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-600'
-                  }
-                >
-                  {task.done ? '✓' : null}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[11px] font-medium text-zinc-900 dark:text-zinc-100">
-                    {task.title}
+        {/* Main content */}
+        <div className="min-w-0 flex-1 px-5 py-4">
+          <div className="flex items-center gap-2.5">
+            <span className="size-4 shrink-0 rounded-[5px] bg-[#2f7cf6]" />
+            <span className="truncate text-xs font-semibold tracking-tight text-zinc-900 dark:text-white">Relay</span>
+            <span className="shrink-0 rounded-full bg-zinc-950/5 px-2.5 py-1 text-xs font-medium text-zinc-600 dark:bg-white/10 dark:text-zinc-300">In Progress</span>
+          </div>
+          <p className="mt-2 truncate text-xs text-zinc-500">Usage-based billing, trials and onboarding</p>
+          {/* AI — up to one glanceable line */}
+          <p className="mt-5 truncate text-xs text-zinc-500 dark:text-zinc-400">
+            <span className="font-medium text-zinc-700 dark:text-zinc-300">Next</span>
+            <span className="mx-2 text-zinc-300 dark:text-zinc-600">·</span>
+            <span>Retry billing on the 3 flagged trials</span>
+          </p>
+          {/* Tasks */}
+          <div className="mt-6 divide-y divide-zinc-950/[0.04] dark:divide-white/[0.06]">
+            {[
+              { title: 'Fix proration on plan change', meta: 'Billing', done: true },
+              { title: 'Backfill trial events', meta: 'Engineering', done: false },
+            ].map((task) => (
+              <div key={task.title} className="flex items-center gap-2.5 py-2.5">
+                {task.done ? (
+                  <span className="grid size-3.5 shrink-0 place-items-center rounded-full bg-zinc-900 text-[8px] text-white dark:bg-zinc-100 dark:text-black">
+                    ✓
                   </span>
-                  <span className="block truncate text-[9px] text-zinc-500">{task.meta}</span>
-                </span>
+                ) : (
+                  <span className="size-3.5 shrink-0 rounded-full border border-zinc-300 dark:border-zinc-600" />
+                )}
+                <span className="min-w-0 flex-1 truncate text-xs text-zinc-600 dark:text-zinc-300">{task.title}</span>
+                <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">{task.meta}</span>
+              </div>
+            ))}
+          </div>
+          {/* Documents */}
+          <div className="mt-6 divide-y divide-zinc-950/[0.04] dark:divide-white/[0.06]">
+            {[
+              { title: 'Pricing RFC', meta: 'Spec' },
+              { title: 'Onboarding copy v2', meta: 'Draft' },
+            ].map((doc) => (
+              <div key={doc.title} className="flex items-center gap-2.5 py-2.5">
+                <DocumentIcon className="size-3.5 shrink-0 text-zinc-300 dark:text-zinc-500" />
+                <span className="min-w-0 flex-1 truncate text-xs text-zinc-600 dark:text-zinc-300">{doc.title}</span>
+                <span className="shrink-0 text-xs text-zinc-400 dark:text-zinc-500">{doc.meta}</span>
               </div>
             ))}
           </div>
@@ -283,111 +285,93 @@ function DesktopMockup() {
   )
 }
 
-function IPhoneAppUi() {
-  return (
-    <div className="flex h-full flex-col bg-white dark:bg-zinc-950">
-      <div className="flex items-center justify-between px-2 pt-1.5">
-        <span className="text-[5px] font-semibold text-zinc-900 dark:text-zinc-100">9:41</span>
-        <span className="flex items-center gap-0.5">
-          <span className="h-1 w-1 rounded-full bg-zinc-900 dark:bg-zinc-100" />
-          <span className="h-1 w-2 rounded-sm bg-zinc-900 dark:bg-zinc-100" />
-        </span>
-      </div>
-      <div className="mt-1 flex items-center justify-between px-2">
-        <div className="space-y-1">
-          <div className="h-1.5 w-10 rounded-full bg-zinc-900 dark:bg-white" />
-          <div className="h-1 w-7 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-        </div>
-        <div className="size-4 rounded-full bg-linear-to-br from-zinc-400 to-zinc-600" />
-      </div>
-      <div className="mx-2 mt-1.5 h-3 rounded-full bg-zinc-100 dark:bg-zinc-800" />
-      <div className="mt-1.5 space-y-1 px-2">
-        {['bg-emerald-500', 'bg-sky-500', 'bg-amber-500'].map((dot, index) => (
-          <div
-            key={dot}
-            className={
-              index === 0
-                ? 'flex items-center gap-1.5 rounded-md bg-zinc-900 p-1.5 dark:bg-white'
-                : 'flex items-center gap-1.5 rounded-md bg-zinc-100 p-1.5 dark:bg-zinc-800'
-            }
-          >
-            <span className={`size-1.5 shrink-0 rounded-full ${dot}`} />
-            <span className="flex-1 space-y-1">
-              <span
-                className={
-                  index === 0
-                    ? 'block h-1 w-4/5 rounded-full bg-white/90 dark:bg-zinc-900/90'
-                    : 'block h-1 w-4/5 rounded-full bg-zinc-400 dark:bg-zinc-500'
-                }
-              />
-              <span
-                className={
-                  index === 0
-                    ? 'block h-1 w-3/5 rounded-full bg-white/50 dark:bg-zinc-900/50'
-                    : 'block h-1 w-3/5 rounded-full bg-zinc-300 dark:bg-zinc-600'
-                }
-              />
-            </span>
-            <span
-              className={
-                index === 0
-                  ? 'size-2 shrink-0 rounded-full border border-white/70 dark:border-zinc-900/70'
-                  : 'size-2 shrink-0 rounded-full border border-zinc-400 dark:border-zinc-500'
-              }
-            />
-          </div>
-        ))}
-      </div>
-      <div className="mx-2 mt-1 rounded-md bg-zinc-100 p-1.5 dark:bg-zinc-800">
-        <div className="h-1 w-1/2 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-        <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-300 dark:bg-zinc-700">
-          <div className="h-full w-2/3 rounded-full bg-zinc-900 dark:bg-white" />
-        </div>
-      </div>
-      <div className="mt-auto flex items-center justify-around border-t border-zinc-950/10 px-2 py-1.5 dark:border-white/10">
-        <span className="size-1.5 rounded-full bg-zinc-900 dark:bg-white" />
-        <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-        <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-        <span className="size-1.5 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-      </div>
-    </div>
-  )
-}
+// Your 15 markers, snapped to the exact anchor points of the 673×457 Logo
+// path (segment endpoints, in path order). Sizing/positioning stays dynamic
+// (cqw + % with -translate-1/2).
+const LOGO_POINTS: [number, number][] = [
+  [71.1, 0.0],
+  [99.6, 33.7],
+  [71.5, 84.5],
+  [73.2, 63.5],
+  [73.2, 50.0],
+  [100.0, 50.0],
+  [71.3, 99.9],
+  [41.9, 69.9],
+  [20.8, 99.7],
+  [0.0, 63.6],
+  [11.2, 63.6],
+  [20.7, 85.1],
+  [30.2, 1.6],
+  [41.9, 1.6],
+  [41.9, 32.9],
+]
 
-function IPadAppUi() {
+function LogoGuideScreen() {
+  // One shared "image", rendered in code: a single centered artwork box
+  // sized in cqw against the MobileMockup @container, so both screens show
+  // the same pixels at the same scale — the iPhone is just a tighter center
+  // crop of the iPad view. The box is an exact multiple of the grid cell on
+  // both axes with left/top-anchored tiling, so a grid line always lands on
+  // the box center (and the logo center) in both screens. Grid spacing = the
+  // iPad screen's old 25% cells, logo guides = the logo bounding box
+  // (14cqw × 9.5cqw) centered.
+  const logoHalfW = '7cqw'
+  const logoHalfH = '4.75cqw'
   return (
-    <div className="flex h-full bg-white dark:bg-zinc-950">
-      <div className="flex w-[30%] flex-col gap-1 bg-zinc-50 p-1.5 dark:bg-zinc-900">
-        <div className="h-1.5 w-2/3 rounded-full bg-zinc-900 dark:bg-white" />
-        <div className="mt-1 space-y-1">
-          <div className="h-2.5 rounded bg-zinc-900 dark:bg-white" />
-          <div className="h-2.5 rounded bg-zinc-200 dark:bg-zinc-700" />
-          <div className="h-2.5 rounded bg-zinc-200 dark:bg-zinc-700" />
-          <div className="h-2.5 rounded bg-zinc-200 dark:bg-zinc-700" />
-        </div>
-        <div className="mt-auto flex items-center gap-1">
-          <div className="size-2 rounded-full bg-linear-to-br from-zinc-400 to-zinc-600" />
-          <div className="h-1 w-2/3 rounded-full bg-zinc-300 dark:bg-zinc-600" />
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col p-1.5">
-        <div className="flex items-center justify-between">
-          <div className="h-1.5 w-1/3 rounded-full bg-zinc-900 dark:bg-white" />
-          <div className="h-2.5 w-8 rounded-full bg-zinc-900 dark:bg-white" />
-        </div>
-        <div className="mt-1.5 grid grid-cols-3 gap-1">
-          <div className="h-7 rounded bg-zinc-100 dark:bg-zinc-800" />
-          <div className="h-7 rounded bg-zinc-100 dark:bg-zinc-800" />
-          <div className="h-7 rounded bg-zinc-900 p-1 dark:bg-white">
-            <div className="h-1 w-2/3 rounded-full bg-white/80 dark:bg-zinc-900/80" />
-            <div className="mt-1 h-1 w-1/2 rounded-full bg-white/50 dark:bg-zinc-900/50" />
+    <div className="absolute inset-0 overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 h-[73.068cqw] w-[106.704cqw] -translate-x-1/2 -translate-y-1/2">
+        <div
+          aria-hidden
+          className="absolute inset-0 text-zinc-950/10 dark:text-white/15"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(to right, currentColor 0 1px, transparent 1px 17.784cqw)',
+            backgroundPosition: '8.892cqw top',
+          }}
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 text-zinc-950/10 dark:text-white/15"
+          style={{
+            backgroundImage: 'repeating-linear-gradient(to bottom, currentColor 0 1px, transparent 1px 12.178cqw)',
+            backgroundPosition: 'left 6.089cqw',
+          }}
+        />
+        <div className="absolute inset-0 flex items-center justify-center">
+          {/* cqw (not %) so the logo renders at the same px size in both
+              the iPad and iPhone screens — both resolve against the shared
+              @container ancestor in MobileMockup. */}
+          <div className="relative w-[14cqw]">
+            <Logo outline className="block h-auto w-full" />
+            {LOGO_POINTS.map(([x, y], i) => (
+              <span
+                key={i}
+                aria-hidden
+                className="absolute aspect-square w-[5%] -translate-x-1/2 -translate-y-1/2 bg-zinc-900 dark:bg-white"
+                style={{ left: `${x}%`, top: `${y}%` }}
+              />
+            ))}
           </div>
         </div>
-        <div className="mt-1 flex-1 space-y-1 rounded bg-zinc-50 p-1 dark:bg-zinc-900">
-          <div className="h-1 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-          <div className="h-1 w-11/12 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-          <div className="h-1 w-4/5 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-        </div>
+        <div
+          aria-hidden
+          className="absolute right-0 left-0 h-px bg-zinc-950/10 dark:bg-white/15"
+          style={{ top: `calc(50% - ${logoHalfH})` }}
+        />
+        <div
+          aria-hidden
+          className="absolute right-0 left-0 h-px bg-zinc-950/10 dark:bg-white/15"
+          style={{ top: `calc(50% + ${logoHalfH})` }}
+        />
+        <div
+          aria-hidden
+          className="absolute top-0 bottom-0 w-px bg-zinc-950/10 dark:bg-white/15"
+          style={{ left: `calc(50% - ${logoHalfW})` }}
+        />
+        <div
+          aria-hidden
+          className="absolute top-0 bottom-0 w-px bg-zinc-950/10 dark:bg-white/15"
+          style={{ left: `calc(50% + ${logoHalfW})` }}
+        />
       </div>
     </div>
   )
@@ -395,39 +379,23 @@ function IPadAppUi() {
 
 function MobileMockup() {
   return (
-    <div className="flex h-full w-full items-center justify-center px-[8%] py-[6%]" aria-hidden="true">
-      <div className="flex h-full w-full items-end justify-center">
-        <div
-          className="relative h-[88%] w-auto shrink-0 drop-shadow-xl"
-          style={{ aspectRatio: '2640 / 1880' }}
-        >
-          <div className="absolute top-[5%] right-[3.2%] bottom-[5%] left-[3.2%] overflow-hidden rounded-[3px] bg-white dark:bg-zinc-950">
-            <IPadAppUi />
+    <div className="flex h-full w-full items-center justify-center" aria-hidden="true">
+      {/* Width-driven: heights follow from aspect ratios, so the pair scales
+          like an image at a constant % of the card and never clips.
+          @container lets both LogoGuideScreens size their logos in cqw
+          so they render identically at any viewport size. */}
+      <div className="flex w-[86%] items-end justify-center @container">
+        <div className="relative w-[76%] shrink-0" style={{ aspectRatio: '2640 / 1880' }}>
+          <div className="absolute top-[5%] right-[3.2%] bottom-[5%] left-[3.2%] overflow-hidden rounded-[3px] bg-white dark:bg-zinc-900">
+            <LogoGuideScreen />
           </div>
-          <Image
-            src="/ipad-bezel.png"
-            alt=""
-            fill
-            sizes="(max-width: 1024px) 280px, 320px"
-            className="pointer-events-none absolute inset-0 h-full w-full object-fill select-none"
-            draggable={false}
-          />
+          <IpadBezelSvg className="pointer-events-none absolute inset-0 h-full w-full select-none" />
         </div>
-        <div
-          className="relative z-10 -ml-[6%] h-[74%] w-auto shrink-0 drop-shadow-xl"
-          style={{ aspectRatio: '1350 / 2760' }}
-        >
-          <div className="absolute top-[1.8%] right-[4%] bottom-[1.8%] left-[4%] overflow-hidden rounded-[14px] bg-white dark:bg-zinc-950">
-            <IPhoneAppUi />
+        <div className="relative z-10 -ml-[7%] w-[24%] shrink-0" style={{ aspectRatio: '441 / 906' }}>
+          <div className="absolute top-[1.8%] right-[4%] bottom-[1.8%] left-[4%] overflow-hidden rounded-[14px] bg-white dark:bg-zinc-900">
+            <LogoGuideScreen />
           </div>
-          <Image
-            src="/iphone-bezel.png"
-            alt=""
-            fill
-            sizes="130px"
-            className="pointer-events-none absolute inset-0 h-full w-full object-fill select-none"
-            draggable={false}
-          />
+          <IphoneBezelSvg className="pointer-events-none absolute inset-0 h-full w-full select-none" />
         </div>
       </div>
     </div>
@@ -458,7 +426,7 @@ async function TowerCode() {
   })
   return (
     <div
-      className="font-mono text-[11px] leading-5 [&_code]:bg-transparent [&_.shiki]:bg-transparent! [&_.shiki_span]:dark:[color:var(--shiki-dark)]! [&_pre]:bg-transparent! [&_pre]:p-0"
+      className="font-mono text-xs/6 [&_code]:bg-transparent [&_.shiki]:bg-transparent! [&_.shiki_span]:dark:text-(--shiki-dark)! [&_pre]:bg-transparent! [&_pre]:p-0"
       dangerouslySetInnerHTML={{ __html: html }}
     />
   )
@@ -466,27 +434,25 @@ async function TowerCode() {
 
 function DeveloperToolsMockup() {
   return (
-    <MockupSurface>
-      <div className="flex items-center gap-2 border-b border-zinc-950/10 pb-2.5 dark:border-white/10">
-        <WindowControls />
-        <div className="rounded-md bg-zinc-950/5 px-2 py-0.5 font-mono text-[10px] text-zinc-600 dark:bg-white/10 dark:text-zinc-300">
-          tower.ts
+    <div className="flex h-full flex-col rounded-xl ring-1 ring-zinc-950/10 dark:ring-white/10">
+      <div className="relative flex items-center gap-4 px-3 py-1 sm:px-4">
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className="size-3 rounded-full bg-red-400 ring-1 ring-white/10 ring-inset" />
+          <span className="size-3 rounded-full bg-yellow-400 ring-1 ring-white/10 ring-inset" />
+          <span className="size-3 rounded-full bg-green-400 ring-1 ring-white/10 ring-inset" />
+        </div>
+        <div className="not-dark:ring-1 not-dark:ring-zinc-950/5 flex min-w-0 items-center gap-2 rounded-lg bg-white/70 px-5 py-1.5 text-xs text-zinc-600 shadow-sm dark:bg-zinc-950/50 dark:text-zinc-300 dark:shadow-none">
+          <span className="hidden truncate sm:inline">tower.config.ts</span>
         </div>
       </div>
-      <div className="mt-3 min-h-0 flex-1 overflow-auto">
-        <TowerCode />
+      <div className="flex-1 px-1 pb-1">
+        <div className="relative h-full overflow-hidden rounded-lg bg-zinc-100 dark:bg-zinc-950">
+          <div className="h-full overflow-auto p-3">
+            <TowerCode />
+          </div>
+        </div>
       </div>
-    </MockupSurface>
-  )
-}
-
-function FilmGrain() {
-  return (
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 opacity-20"
-      style={{ backgroundImage: 'url(/bg-noise.png)', backgroundSize: '250px 250px' }}
-    />
+    </div>
   )
 }
 
@@ -494,70 +460,36 @@ function BentoCard({
   title,
   tools,
   description,
-  wallpaper,
-  darkWallpaper,
-  wallpaperClassName,
-  darkWallpaperClassName,
-  lightOverlayClassName,
-  darkOverlayClassName,
   children,
   className,
 }: {
   title: string
   tools: Tool[]
   description: string
-  wallpaper: string
-  darkWallpaper?: string
-  wallpaperClassName?: string
-  darkWallpaperClassName?: string
-  lightOverlayClassName?: string
-  darkOverlayClassName?: string
   children: ReactNode
   className?: string
 }) {
   return (
     <div
       className={clsx(
-        'relative flex flex-col overflow-hidden rounded-[20px] bg-white dark:bg-zinc-900',
+        'relative rounded-2xl bg-white shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-2xl dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline min-h-130_',
         className
       )}
     >
-      <div className="absolute inset-0 rounded-[20px] ring pointer-events-none ring-inset ring-zinc-950/5 dark:ring-white/10 z-10" />
-      {/* Wallpaper fills the whole card behind everything */}
-      <Image
-        src={wallpaper}
-        alt=""
-        fill
-        sizes="(max-width: 1024px) 100vw, 50vw"
-        className={clsx('absolute inset-0 h-full w-full object-cover dark:hidden', wallpaperClassName)}
-        draggable={false}
-      />
-      <Image
-        src={darkWallpaper ?? wallpaper}
-        alt=""
-        fill
-        sizes="(max-width: 1024px) 100vw, 50vw"
-        className={clsx('absolute inset-0 hidden h-full w-full object-cover dark:block', darkWallpaperClassName)}
-        draggable={false}
-      />
-      {lightOverlayClassName ? (
-        <div aria-hidden className={clsx('pointer-events-none absolute inset-0 dark:hidden', lightOverlayClassName)} />
-      ) : null}
-      {darkOverlayClassName ? (
-        <div aria-hidden className={clsx('pointer-events-none absolute inset-0 hidden dark:block', darkOverlayClassName)} />
-      ) : null}
-      {/*<FilmGrain />*/}
-      <div className="relative px-5 pt-5 sm:px-6 sm:pt-6">
-        <div className="flex flex-wrap items-center gap-3">
-          <h3 className="text-[15px] font-semibold tracking-tight text-zinc-950 dark:text-white">{title}</h3>
-          <TechnologyIcons items={tools} />
+      <div className="inset-0 flex flex-col size-full overflow-hidden rounded-2xl">
+        <div className="relative px-5 pt-5 sm:px-6 sm:pt-6">
+          <div className="flex flex-wrap items-center gap-3">
+            <h3 className="text-[15px] font-semibold tracking-tight text-zinc-950 dark:text-white">{title}</h3>
+            <TechnologyIcons items={tools} />
+          </div>
+          <p className="mt-2 text-sm leading-6 text-zinc-950/50 dark:text-white/60 dark:mix-blend-plus-lighter">
+            {description}
+          </p>
         </div>
-        <p className="mt-2 text-sm leading-6 text-zinc-950/50 dark:text-white/60 dark:mix-blend-plus-lighter">{description}</p>
-      </div>
 
-      {/* Padding = card (20px) − window rounded-xl (12px) = 8px, perfectly concentric */}
-      <div className="relative mt-6 flex-1 px-2 pb-2">
-        <div className="h-full">{children}</div>
+        <div className="relative mt-6 flex-1 rounded-b-2xl px-2 pb-2">
+          <div className="h-full">{children}</div>
+        </div>
       </div>
     </div>
   )
@@ -571,9 +503,6 @@ export function SoftwareUiGrid() {
           title="Websites"
           tools={tools.websites}
           description={descriptions.websites}
-          wallpaper="/wallpaper-1-light.png"
-          darkWallpaper="/wallpaper-1-dark.png"
-          darkWallpaperClassName="brightness-70"
           className="lg:col-span-7 min-h-95"
         >
           <WebsitesBrowserEditor />
@@ -583,10 +512,7 @@ export function SoftwareUiGrid() {
           title="Desktop Apps"
           tools={tools.desktop}
           description={descriptions.desktop}
-          wallpaper="/wallpaper-7.png"
-          lightOverlayClassName="bg-white/30 mix-blend-screen"
-          darkOverlayClassName="bg-black/40 mix-blend-multiply"
-          className="lg:col-span-5 min-h-95 *:[img]:scale-130 *:[img]:-translate-y-20 *:[img]:-translate-x-10"
+          className="lg:col-span-5 min-h-95"
         >
           <DesktopMockup />
         </BentoCard>
@@ -595,8 +521,7 @@ export function SoftwareUiGrid() {
           title="Mobile Apps"
           tools={tools.mobile}
           description={descriptions.mobile}
-          wallpaper="/wallpaper-3.png"
-          className="lg:col-span-6 min-h-85 not-dark:*:[img]:brightness-200 not-dark:*:[img]:invert"
+          className="lg:col-span-6 min-h-85"
         >
           <MobileMockup />
         </BentoCard>
@@ -605,10 +530,7 @@ export function SoftwareUiGrid() {
           title="Developer Tools"
           tools={tools.developerTools}
           description={descriptions.developerTools}
-          wallpaper="/wallpaper-4-rotated.png"
-          lightOverlayClassName="bg-white/60 mix-blend-screen"
-          darkOverlayClassName="bg-black/40 mix-blend-multiply"
-          className="lg:col-span-6 min-h-85 *:[img]:scale-180 *:[img]:-translate-y-40 *:[img]:translate-x-30"
+          className="lg:col-span-6 min-h-85"
         >
           <DeveloperToolsMockup />
         </BentoCard>

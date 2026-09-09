@@ -20,14 +20,14 @@ export function segment(input: string, separator: string) {
   // SAFETY: We can use an index into a shared buffer because this function is
   // synchronous, non-recursive, and runs in a single-threaded environment.
   let stackPos = 0
-  let parts: string[] = []
+  const parts: string[] = []
   let lastPos = 0
-  let len = input.length
+  const len = input.length
 
-  let separatorCode = separator.charCodeAt(0)
+  const separatorCode = separator.charCodeAt(0)
 
   for (let idx = 0; idx < len; idx++) {
-    let char = input.charCodeAt(idx)
+    const char = input.charCodeAt(idx)
 
     if (stackPos === 0 && char === separatorCode) {
       parts.push(input.slice(lastPos, idx))
@@ -45,7 +45,7 @@ export function segment(input: string, separator: string) {
       case DOUBLE_QUOTE:
         // Ensure we don't go out of bounds.
         while (++idx < len) {
-          let nextChar = input.charCodeAt(idx)
+          const nextChar = input.charCodeAt(idx)
 
           // The next character is escaped, so we skip it.
           if (nextChar === BACKSLASH) {

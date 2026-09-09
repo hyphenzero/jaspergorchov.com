@@ -4,6 +4,28 @@
 @theme {
   --font-sans: Inter var, sans-serif;
   --font-sans--font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+  --font-mono: var(--font-ibm-plex-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, 'Segoe UI Mono', monospace;
   --font-weight-book: 450;
+}
+
+@layer base {
+  /* Only show focus outlines for keyboard navigation. Mouse/touch users
+  never see them; keyboard users still get native :focus-visible rings
+  plus the data-focus styles on Catalyst components. */
+  :where(button, a, input, select, textarea, [role='button'], [tabindex]):focus:not(:focus-visible) {
+    outline: none;
+  }
+  /* Same deal while the press is held: hide the ring for mouse presses,
+  but keep it when the press comes from the keyboard (:focus-visible
+  still matches then, so this selector won't). */
+  :where(button, a, input, select, textarea, [role='button'], [tabindex]):active:not(:focus-visible) {
+    outline: none;
+  }
+  /* Belt and braces for browsers that match :focus-visible on mouse click
+  (e.g. Firefox on buttons): while the last interaction was a pointer,
+  force outlines off. Any Tab/arrow keypress removes the attribute first,
+  so keyboard users always keep their rings. */
+  html[data-mouse] *:focus {
+    outline: none !important;
+  }
 }

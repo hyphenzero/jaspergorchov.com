@@ -21,7 +21,11 @@ export default async function Home() {
   const blogPosts = await getAllBlogPosts()
   const notes = await getAllNotes()
 
-  const serializableProjects = projects.map(({ Component, ...rest }) => rest)
+  const serializableProjects = projects.map(({ Component: _Omitted, ...rest }) => {
+    // Component is intentionally stripped: it isn't serializable to the client.
+    void _Omitted
+    return rest
+  })
 
   const recentPosts = blogPosts
     .filter((post) => !post.meta.private)
@@ -53,8 +57,8 @@ export default async function Home() {
         <Container className="pt-28">
           <SectionEyebrow color="sky">Software development</SectionEyebrow>
           <SectionDescription>
-            <SectionDescriptionLead>High-quality software experiences and tooling</SectionDescriptionLead> built with
-            modern technologies and a focus on both design and functionality.
+            <SectionDescriptionLead>Websites, native apps, and developer tools,</SectionDescriptionLead> built with focus on the
+            details that make them work well and feel right.
           </SectionDescription>
 
           <div className="mt-12">

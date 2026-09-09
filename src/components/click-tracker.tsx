@@ -8,7 +8,7 @@ export function ClickTracker() {
     function handleClick(e: MouseEvent) {
       let target = e.target as HTMLElement | null
       while (target && target !== document.body) {
-        let trackName = target.getAttribute('data-track')
+        const trackName = target.getAttribute('data-track')
         if (trackName) {
           trackEvent({
             event_type: 'button_click',

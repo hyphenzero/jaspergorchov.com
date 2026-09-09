@@ -1,10 +1,11 @@
 'use client'
 
+import { trackEvent } from '@/actions/analytics'
 import { ContactShadows, Environment, OrbitControls, useGLTF } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { clsx } from 'clsx'
-import Image from 'next/image'
-import { Suspense, useEffect, useMemo, useState } from 'react'
+import Image, { type StaticImageData } from 'next/image'
+import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { TeapotGeometry } from 'three-stdlib'
 
@@ -66,23 +67,22 @@ function ArtBentoCard({
 
 // --- Three.js mini lab ---
 
-type MeshId = 'torusKnot' | 'sphere' | 'teapot' | 'suzanne' | 'glass'
-type MatId = 'clay' | 'metal' | 'holo' | 'wood' | 'glass'
+type MeshId = 'torusKnot' | 'sphere' | 'teapot' | 'suzanne'
+type MatId = 'clay' | 'metal' | 'plastic' | 'wood' | 'toon'
 
 const MESHES: { id: MeshId; label: string }[] = [
   { id: 'torusKnot', label: 'Torus Knot' },
   { id: 'sphere', label: 'Sphere' },
   { id: 'teapot', label: 'Teapot' },
   { id: 'suzanne', label: 'Suzanne' },
-  { id: 'glass', label: 'Glass' },
 ]
 
-const MATERIALS: { id: MatId; label: string; color: string; roughness: number; metalness: number; transmission?: number; thickness?: number; ior?: number; dispersion?: number }[] = [
-  { id: 'clay', label: 'Clay', color: '#fb923c', roughness: 0.85, metalness: 0 },
+const MATERIALS: { id: MatId; label: string; color: string; roughness: number; metalness: number }[] = [
+  { id: 'clay', label: 'Clay', color: '#a3a3a3', roughness: 0.95, metalness: 0 },
   { id: 'metal', label: 'Metal', color: '#a1a1aa', roughness: 0.25, metalness: 0.85 },
-  { id: 'holo', label: 'Holo', color: '#60a5fa', roughness: 0.35, metalness: 0.5 },
+  { id: 'plastic', label: 'Plastic', color: '#ffffff', roughness: 1, metalness: 0 },
   { id: 'wood', label: 'Wood', color: '#a16207', roughness: 0.9, metalness: 0.05 },
-  { id: 'glass', label: 'Glass', color: '#ffffff', roughness: 0.05, metalness: 0, transmission: 0.98, thickness: 0.5, ior: 1.52, dispersion: 0.012 },
+  { id: 'toon', label: 'Toon', color: '#fb923c', roughness: 0.6, metalness: 0 },
 ]
 
 const TARGET_HEIGHT = 1.18 // sphere 0.48*2 — reference height, bumped up a touch from 0.96
@@ -92,33 +92,17 @@ const MESH_TARGET_HEIGHTS: Record<MeshId, number> = {
   sphere: TARGET_HEIGHT,
   teapot: TARGET_HEIGHT * 0.82,
   suzanne: TARGET_HEIGHT * 0.88,
-  glass: TARGET_HEIGHT,
+}
+
+// Per-mesh preview zoom so each model fills its toolbar circle
+// (teapot already fills its circle, so it stays at 1)
+const PREVIEW_FILL: Record<MeshId, number> = {
+  torusKnot: 1.35,
+  sphere: 1.4,
+  teapot: 1,
+  suzanne: 1.3,
 }
 const FLOOR_Y = -TARGET_HEIGHT / 2
-
-function placeOnFloor(geometry: THREE.BufferGeometry, targetHeight: number) {
-  normalizeGeometry(geometry, targetHeight)
-  geometry.computeBoundingBox()
-  const box = geometry.boundingBox!
-  const bottom = box.min.y
-  const yShift = FLOOR_Y - bottom
-  geometry.translate(0, yShift, 0)
-  return geometry
-}
-
-function placeSceneOnFloor(scene: THREE.Group, targetHeight: number) {
-  scene.updateMatrixWorld(true)
-  const box = new THREE.Box3().setFromObject(scene)
-  const height = box.max.y - box.min.y
-  if (height === 0) return scene
-  const scale = targetHeight / height
-  scene.scale.setScalar(scale)
-  scene.updateMatrixWorld(true)
-  const box2 = new THREE.Box3().setFromObject(scene)
-  const yShift = FLOOR_Y - box2.min.y
-  scene.position.y += yShift
-  return scene
-}
 
 function placeGeometryOnFloor(geometry: THREE.BufferGeometry, targetHeight: number) {
   normalizeGeometry(geometry, targetHeight)
@@ -142,13 +126,165 @@ function normalizeGeometry(geometry: THREE.BufferGeometry, targetHeight: number)
   return geometry
 }
 
-function SuzanneModel({ material, targetHeight, onFloor }: { material: THREE.Material; targetHeight?: number; onFloor?: boolean }) {
+// Real PBR maps from ambientCG (CC0), 1k is plenty for these small views.
+// Only metal + wood are textured — the rest stay procedural.
+// Vendored locally so the page never depends on a third-party host.
+const METAL_MAP_URLS = [
+  '/materials/metal049a/Metal049A_1K-JPG_Color.jpg',
+  '/materials/metal049a/Metal049A_1K-JPG_NormalGL.jpg',
+  '/materials/metal049a/Metal049A_1K-JPG_Roughness.jpg',
+]
+
+// Wood 095 by ambientCG (CC0), vendored locally like the metal maps.
+const WOOD_MAP_URLS = [
+  '/materials/wood095/Wood095_1K-JPG_Color.jpg',
+  '/materials/wood095/Wood095_1K-JPG_NormalGL.jpg',
+  '/materials/wood095/Wood095_1K-JPG_Roughness.jpg',
+]
+
+// Plastic 015 B by ambientCG (CC0), vendored locally like the others.
+const PLASTIC_MAP_URLS = [
+  '/materials/plastic015b/Plastic015B_1K-JPG_Color.jpg',
+  '/materials/plastic015b/Plastic015B_1K-JPG_NormalGL.jpg',
+  '/materials/plastic015b/Plastic015B_1K-JPG_Roughness.jpg',
+]
+
+type PbrMaps = { metal: THREE.Texture[]; wood: THREE.Texture[]; plastic: THREE.Texture[] } | null
+
+// Module-level cache so the maps load exactly once no matter how many
+// previews (each its own Canvas/renderer) subscribe to them.
+const mapsCache = new Map<string, Promise<THREE.Texture[]>>()
+
+function loadMaps(urls: string[]): Promise<THREE.Texture[]> {
+  const key = urls.join('|')
+  let pending = mapsCache.get(key)
+  if (!pending) {
+    pending = (async () => {
+      const loader = new THREE.TextureLoader()
+      loader.setCrossOrigin('anonymous')
+      const texs = await Promise.all(urls.map((u) => loader.loadAsync(u)))
+      for (const t of texs) {
+        t.wrapS = t.wrapT = THREE.RepeatWrapping
+        t.needsUpdate = true
+      }
+      return texs
+    })()
+    mapsCache.set(key, pending)
+  }
+  return pending
+}
+
+function usePbrMaps(): PbrMaps {
+  const [maps, setMaps] = useState<PbrMaps>(null)
+  useEffect(() => {
+    let cancelled = false
+    Promise.all([loadMaps(METAL_MAP_URLS), loadMaps(WOOD_MAP_URLS), loadMaps(PLASTIC_MAP_URLS)]).then(
+      ([metal, wood, plastic]) => {
+        if (!cancelled) setMaps({ metal, wood, plastic })
+      }
+    )
+    return () => {
+      cancelled = true
+    }
+  }, [])
+  return maps
+}
+
+let cachedToonGradient: THREE.DataTexture | null = null
+
+function getToonGradientMap(): THREE.DataTexture {
+  if (!cachedToonGradient) {
+    const tones = new Uint8Array([110, 170, 230, 255])
+    const tex = new THREE.DataTexture(tones, tones.length, 1, THREE.RedFormat)
+    tex.minFilter = THREE.NearestFilter
+    tex.magFilter = THREE.NearestFilter
+    tex.generateMipmaps = false
+    tex.needsUpdate = true
+    cachedToonGradient = tex
+  }
+  return cachedToonGradient
+}
+
+// Inverted-hull outline: a slightly scaled BackSide copy of the mesh.
+// Outline color flips with the theme so it reads on light and dark scenes.
+function ToonOutline({
+  geometry,
+  scale = 1.05,
+  rotation,
+  isDark,
+}: {
+  geometry: THREE.BufferGeometry
+  scale?: number
+  rotation?: [number, number, number]
+  isDark: boolean
+}) {
+  return (
+    <mesh geometry={geometry} scale={scale} rotation={rotation}>
+      <meshBasicMaterial color={isDark ? '#fafafa' : '#18181b'} side={THREE.BackSide} />
+    </mesh>
+  )
+}
+
+function buildLabMaterial(matId: MatId, maps: PbrMaps): THREE.Material {
+  const m = MATERIALS.find((x) => x.id === matId)!
+  if (m.id === 'toon') {
+    return new THREE.MeshToonMaterial({ color: m.color, gradientMap: getToonGradientMap() })
+  }
+  const mat = new THREE.MeshStandardMaterial({ color: m.color, roughness: m.roughness, metalness: m.metalness })
+  const texs = m.id === 'metal' ? maps?.metal : m.id === 'wood' ? maps?.wood : m.id === 'plastic' ? maps?.plastic : null
+  if (texs) {
+    const [diffuse, normal, roughnessMap] = texs
+    diffuse.colorSpace = THREE.SRGBColorSpace
+    mat.map = diffuse
+    mat.normalMap = normal
+    mat.roughnessMap = roughnessMap
+    mat.roughness = 1
+    if (m.id === 'metal') {
+      mat.metalness = 1
+      mat.envMapIntensity = 1.2
+    }
+  }
+  return mat
+}
+
+// Materials start procedural and gain their Poly Haven maps as soon as the
+// textures finish loading (each component owns its material instance).
+function useLabMaterial(matId: MatId): THREE.Material {
+  const maps = usePbrMaps()
+  return useMemo(() => buildLabMaterial(matId, maps), [matId, maps])
+}
+
+function SuzanneModel({
+  material,
+  targetHeight,
+  onFloor,
+  outline,
+  outlineColor,
+}: {
+  material: THREE.Material
+  targetHeight?: number
+  onFloor?: boolean
+  outline?: boolean
+  outlineColor?: string
+}) {
   const { scene } = useGLTF('/models/suzanne/Suzanne.gltf')
   const cloned = useMemo(() => {
     const s = scene.clone(true)
+    const meshes: THREE.Mesh[] = []
     s.traverse((c) => {
-      if ((c as THREE.Mesh).isMesh) (c as THREE.Mesh).material = material
+      if ((c as THREE.Mesh).isMesh) meshes.push(c as THREE.Mesh)
     })
+    const outlineMat = outline
+      ? new THREE.MeshBasicMaterial({ color: outlineColor ?? '#18181b', side: THREE.BackSide })
+      : null
+    for (const mesh of meshes) {
+      mesh.material = material
+      if (outlineMat) {
+        const o = new THREE.Mesh(mesh.geometry, outlineMat)
+        o.scale.setScalar(1.045)
+        mesh.add(o)
+      }
+    }
     if (targetHeight) {
       const adjustedHeight = targetHeight * 0.88
       s.updateMatrixWorld(true)
@@ -167,7 +303,7 @@ function SuzanneModel({ material, targetHeight, onFloor }: { material: THREE.Mat
       }
     }
     return s
-  }, [scene, material, targetHeight, onFloor])
+  }, [scene, material, targetHeight, onFloor, outline, outlineColor])
   if (targetHeight) return <primitive object={cloned} />
   return <primitive object={cloned} scale={0.65} position={[0, -0.18, 0]} />
 }
@@ -265,24 +401,9 @@ function GridFloor({ isDark }: { isDark: boolean }) {
   )
 }
 
-function TurntableMesh({ meshId, matId }: { meshId: MeshId; matId: MatId }) {
-  const mat = useMemo(() => {
-    const m = MATERIALS.find((x) => x.id === matId)!
-    if (m.id === 'glass') {
-      return new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        roughness: 0,
-        metalness: 0,
-        transmission: 1,
-        thickness: 0.5,
-        ior: 1.52,
-        dispersion: 0.012,
-        clearcoat: 0.1,
-        clearcoatRoughness: 0.1,
-      })
-    }
-    return new THREE.MeshStandardMaterial({ color: m.color, roughness: m.roughness, metalness: m.metalness })
-  }, [matId])
+function TurntableMesh({ meshId, matId, isDark }: { meshId: MeshId; matId: MatId; isDark: boolean }) {
+  const mat = useLabMaterial(matId)
+  const isToon = matId === 'toon'
 
   const geometry = useMemo(() => {
     let g: THREE.BufferGeometry | null = null
@@ -296,14 +417,10 @@ function TurntableMesh({ meshId, matId }: { meshId: MeshId; matId: MatId }) {
         placeGeometryOnFloor(g, MESH_TARGET_HEIGHTS[meshId])
         break
       case 'teapot': {
-        g = new TeapotGeometry(0.6)
+        // High segment count: coarse tessellation rows show through toon
+        // shading as scalloped bands.
+        g = new TeapotGeometry(0.6, 24)
         placeGeometryOnFloor(g, MESH_TARGET_HEIGHTS[meshId])
-        break
-      }
-      case 'glass': {
-        g = new THREE.SphereGeometry(0.5, 64, 64)
-        // Position slightly above floor so you can see floor through it
-        g.translate(0, 0.25, 0)
         break
       }
       default:
@@ -318,9 +435,18 @@ function TurntableMesh({ meshId, matId }: { meshId: MeshId; matId: MatId }) {
   return (
     <group position={[0, 0, 0]}>
       {meshId === 'suzanne' ? (
-        <SuzanneModel material={mat} targetHeight={MESH_TARGET_HEIGHTS['suzanne']} onFloor />
+        <SuzanneModel
+          material={mat}
+          targetHeight={MESH_TARGET_HEIGHTS['suzanne']}
+          onFloor
+          outline={isToon}
+          outlineColor={isDark ? '#fafafa' : '#18181b'}
+        />
       ) : geometry ? (
-        <mesh geometry={geometry} material={mat} castShadow receiveShadow />
+        <>
+          <mesh geometry={geometry} material={mat} castShadow receiveShadow />
+          {isToon && <ToonOutline geometry={geometry} scale={1.04} isDark={isDark} />}
+        </>
       ) : null}
     </group>
   )
@@ -331,29 +457,16 @@ function StaticShapePreview({
   matId,
   isSelected,
   onClick,
+  isDark,
 }: {
   meshId: MeshId
   matId: MatId
   isSelected: boolean
   onClick: () => void
+  isDark: boolean
 }) {
-  const mat = useMemo(() => {
-    const m = MATERIALS.find((x) => x.id === matId)!
-    if (m.id === 'glass') {
-      return new THREE.MeshPhysicalMaterial({
-        color: 0xffffff,
-        roughness: 0,
-        metalness: 0,
-        transmission: 1,
-        thickness: 0.5,
-        ior: 1.52,
-        dispersion: 0.012,
-        clearcoat: 0.1,
-        clearcoatRoughness: 0.1,
-      })
-    }
-    return new THREE.MeshStandardMaterial({ color: m.color, roughness: m.roughness, metalness: m.metalness })
-  }, [matId])
+  const mat = useLabMaterial(matId)
+  const isToon = matId === 'toon'
 
   const geometry = useMemo(() => {
     let g: THREE.BufferGeometry | null = null
@@ -365,35 +478,54 @@ function StaticShapePreview({
         g = new THREE.SphereGeometry(0.48, 32, 32)
         break
       case 'teapot': {
-        g = new TeapotGeometry(0.6)
+        g = new TeapotGeometry(0.6, 24)
         if (g) normalizeGeometry(g, TARGET_HEIGHT * 0.82)
         return g
-      }
-      case 'glass': {
-        g = new THREE.SphereGeometry(0.5, 64, 64)
-        // Position so bottom touches floor (FLOOR_Y)
-        // Sphere radius 0.5, center at FLOOR_Y + 0.5 = -0.59 + 0.5 = -0.09
-        g.translate(0, 0.5, 0)
-        break
       }
       default:
         g = null
     }
-    if (g) normalizeGeometry(g, TARGET_HEIGHT)
+    if (g) {
+      normalizeGeometry(g, TARGET_HEIGHT)
+      const f = PREVIEW_FILL[meshId]
+      g.scale(f, f, f)
+    }
     return g
   }, [meshId])
 
+  const label = MESHES.find((m) => m.id === meshId)?.label ?? meshId
+
   return (
-    <button onClick={onClick} className={clsx('pointer-events-auto relative size-20 shrink-0 transition-opacity', isSelected ? 'opacity-100' : 'opacity-55 hover:opacity-100')}>
+    <button
+      onClick={onClick}
+      title={label}
+      aria-label={label}
+      className={clsx(
+        'pointer-events-auto relative size-11 shrink-0 overflow-hidden rounded-full transition-shadow',
+        isSelected && 'ring-2 ring-sky-500 ring-offset-1 ring-offset-white dark:ring-offset-zinc-900',
+        !isSelected &&
+          'hover:ring-2 hover:ring-sky-500/50 hover:ring-offset-1 hover:ring-offset-white dark:hover:ring-offset-zinc-900'
+      )}
+    >
       <Canvas camera={{ position: [0, 0, 4.8], fov: 26 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
         <ambientLight intensity={0.9} />
         <directionalLight position={[2, 3, 2]} intensity={1.1} />
         <Environment preset="studio" />
         <Suspense fallback={null}>
           {meshId === 'suzanne' ? (
-            <SuzanneModel material={mat} targetHeight={MESH_TARGET_HEIGHTS['suzanne']} />
+            <SuzanneModel
+              material={mat}
+              targetHeight={MESH_TARGET_HEIGHTS['suzanne'] * PREVIEW_FILL['suzanne']}
+              outline={isToon}
+              outlineColor={isDark ? '#fafafa' : '#18181b'}
+            />
           ) : geometry ? (
-            <mesh geometry={geometry} material={mat} rotation={[0.3, 0.5, 0]} />
+            <>
+              <mesh geometry={geometry} material={mat} rotation={[0.3, 0.5, 0]} />
+              {isToon && (
+                <ToonOutline geometry={geometry} scale={1.07} rotation={[0.3, 0.5, 0]} isDark={isDark} />
+              )}
+            </>
           ) : null}
         </Suspense>
       </Canvas>
@@ -401,8 +533,58 @@ function StaticShapePreview({
   )
 }
 
+function MaterialSpherePreview({
+  matId,
+  isSelected,
+  onClick,
+  isDark,
+}: {
+  matId: MatId
+  isSelected: boolean
+  onClick: () => void
+  isDark: boolean
+}) {
+  const mat = useLabMaterial(matId)
+  const isToon = matId === 'toon'
+  const geometry = useMemo(() => new THREE.SphereGeometry(0.9, 32, 32), [])
+  const label = MATERIALS.find((m) => m.id === matId)?.label ?? matId
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      aria-label={label}
+      className={clsx(
+        'pointer-events-auto relative size-11 shrink-0 overflow-hidden rounded-full transition-shadow',
+        isSelected && 'ring-2 ring-sky-500 ring-offset-1 ring-offset-white dark:ring-offset-zinc-900',
+        !isSelected &&
+          'hover:ring-2 hover:ring-sky-500/50 hover:ring-offset-1 hover:ring-offset-white dark:hover:ring-offset-zinc-900'
+      )}
+    >
+      <Canvas camera={{ position: [0, 0, 4.8], fov: 26 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+        <ambientLight intensity={0.9} />
+        <directionalLight position={[2, 3, 2]} intensity={1.1} />
+        <Environment preset="studio" />
+        <Suspense fallback={null}>
+          <>
+            <mesh geometry={geometry} material={mat} />
+            {isToon && <ToonOutline geometry={geometry} scale={1.07} isDark={isDark} />}
+          </>
+        </Suspense>
+      </Canvas>
+    </button>
+  )
+}
+
+// Pill styled like BottomToolbar in components/mini-editor/toolbar.tsx:
+// same rounded-full bg-white + shadow/ring classes, scaled up with p-2
+// padding and size-12 items. Vertical on desktop, horizontal on mobile.
+const VERTICAL_TOOLBAR_PILL =
+  'pointer-events-auto relative flex flex-col items-center gap-1.5 rounded-full bg-white p-1.5 shadow-[0px_0px_0px_1px_rgba(9,9,11,0.07),0px_2px_2px_0px_rgba(9,9,11,0.05)] dark:bg-zinc-900 dark:shadow-[0px_0px_0px_1px_rgba(255,255,255,0.1)] dark:before:pointer-events-none dark:before:absolute dark:before:-inset-px dark:before:rounded-full dark:before:shadow-[0px_2px_8px_0px_rgba(0,0,0,0.20),0px_1px_0px_0px_rgba(255,255,255,0.06)_inset] forced-colors:outline max-sm:flex-row'
+
 function ThreeJSLab() {
-  const [meshId, setMeshId] = useState<MeshId>('teapot')
+  const [meshId, setMeshId] = useState<MeshId>('torusKnot')
   const [matId, setMatId] = useState<MatId>('clay')
   const [isDark, setIsDark] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
@@ -420,13 +602,40 @@ function ThreeJSLab() {
   }, [])
   const bg = isDark ? '#18181b' : '#ffffff'
 
+  // Counts as one "use" the first time a visitor actually changes the model
+  // or material — compare against page views for the usage ratio.
+  const labUsedRef = useRef(false)
+  function trackLabUse() {
+    if (labUsedRef.current) return
+    labUsedRef.current = true
+    trackEvent({ event_type: 'threejs_lab_use', content_type: 'home', source: 'threejs-lab' }).catch(() => {})
+  }
+  function selectMesh(id: MeshId) {
+    if (id !== meshId) trackLabUse()
+    setMeshId(id)
+  }
+  function selectMaterial(id: MatId) {
+    if (id !== matId) trackLabUse()
+    setMatId(id)
+  }
+
   return (
     <div className="relative flex h-full min-h-130 overflow-hidden" style={{ background: bg }}>
-      {/* Left — vertical stack of shapes (transparent, overlaying grid) */}
-      <div className="pointer-events-none absolute inset-y-0 left-4 z-10 flex w-22 flex-col items-center justify-center gap-2 bg-transparent py-4">
-        {MESHES.map((m) => (
-          <StaticShapePreview key={m.id} meshId={m.id} matId={matId} isSelected={meshId === m.id} onClick={() => setMeshId(m.id)} />
-        ))}
+      {/* Left — model picker: vertical pill on desktop, horizontal pill
+          pinned to the top on mobile */}
+      <div className="pointer-events-none absolute inset-y-0 left-4 z-10 flex items-center py-4 max-sm:inset-x-0 max-sm:inset-y-auto max-sm:top-0 max-sm:justify-center">
+        <div className={VERTICAL_TOOLBAR_PILL}>
+          {MESHES.map((m) => (
+            <StaticShapePreview
+              key={m.id}
+              meshId={m.id}
+              matId={matId}
+              isSelected={meshId === m.id}
+              onClick={() => selectMesh(m.id)}
+              isDark={isDark}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Center — turntable (full bleed behind sidebars) */}
@@ -434,10 +643,16 @@ function ThreeJSLab() {
         <Canvas camera={{ position: [0, 1.6, 4.95], fov: 32 }} dpr={[1, 2]} shadows gl={{ antialias: true }}>
           <color attach="background" args={[bg]} />
           <ambientLight intensity={0.6} />
-          <directionalLight position={[4, 6, 4]} intensity={1.6} castShadow />
+          <directionalLight
+            position={[4, 6, 4]}
+            intensity={1.6}
+            castShadow
+            shadow-bias={-0.0002}
+            shadow-normalBias={0.03}
+          />
           <directionalLight position={[-4, 2, -4]} intensity={0.6} />
           <Suspense fallback={null}>
-            <TurntableMesh meshId={meshId} matId={matId} />
+            <TurntableMesh meshId={meshId} matId={matId} isDark={isDark} />
             <Environment preset="studio" />
             <ContactShadows position={[0, FLOOR_Y + 0.02, 0]} opacity={0.3} scale={5} blur={2.8} far={4} />
             <GridFloor isDark={isDark} />
@@ -460,22 +675,21 @@ function ThreeJSLab() {
         </Canvas>
       </div>
 
-      {/* Right — vertical stack of textures (transparent, overlaying grid) */}
-      <div className="pointer-events-none absolute inset-y-0 right-4 z-10 flex w-17 flex-col items-center justify-center gap-2.5 bg-transparent py-4">
-        {MATERIALS.map((m) => (
-          <button
-            key={m.id}
-            onClick={() => setMatId(m.id)}
-            aria-label={m.label}
-            className={clsx(
-              'pointer-events-auto size-8 rounded-full ring-1 transition-all',
-              matId === m.id
-                ? 'ring-2 ring-zinc-900 ring-offset-2 ring-offset-white dark:ring-white dark:ring-offset-zinc-900'
-                : 'ring-black/10 hover:ring-black/20 dark:ring-white/15 dark:hover:ring-white/25'
-            )}
-            style={{ background: m.color }}
-          />
-        ))}
+      {/* Right — material picker: vertical pill on desktop, horizontal pill
+          pinned to the bottom on mobile. Each material is previewed on an
+          actual sphere so you can see how it looks. */}
+      <div className="pointer-events-none absolute inset-y-0 right-4 z-10 flex items-center py-4 max-sm:inset-x-0 max-sm:inset-y-auto max-sm:bottom-0 max-sm:justify-center">
+        <div className={VERTICAL_TOOLBAR_PILL}>
+          {MATERIALS.map((m) => (
+            <MaterialSpherePreview
+              key={m.id}
+              matId={m.id}
+              isSelected={matId === m.id}
+              onClick={() => selectMaterial(m.id)}
+              isDark={isDark}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -493,7 +707,7 @@ function ImageBentoCard({
 }: {
   title: string
   description: string
-  src: any
+  src: StaticImageData
   alt: string
   className?: string
   alignTop?: boolean
@@ -546,7 +760,7 @@ export function ThreeDArtGrid() {
     <div className="grid auto-rows-fr grid-cols-1 gap-6 lg:grid-cols-12">
       <ImageBentoCard
         title="Environments"
-        description="Architectural worlds and natural scattering — the Train Station project."
+        description="Full architectural or natural environments, rendered in Blender."
         src={trainStation}
         alt="Train Station environment"
         className="lg:col-span-6"
@@ -554,7 +768,7 @@ export function ThreeDArtGrid() {
 
       <ImageBentoCard
         title="Illustrations"
-        description="Abstract form, color, and close-up material studies."
+        description="Abstract pieces focused on shape, color, and composition."
         src={abstractThumb}
         alt="Abstract composition"
         className="lg:col-span-6"
@@ -563,7 +777,7 @@ export function ThreeDArtGrid() {
         topFade
       />
 
-      <ArtBentoCard title="Three.js" description="Pick a mesh and material — drag to spin, release to keep turntabling." fullBleed className="lg:col-span-12 min-h-150">
+      <ArtBentoCard title="Three.js" description="Interactive experiences that run in real time in the browser." fullBleed className="lg:col-span-12 min-h-150">
         <ThreeJSLab />
       </ArtBentoCard>
     </div>

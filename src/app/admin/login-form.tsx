@@ -6,18 +6,20 @@ import { ErrorMessage, Field, Label } from '@/components/fieldset'
 import { Heading } from '@/components/heading'
 import { Input } from '@/components/input'
 import { Logo } from '@/components/logo'
-import { useActionState, useEffect, useState } from 'react'
+import { useActionState, useState } from 'react'
 
 export function AdminLoginForm() {
   const [state, formAction] = useActionState(adminLogin, { error: undefined })
   const [value, setValue] = useState('')
   const [displayError, setDisplayError] = useState<string | undefined>(undefined)
+  const [lastError, setLastError] = useState<string | undefined>(undefined)
 
-  useEffect(() => {
-    if (state.error) {
-      setDisplayError(state.error)
-    }
-  }, [state])
+  // Mirror server errors locally so typing can dismiss them. Adjusted during
+  // render (the endorsed alternative to syncing in an effect).
+  if (state.error !== lastError) {
+    setLastError(state.error)
+    setDisplayError(state.error)
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setValue(e.target.value)

@@ -40,14 +40,16 @@ function StatCard({ label, value }: { label: string; value: number }) {
 export function AnalyticsDashboard({ summary, pageViews, previewClicks, buttonClicks }: Props) {
   return (
     <div className="space-y-24">
-      <div className="grid grid-cols-4">
+      <div className="grid grid-cols-2 gap-y-8 md:grid-cols-3 xl:grid-cols-6">
         <StatCard label="Page views" value={summary.total_views} />
         <StatCard label="Pages viewed" value={summary.unique_pages} />
         <StatCard label="Button clicks" value={summary.total_button_clicks} />
         <StatCard label="Preview opens" value={summary.total_preview_clicks} />
+        <StatCard label="Canvas draws" value={summary.total_canvas_draws} />
+        <StatCard label="3D lab uses" value={summary.total_threejs_lab_uses} />
       </div>
 
-      <ViewsChart totalViews={summary.total_views} />
+      <ViewsChart />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ContentAnalytics pageViews={pageViews} />
@@ -65,8 +67,8 @@ export function AnalyticsDashboard({ summary, pageViews, previewClicks, buttonCl
                 <span className="font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">Clicks</span>
               </div>
               {buttonClicks.map((row) => {
-                let maxClicks = Math.max(1, ...buttonClicks.map((b) => b.total_clicks))
-                let pct = (row.total_clicks / maxClicks) * 100
+                const maxClicks = Math.max(1, ...buttonClicks.map((b) => b.total_clicks))
+                const pct = (row.total_clicks / maxClicks) * 100
                 return (
                   <div
                     key={row.name}
@@ -103,8 +105,8 @@ export function AnalyticsDashboard({ summary, pageViews, previewClicks, buttonCl
               <span className="font-mono text-xs font-medium tracking-widest text-zinc-500 uppercase">Opens</span>
             </div>
             {previewClicks.map((row) => {
-              let maxClicks = Math.max(1, ...previewClicks.map((p) => p.total_clicks))
-              let pct = (row.total_clicks / maxClicks) * 100
+              const maxClicks = Math.max(1, ...previewClicks.map((p) => p.total_clicks))
+              const pct = (row.total_clicks / maxClicks) * 100
               return (
                 <div
                   key={row.slug}

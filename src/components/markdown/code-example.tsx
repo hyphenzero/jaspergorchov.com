@@ -10,27 +10,27 @@ import { getHighlighter } from '../../lib/shiki'
 import { highlightClasses } from './highlight-classes'
 import linesToDiv from './lines-to-div'
 
-export function js(strings: TemplateStringsArray, ...args: any[]) {
+export function js(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'js', code: dedent(strings, ...args) }
 }
 
-export function ts(strings: TemplateStringsArray, ...args: any[]) {
+export function ts(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'ts', code: dedent(strings, ...args) }
 }
 
-export function jsx(strings: TemplateStringsArray, ...args: any[]) {
+export function jsx(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'jsx', code: dedent(strings, ...args) }
 }
 
-export function html(strings: TemplateStringsArray, ...args: any[]) {
+export function html(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'html', code: dedent(strings, ...args) }
 }
 
-export function svelte(strings: TemplateStringsArray, ...args: any[]) {
+export function svelte(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'svelte', code: dedent(strings, ...args) }
 }
 
-export function css(strings: TemplateStringsArray, ...args: any[]) {
+export function css(strings: TemplateStringsArray, ...args: unknown[]) {
   return { lang: 'css', code: dedent(strings, ...args) }
 }
 
@@ -135,14 +135,14 @@ export async function RawHighlightedCode({
   example: { lang: string; code: string }
   className?: string
 }) {
-  let codeWithoutPrettierIgnore = example.code
+  const codeWithoutPrettierIgnore = example.code
     .split('\n')
     .filter((line) => !line.includes('prettier-ignore'))
     .join('\n')
 
   const highlighter = await getHighlighter()
 
-  let code = highlighter
+  const code = highlighter
     .codeToHtml(codeWithoutPrettierIgnore, {
       lang: example.lang,
       themes: {

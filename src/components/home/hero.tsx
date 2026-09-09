@@ -1,7 +1,6 @@
 'use client'
 
 import { ProjectVideoOverlay } from '@/components/project-video'
-import { useVideoCache } from '@/components/video-cache-context'
 import type { SerializableProject } from '@/types/post'
 import { ArrowUpRightIcon } from '@heroicons/react/16/solid'
 import { motion } from 'motion/react'
@@ -181,7 +180,6 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const loadedCountRef = useRef(0)
   const [imagesReady, setImagesReady] = useState(false)
   const gridReady = shuffled && imagesReady
-  const { preload } = useVideoCache()
 
   useEffect(() => {
     const update = () => {
@@ -229,22 +227,30 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
   const [order, setOrder] = useState<number[]>(() => filteredProjects.map((_, i) => i))
 
   const orderRef = useRef(order)
-  orderRef.current = order
   const layoutRef = useRef(layout)
-  layoutRef.current = layout
   const focusCenterYRef = useRef(focusCenterY)
-  focusCenterYRef.current = focusCenterY
   const displayVwRef = useRef(displayVw)
-  displayVwRef.current = displayVw
   const displayVhRef = useRef(displayVh)
-  displayVhRef.current = displayVh
   const imageProjectsRef = useRef(imageProjects)
-  imageProjectsRef.current = imageProjects
   const isPortraitRef = useRef(isPortrait)
-  isPortraitRef.current = isPortrait
   const tileHeightRef = useRef(tileHeight)
-  tileHeightRef.current = tileHeight
 
+  // Sync latest values for the tick loop below. Runs before it on mount
+  // because effects execute in declaration order.
+  useEffect(() => {
+    orderRef.current = order
+    layoutRef.current = layout
+    focusCenterYRef.current = focusCenterY
+    displayVwRef.current = displayVw
+    displayVhRef.current = displayVh
+    imageProjectsRef.current = imageProjects
+    isPortraitRef.current = isPortrait
+    tileHeightRef.current = tileHeight
+  })
+
+  // Client-only initial shuffle: random order must be generated after
+  // hydration (a lazy initializer would mismatch the server render).
+  /* eslint-disable react-hooks/set-state-in-effect -- mount-only setup, see above */
   useEffect(() => {
     if (filteredProjects.length === 0) return
 
@@ -331,12 +337,6 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
         return
       }
 
-      const projects = imageProjectsRef.current
-      const nextProject = projects[nextProjectIdx]
-      if (nextProject?.meta.video) {
-        preload(nextProject.meta.video)
-      }
-
       const currentPos = pos[o[currentOrderIdx]]
       const nextScale = isPortraitRef.current ? (w - 2 * PORTRAIT_PADDING) / (tileHeightRef.current * activeRatio) : 1
       const to = getFocusedTransform(nextPos.centerX, nextPos.centerY, w / 2, targetY, nextScale)
@@ -384,6 +384,7 @@ export function Hero({ projects = [], imageHeight, focusCenterY }: Props) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filteredProjects.length])
+  /* eslint-enable react-hooks/set-state-in-effect */
 
   useLayoutEffect(() => {
     const idx = Math.min(currentIdxRef.current, layout.positions.length - 1)

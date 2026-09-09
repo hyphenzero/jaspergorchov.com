@@ -8,7 +8,11 @@ export function NoteRow({
   meta,
   children,
 }: {
-  meta: { date: string; image?: { src: string; width?: number; height?: number } }
+  meta: {
+    date: string
+    image?: { src: string; width?: number; height?: number }
+    imageDark?: { src: string; width?: number; height?: number }
+  }
   children: React.ReactNode
 }) {
   return (
@@ -27,7 +31,12 @@ export function NoteRow({
       <div className="relative sm:col-span-2 sm:max-w-2xl">
         <div className="prose prose-blog">{children}</div>
         {meta.image ? (
-          <Image src={meta.image as { src: string; width: number; height: number }} alt="" className="mt-8" />
+          <Image
+            src={meta.image as { src: string; width: number; height: number }}
+            darkSrc={meta.imageDark}
+            alt=""
+            className="mt-8"
+          />
         ) : null}
       </div>
     </div>

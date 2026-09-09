@@ -19,7 +19,7 @@ export async function trackEvent(event: {
 
   if (
     !event.event_type ||
-    !['page_view', 'preview_click', 'preview_reload', 'button_click'].includes(event.event_type)
+    !['page_view', 'preview_click', 'preview_reload', 'button_click', 'canvas_draw', 'threejs_lab_use'].includes(event.event_type)
   ) {
     throw new Error('Invalid event_type')
   }

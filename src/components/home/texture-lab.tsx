@@ -4,6 +4,7 @@ import { Tabs } from '@/components/tabs'
 import { ContactShadows, Environment, OrbitControls, useGLTF, useTexture } from '@react-three/drei'
 import { Canvas, useFrame, useLoader } from '@react-three/fiber'
 import { clsx } from 'clsx'
+import Image from 'next/image'
 import { Suspense, useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
 import { OBJLoader, TeapotGeometry } from 'three-stdlib'
@@ -32,12 +33,6 @@ const GEOMETRY_OPTIONS: { type: GeometryType; label: string }[] = [
   { type: 'suzanne', label: 'Suzanne' },
   { type: 'bunny', label: 'Stanford Bunny' },
 ]
-
-const LOADED_TYPES = new Set<GeometryType>(['suzanne', 'bunny'])
-
-function isLoadedModel(type: GeometryType) {
-  return LOADED_TYPES.has(type)
-}
 
 function createGeometry(type: GeometryType): THREE.BufferGeometry | null {
   switch (type) {
@@ -91,7 +86,7 @@ const FALLBACK_TEXTURES: TextureAsset[] = Array.from({ length: 24 }, (_, i) => (
 
 // ============ PBR Material Loader ============
 
-function createPBRMaterial(previewMap: TextureAsset['previewMap']): THREE.MeshStandardMaterial {
+function createPBRMaterial(): THREE.MeshStandardMaterial {
   const m = new THREE.MeshStandardMaterial({
     roughness: 0.5,
     metalness: 0.3,
@@ -142,7 +137,7 @@ function PBRMaterial({ previewMap }: { previewMap: TextureAsset['previewMap'] })
   const loadedTextures = useTexture(urls)
 
   const mat = useMemo(() => {
-    const m = createPBRMaterial(previewMap)
+    const m = createPBRMaterial()
     applyMaps(m, previewMap, loadedTextures)
     return m
   }, [loadedTextures, previewMap])
@@ -170,7 +165,7 @@ function GLTFModel({
 
   const cloned = useMemo(() => {
     const s = scene.clone(true)
-    const mat = createPBRMaterial(previewMap)
+    const mat = createPBRMaterial()
     applyMaps(mat, previewMap, loadedTextures)
     s.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
@@ -193,7 +188,7 @@ function OBJModel({ url, previewMap, scale }: { url: string; previewMap: Texture
 
   const cloned = useMemo(() => {
     const copy = obj.clone(true)
-    const mat = createPBRMaterial(previewMap)
+    const mat = createPBRMaterial()
     applyMaps(mat, previewMap, loadedTextures)
     copy.traverse((child) => {
       if ((child as THREE.Mesh).isMesh) {
@@ -311,7 +306,9 @@ function TexturePreview({
         !isSelected && 'hover:ring-2 hover:ring-amber-500/50 hover:ring-offset-2 hover:ring-offset-zinc-900'
       )}
     >
-      {imgSrc && <img src={imgSrc} alt={texture.name} className="size-full object-cover" loading="lazy" />}
+      {imgSrc && (
+        <Image src={imgSrc} alt={texture.name} fill sizes="96px" className="object-cover" loading="lazy" />
+      )}
       <div className="pointer-events-none absolute inset-0 rounded-full bg-[radial-gradient(circle_at_35%_35%,transparent_35%,rgba(0,0,0,0.4)_100%)]" />
       {isSelected && <div className="pointer-events-none absolute inset-0 rounded-full bg-amber-500/10" />}
     </button>
@@ -528,16 +525,16 @@ export function TextureLab({ className }: { className?: string }) {
         if (!res.ok) throw new Error('API failed')
         return res.json()
       })
-      .then((data: Record<string, any>) => {
+      .then((data: Record<string, { type?: number; name?: string }>) => {
         if (cancelled) return
         const assets: TextureAsset[] = Object.entries(data)
-          .filter(([, v]) => (v as any).type === 1)
+          .filter(([, v]) => v.type === 1)
           .slice(0, 48)
           .map(([id, v]) => {
             const base = `https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/${id}/${id}`
             return {
               id,
-              name: ((v as any).name ?? id)
+              name: (v.name ?? id)
                 .replace(/\baerial\b/gi, '')
                 .replace(/\s+/g, ' ')
                 .trim(),

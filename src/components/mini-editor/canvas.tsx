@@ -11,7 +11,7 @@ import {
 } from 'react'
 import { type Command, createLayer as createLayerCmd } from './commands'
 import { useEditor } from './store'
-import { getResizeCursor, getToolForId, type ToolContext } from './tools'
+import { getResizeCursor, getToolForId, isSelectionSuppressed, type ToolContext, type ToolRuntime } from './tools'
 import {
   type BrushLayer,
   type EllipseLayer,
@@ -48,60 +48,182 @@ function hitTest(layers: Layer[], point: Point): Layer | null {
   return null
 }
 
-function renderRectangle(layer: RectangleLayer) {
-  const fill =
-    layer.fill === 'url(#bg-gradient)' ? 'linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 48%, #14b8a6 100%)' : layer.fill
+function erasureHoles(layer: Layer) {
+  const erasures = layer.erasures ?? []
+  if (erasures.length === 0) return null
+  // Holes in the layer's own local coordinates, rendered as smooth eraser
+  // paths exactly like brush strokes.
+  return erasures.map((stroke, index) => {
+    const local = stroke.points.map((p) => ({ x: p.x - layer.x, y: p.y - layer.y }))
+    return local.length === 1 ? (
+      <circle key={index} cx={local[0].x} cy={local[0].y} r={stroke.width / 2} fill="black" />
+    ) : (
+      <path
+        key={index}
+        d={pointsToSmoothPath(local)}
+        stroke="black"
+        strokeWidth={stroke.width}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    )
+  })
+}
 
+function shapeMaskDef(layer: Layer) {
+  const erasures = layer.erasures ?? []
+  if (erasures.length === 0 || layer.width <= 0 || layer.height <= 0) return null
+  // Explicit user-space units: the referencing shape lives in this same SVG
+  // viewport (which spans the layer box 1:1), so local coordinates line up.
+  // The region is padded generously so overflowing content (e.g. long text)
+  // is never clipped by the mask itself.
+  const pad = 200
   return (
-    <div
-      className="pointer-events-none size-full"
-      style={{
-        background: fill,
-        borderRadius: layer.cornerRadius,
-        boxShadow: layer.fill === '#f8fafc' ? '0 18px 45px rgb(15 23 42 / 0.16)' : undefined,
-        opacity: layer.opacity,
-      }}
-    />
+    <mask
+      id={`shape-erase-${layer.id}`}
+      maskUnits="userSpaceOnUse"
+      maskContentUnits="userSpaceOnUse"
+      x={-pad}
+      y={-pad}
+      width={layer.width + pad * 2}
+      height={layer.height + pad * 2}
+    >
+      <rect x={-pad} y={-pad} width={layer.width + pad * 2} height={layer.height + pad * 2} fill="white" />
+      {erasureHoles(layer)}
+    </mask>
+  )
+}
+
+function renderRectangle(layer: RectangleLayer) {
+  const maskId = `shape-erase-${layer.id}`
+  const hasErasures = (layer.erasures ?? []).length > 0
+  return (
+    <svg className="pointer-events-none absolute inset-0 overflow-visible">
+      {hasErasures ? shapeMaskDef(layer) : null}
+      {layer.fill === 'url(#bg-gradient)' ? (
+        <linearGradient id="bg-gradient" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stopColor="#0ea5e9" />
+          <stop offset="0.48" stopColor="#8b5cf6" />
+          <stop offset="1" stopColor="#14b8a6" />
+        </linearGradient>
+      ) : null}
+      <rect
+        x="0"
+        y="0"
+        width={layer.width}
+        height={layer.height}
+        rx={layer.cornerRadius}
+        fill={layer.fill}
+        opacity={layer.opacity}
+        mask={hasErasures ? `url(#${maskId})` : undefined}
+      />
+    </svg>
   )
 }
 
 function renderEllipse(layer: EllipseLayer) {
+  const maskId = `shape-erase-${layer.id}`
+  const hasErasures = (layer.erasures ?? []).length > 0
   return (
-    <div
-      className="pointer-events-none size-full"
-      style={{
-        background: layer.fill,
-        borderRadius: '50%',
-        filter: layer.name.toLowerCase().includes('glow') ? 'blur(0.5px)' : undefined,
-        opacity: layer.opacity,
-      }}
-    />
+    <svg className="pointer-events-none absolute inset-0 overflow-visible">
+      {hasErasures ? shapeMaskDef(layer) : null}
+      <ellipse
+        cx={layer.width / 2}
+        cy={layer.height / 2}
+        rx={layer.width / 2}
+        ry={layer.height / 2}
+        fill={layer.fill}
+        opacity={layer.opacity}
+        mask={hasErasures ? `url(#${maskId})` : undefined}
+      />
+    </svg>
   )
 }
 
 function renderText(layer: TextLayer) {
+  const maskId = `shape-erase-${layer.id}`
+  const hasErasures = (layer.erasures ?? []).length > 0
   return (
-    <div
-      className="pointer-events-none flex size-full items-center text-pretty select-none"
-      style={{
-        color: layer.fill,
-        fontSize: layer.fontSize,
-        fontWeight: 600,
-        lineHeight: 1.04,
-        opacity: layer.opacity,
-      }}
-    >
-      {layer.text}
-    </div>
+    <svg className="pointer-events-none absolute inset-0 overflow-visible">
+      {hasErasures ? shapeMaskDef(layer) : null}
+      <text
+        x="0"
+        y={layer.height / 2}
+        dominantBaseline="central"
+        fill={layer.fill}
+        fontSize={layer.fontSize}
+        fontWeight={600}
+        opacity={layer.opacity}
+        mask={hasErasures ? `url(#${maskId})` : undefined}
+        className="select-none"
+      >
+        {layer.text}
+      </text>
+    </svg>
   )
 }
 
 function renderBrush(layer: BrushLayer, zIndex: number) {
+  const hasErasures = layer.erasures.length > 0
+  const maskId = `erase-${layer.id}`
+
+  let mask: React.ReactNode = null
+  if (hasErasures) {
+    // Mask in the same canvas coordinate space as the path itself, so the
+    // holes line up exactly and nothing gets sliced at a bounding box.
+    // Each eraser gesture renders as one smooth path, just like a brush stroke.
+    const xs = layer.points.map((p) => p.x)
+    const ys = layer.points.map((p) => p.y)
+    const margin = Math.max(...layer.erasures.map((s) => s.width / 2)) + layer.strokeWidth
+    const minX = Math.min(...xs) - margin
+    const minY = Math.min(...ys) - margin
+    const w = Math.max(Math.max(...xs) + margin - minX, 1)
+    const h = Math.max(Math.max(...ys) + margin - minY, 1)
+    mask = (
+      <mask
+        id={maskId}
+        maskUnits="userSpaceOnUse"
+        maskContentUnits="userSpaceOnUse"
+        x={minX}
+        y={minY}
+        width={w}
+        height={h}
+      >
+        <rect x={minX} y={minY} width={w} height={h} fill="white" />
+        {layer.erasures.map((stroke, index) =>
+          stroke.points.length === 1 ? (
+            <circle key={index} cx={stroke.points[0].x} cy={stroke.points[0].y} r={stroke.width / 2} fill="black" />
+          ) : (
+            <path
+              key={index}
+              d={pointsToSmoothPath(stroke.points)}
+              stroke="black"
+              strokeWidth={stroke.width}
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )
+        )}
+      </mask>
+    )
+  }
+  const maskProp = hasErasures ? { mask: `url(#${maskId})` } : {}
+
   if (layer.points.length === 1) {
     const [point] = layer.points
     return (
       <svg className="pointer-events-none absolute inset-0 overflow-visible" style={{ zIndex }}>
-        <circle cx={point.x} cy={point.y} r={layer.strokeWidth / 2} fill={layer.strokeColor} opacity={layer.opacity} />
+        {mask}
+        <circle
+          cx={point.x}
+          cy={point.y}
+          r={layer.strokeWidth / 2}
+          fill={layer.strokeColor}
+          opacity={layer.opacity}
+          {...maskProp}
+        />
       </svg>
     )
   }
@@ -110,6 +232,7 @@ function renderBrush(layer: BrushLayer, zIndex: number) {
 
   return (
     <svg className="pointer-events-none absolute inset-0 overflow-visible" style={{ zIndex }}>
+      {mask}
       <path
         d={d}
         stroke={layer.strokeColor}
@@ -118,6 +241,7 @@ function renderBrush(layer: BrushLayer, zIndex: number) {
         opacity={layer.opacity}
         strokeLinecap="round"
         strokeLinejoin="round"
+        {...maskProp}
       />
     </svg>
   )
@@ -140,6 +264,34 @@ function pointsToSmoothPath(points: Point[]): string {
   }
 
   return d
+}
+
+let measureContext: CanvasRenderingContext2D | null = null
+
+function measureText(fontSize: number, text: string): { width: number; height: number } {
+  if (typeof document === 'undefined') return { width: Math.max(text.length * fontSize * 0.55, 20), height: fontSize * 1.2 }
+  if (!measureContext) measureContext = document.createElement('canvas').getContext('2d')
+  if (!measureContext) return { width: Math.max(text.length * fontSize * 0.55, 20), height: fontSize * 1.2 }
+  measureContext.font = `600 ${fontSize}px Inter, system-ui, sans-serif`
+  const width = measureContext.measureText(text || ' ').width + 4
+  return { width: Math.max(width, 20), height: fontSize * 1.2 }
+}
+
+function brushBounds(points: Point[], strokeWidth: number) {
+  const xs = points.map((p) => p.x)
+  const ys = points.map((p) => p.y)
+  const minX = Math.min(...xs)
+  const minY = Math.min(...ys)
+  return {
+    x: minX - strokeWidth,
+    y: minY - strokeWidth,
+    width: Math.max(...xs) - minX + strokeWidth * 2,
+    height: Math.max(...ys) - minY + strokeWidth * 2,
+  }
+}
+
+function createDefaultDoodles(): Layer[] {
+  return []
 }
 
 function getHandlePosition(handle: string, width: number, height: number): CSSProperties {
@@ -198,11 +350,16 @@ function CanvasLayer({
 }) {
   const inputRef = useRef<HTMLInputElement>(null)
   const isEditing = layer.id === editingTextId && layer.type === 'text'
+  const [draftLength, setDraftLength] = useState((layer as TextLayer).text?.length ?? 0)
 
+  const wasEditingRef = useRef(false)
   useEffect(() => {
-    if (!isEditing) return
-    inputRef.current?.focus()
-  }, [isEditing])
+    if (isEditing && !wasEditingRef.current) {
+      setDraftLength((layer as TextLayer).text?.length ?? 0)
+      inputRef.current?.focus()
+    }
+    wasEditingRef.current = isEditing
+  }, [isEditing, layer])
 
   if (!layer.visible) return null
 
@@ -223,7 +380,7 @@ function CanvasLayer({
           ref={inputRef}
           type="text"
           defaultValue={textLayer.text}
-          className="size-full cursor-text bg-transparent outline-none"
+          className="h-full cursor-text bg-transparent outline-none"
           style={{
             color: textLayer.fill,
             fontSize: textLayer.fontSize,
@@ -232,7 +389,10 @@ function CanvasLayer({
             opacity: textLayer.opacity,
             border: 'none',
             padding: 0,
+            width: `${Math.max(draftLength + 1, 4)}ch`,
+            maxWidth: '80vw',
           }}
+          onChange={(e) => setDraftLength(e.currentTarget.value.length)}
           onBlur={(e) => onFinishEdit(layer.id, e.currentTarget.value)}
           onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
             if (e.key === 'Enter') {
@@ -279,28 +439,8 @@ function CanvasLayer({
 export function Canvas() {
   const { state, dispatch, history } = useEditor()
   const viewportRef = useRef<HTMLDivElement>(null)
-  const [viewportSize, setViewportSize] = useState({ width: 0, height: 0 })
   const [editingTextId, setEditingTextId] = useState<string | null>(null)
   const pointerCapturedRef = useRef(false)
-
-  useEffect(() => {
-    const viewportNode = viewportRef.current
-    if (!viewportNode) return
-
-    const update = () => {
-      const rect = viewportNode.getBoundingClientRect()
-      setViewportSize({ width: rect.width, height: rect.height })
-    }
-
-    update()
-    const observer = new ResizeObserver(update)
-    observer.observe(viewportNode)
-
-    return () => observer.disconnect()
-  }, [])
-
-  const layersRef = useRef(state.layers)
-  layersRef.current = state.layers
 
   const getPoint = useCallback((clientX: number, clientY: number): Point => {
     const el = viewportRef.current
@@ -319,7 +459,7 @@ export function Canvas() {
     [history]
   )
 
-  const startEditingText = useCallback((id: string, _text: string, _x: number, _y: number) => {
+  const startEditingText = useCallback((id: string) => {
     requestAnimationFrame(() => setEditingTextId(id))
   }, [])
 
@@ -329,15 +469,24 @@ export function Canvas() {
 
   const handleFinishEdit = useCallback(
     (id: string, text: string) => {
-      const layer = layersRef.current.find((l) => l.id === id)
-      if (layer) {
+      const layers = state.layers
+      const layer = layers.find((l) => l.id === id)
+      if (layer && layer.type === 'text' && text.trim() === '') {
+        dispatch({ type: 'DELETE_LAYER', id })
+      } else if (layer && layer.type === 'text') {
+        const { width, height } = measureText(layer.fontSize, text)
+        const next = layers.map((l) => (l.id === id ? { ...l, text, width, height } : l))
+        history.record({ apply: () => next, undo: () => layers })
+        dispatch({ type: 'SET_TEXT_CONTENT', id, text, width, height })
+        dispatch({ type: 'SELECT_LAYER', id })
+      } else if (layer) {
         const finalLayer = { ...layer, text }
         history.record(createLayerCmd(finalLayer))
+        dispatch({ type: 'SET_LAYER_PROPERTY', id, property: 'text', value: text })
       }
-      dispatch({ type: 'SET_LAYER_PROPERTY', id, property: 'text', value: text })
       setEditingTextId(null)
     },
-    [dispatch, history]
+    [state.layers, dispatch, history]
   )
 
   const buildToolContext = useCallback(
@@ -347,6 +496,8 @@ export function Canvas() {
       fillColor: state.fillColor,
       brushColor: state.brushColor,
       brushSize: state.brushSize,
+      eraserSize: state.eraserSize,
+      eraserMode: state.eraserMode,
       dispatch,
       recordCommand,
       editingTextId,
@@ -360,6 +511,8 @@ export function Canvas() {
       state.fillColor,
       state.brushColor,
       state.brushSize,
+      state.eraserSize,
+      state.eraserMode,
       dispatch,
       recordCommand,
       editingTextId,
@@ -370,8 +523,22 @@ export function Canvas() {
   )
 
   const cursorRef = useRef('default')
-  const selectedLayerRef = useRef(state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null)
-  selectedLayerRef.current = state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null
+  const seededRef = useRef(false)
+
+  // Seed corner doodles once on load: a smiley bottom-right and a loopy
+  // line top-right. Skipped if layers already exist (StrictMode remount,
+  // HMR state restore) so they never duplicate.
+  useEffect(() => {
+    if (seededRef.current || state.layers.length > 0) return
+    const viewport = viewportRef.current
+    if (!viewport) return
+    const rect = viewport.getBoundingClientRect()
+    if (rect.width <= 0 || rect.height <= 0) return
+    seededRef.current = true
+    dispatch({ type: 'SET_LAYERS', layers: createDefaultDoodles() })
+    // Only the mount values matter; later renders must not reseed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handlePointerDown = useCallback(
     (event: PointerEvent<HTMLDivElement>) => {
@@ -395,7 +562,7 @@ export function Canvas() {
 
       if (state.activeTool === 'brush') return
 
-      const layer = selectedLayerRef.current
+      const layer = state.layers.find((l) => l.id === state.selectedLayerId) ?? null
       if (state.activeTool === 'move' && layer && viewportRef.current) {
         const pt = getPoint(event.clientX, event.clientY)
         const handle = getResizeCursor(layer, pt)
@@ -406,7 +573,7 @@ export function Canvas() {
         }
       }
     },
-    [state.activeTool, buildToolContext, getPoint]
+    [state.activeTool, state.layers, state.selectedLayerId, buildToolContext, getPoint]
   )
 
   const handlePointerUp = useCallback(
@@ -420,7 +587,7 @@ export function Canvas() {
         pointerCapturedRef.current = false
       }
 
-      if (viewportRef.current && state.activeTool !== 'brush') {
+      if (viewportRef.current && state.activeTool !== 'brush' && state.activeTool !== 'eraser') {
         const resetCursor = 'default'
         cursorRef.current = resetCursor
         viewportRef.current.style.cursor = resetCursor
@@ -456,9 +623,15 @@ export function Canvas() {
   )
 
   const selectedLayer = state.layers.find((layer) => layer.id === state.selectedLayerId) ?? null
-  const showSelection = selectedLayer && state.activeTool === 'move' && selectedLayer.visible
+  const showSelection =
+    selectedLayer && selectedLayer.visible && !isSelectionSuppressed() && state.activeTool !== 'brush'
   const cursorClass = getToolForId(state.activeTool).cursor
-  const brushCursor = state.activeTool === 'brush' ? brushCursorUrl(state.brushSize) : undefined
+  const brushCursor =
+    state.activeTool === 'brush'
+      ? brushCursorUrl(state.brushSize)
+      : state.activeTool === 'eraser'
+        ? brushCursorUrl(state.eraserSize)
+        : undefined
 
   return (
     <div
@@ -491,8 +664,8 @@ export function Canvas() {
               ctx.dispatch({ type: 'SELECT_LAYER', id: selectedLayer.id })
               const pt = ctx.getCanvasPoint(event.clientX, event.clientY)
               if (!pt) return
-              const tool = getToolForId('move')
-              ;(tool as any)._resizeState = {
+              const tool = getToolForId(state.activeTool) as ToolRuntime
+              ;tool._resizeState = {
                 layerId: selectedLayer.id,
                 handle,
                 startX: pt.x,
@@ -501,7 +674,9 @@ export function Canvas() {
                 layerStartY: selectedLayer.y,
                 layerStartW: selectedLayer.width,
                 layerStartH: selectedLayer.height,
+                startFontSize: (selectedLayer as TextLayer).fontSize ?? 16,
                 oldPoints: selectedLayer.type === 'brush' ? [...selectedLayer.points] : undefined,
+                initialLayers: state.layers,
               }
               viewportRef.current?.setPointerCapture(event.pointerId)
               pointerCapturedRef.current = true

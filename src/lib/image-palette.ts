@@ -230,7 +230,7 @@ export async function extractPaletteFromImage(imageSrc: string, backgroundColor?
   }
 
   const dominantColors = chooseDominantColors(
-    [...swatches.entries()].map(([key, value]) => ({
+    [...swatches.values()].map((value) => ({
       color: {
         red: Math.round(value.red / value.count),
         green: Math.round(value.green / value.count),
